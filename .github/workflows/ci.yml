@@ -43,7 +43,13 @@ jobs:
       - run: npm ci
       - run: npm run build:plugin
       - name: Fail if plugin/server differs from src/
-        run: git diff --exit-code -- plugin/server || (echo "::error::plugin/server is stale - run 'npm run build:plugin' and commit" && exit 1)
+        run: |
+          if ! git diff --quiet -- plugin/server; then
+            git diff --stat -- plugin/server
+            git diff -- plugin/server | head -80
+            echo "::error::plugin/server is stale - run 'npm run build:plugin' and commit"
+            exit 1
+          fi
       - name: Bundled server passes the MCP tests outside the repo
         run: |
           mkdir -p "$RUNNER_TEMP/plugin" && cp -r plugin/. "$RUNNER_TEMP/plugin/"
