@@ -31,6 +31,24 @@ describe.each(VERSIONS)("sample characters — Spine %s", (v) => {
   });
 });
 
+it.each([["knight", ["idle", "attack", "walk"]], ["wizard", ["idle", "cast"]]] as const)("sample %s poses identically in 3.8 and 4.2", async (name, anims) => {
+  const open = async (v: "3.8" | "4.2") => {
+    const base = join("samples", "characters", `${name}-${v}`, name);
+    return openSkeleton((await loadRuntime(v)).core, read(`${base}.json`), readFileSync(`${base}.atlas`, "utf8"));
+  };
+  const a = await open("3.8"), b = await open("4.2");
+  let worst = 0;
+  for (const anim of anims) {
+    const dur = b.animations.find((x) => x.name === anim)!.duration;
+    for (let t = 0; t <= dur + 1e-6; t += dur / 20) {
+      a.pose(anim, t); b.pose(anim, t);
+      for (const bone of b.skeleton.bones) { const p = a.bone(bone.data.name), q = b.bone(bone.data.name); worst = Math.max(worst, Math.hypot(p.x - q.x, p.y - q.y)); }
+    }
+  }
+  // 3.8 interpolates rotations the short way round: keys more than 180° apart would swing the other way
+  expect(worst).toBeLessThan(0.05);
+});
+
 describe.each(VERSIONS)("character merge — Spine %s", (v) => {
   it("follow: the anchor sits on the bone through the whole animation; original files untouched", async () => {
     const f = fixture(v);

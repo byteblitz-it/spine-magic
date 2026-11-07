@@ -1,151 +1,232 @@
-// Builds the sample characters (knight, wizard) from art/sample-characters.png as Spine 3.8 and 4.2 skeletons.
-// Each character is one sprite on a "body" bone that leans, bobs and lunges, plus anchor bones placed on the art
-// (sword tip, grip, staff orb, gems) for attach_effect. Pages are premultiplied, like Spine's default export.
+// Builds the sample characters (knight, wizard) as cut-out Spine rigs from the layered parts in art/parts/
+// (cut by scripts/cut-rig-parts.ts), for Spine 3.8 and 4.2, with anchor bones for attach_effect.
+// Pages are premultiplied, like Spine's default export.
 // Usage: npx tsx scripts/make-sample-characters.ts  → samples/characters/<name>-<version>/
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
-import { buildAtlas, createImage, decodePng, encodePng, type Image } from "../src/core/index.js";
+import { buildAtlas, decodePng, encodePng, type Image, type Texture } from "../src/core/index.js";
 
-const SCALE = 0.5;
-const src = decodePng(new Uint8Array(readFileSync(join("art", "sample-characters.png"))));
+/** Bones in world space at setup (no setup rotation, so a child's offset is just the difference). */
+interface BoneDef { name: string; parent?: string; x: number; y: number; color?: string }
+/** A part image placed in world space at setup: centre, rotation (deg), optional mirror. Listed back to front. */
+interface PartDef { part: string; bone: string; x: number; y: number; rotation?: number; flipX?: boolean; scale?: number }
+type Key = { time: number; [k: string]: number | string | number[] | undefined };
+/** keys: [time, value(s)…, "linear"?] — eased by default; "linear" keeps the segment to the next key straight */
+type Timelines = Record<string, { rotate?: (number | "linear")[][]; translate?: [number, number, number][]; scale?: [number, number, number][] }>;
+export interface CharDef { name: string; bones: BoneDef[]; parts: PartDef[]; animations: Record<string, Timelines> }
 
-/** Crops [x0,x1)×[y0,y1) and downsamples by 2 with alpha-weighted averaging, then premultiplies. */
-function cutout(x0: number, y0: number, x1: number, y1: number): Image {
-  const w = Math.ceil((x1 - x0) * SCALE), h = Math.ceil((y1 - y0) * SCALE);
-  const out = createImage(w, h);
-  const k = Math.round(1 / SCALE);
-  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
-    let r = 0, g = 0, b = 0, a = 0, n = 0;
-    for (let dy = 0; dy < k; dy++) for (let dx = 0; dx < k; dx++) {
-      const sx = x0 + x * k + dx, sy = y0 + y * k + dy;
-      n++;
-      if (sx >= src.width || sy >= src.height) continue;
-      const i = (sy * src.width + sx) * 4, al = src.data[i + 3];
-      r += src.data[i] * al; g += src.data[i + 1] * al; b += src.data[i + 2] * al; a += al;
+const ANCHOR = "ffcc00ff";
+
+const KNIGHT: CharDef = {
+  name: "knight",
+  bones: [
+    { name: "root", x: 0, y: 0 },
+    { name: "hip", parent: "root", x: 0, y: 118 },
+    { name: "torso", parent: "hip", x: 0, y: 140 },
+    { name: "head", parent: "torso", x: 4, y: 222 },
+    { name: "cape", parent: "torso", x: -30, y: 200 },
+    { name: "arm_r", parent: "torso", x: -52, y: 205 },
+    { name: "forearm_r", parent: "arm_r", x: -78, y: 160 },
+    { name: "hand_r", parent: "forearm_r", x: -96, y: 118 },
+    { name: "sword", parent: "hand_r", x: -96, y: 118 },
+    { name: "grip", parent: "sword", x: -96, y: 118, color: ANCHOR },
+    { name: "blade_mid", parent: "sword", x: 35, y: 53, color: ANCHOR },
+    { name: "sword_tip", parent: "sword", x: 133, y: 5, color: ANCHOR },
+    { name: "arm_l", parent: "torso", x: 56, y: 200 },
+    { name: "forearm_l", parent: "arm_l", x: 74, y: 160 },
+    { name: "leg_r", parent: "hip", x: -30, y: 110 },
+    { name: "shin_r", parent: "leg_r", x: -42, y: 60 },
+    { name: "leg_l", parent: "hip", x: 30, y: 110 },
+    { name: "shin_l", parent: "leg_l", x: 50, y: 60 },
+    { name: "chest", parent: "torso", x: 0, y: 185, color: ANCHOR },
+  ],
+  parts: [
+    { part: "cape", bone: "cape", x: -100, y: 130 },
+    { part: "leg_l", bone: "leg_l", x: 38, y: 104 },
+    { part: "boot_l", bone: "shin_l", x: 64, y: 64 },
+    { part: "leg_r", bone: "leg_r", x: -34, y: 104 },
+    { part: "boot_r", bone: "shin_r", x: -50, y: 86 },
+    { part: "crotch", bone: "hip", x: 2, y: 130 },
+    { part: "torso", bone: "torso", x: 2, y: 192 },
+    { part: "tasset", bone: "hip", x: 4, y: 112 },
+    { part: "pauldron_l", bone: "arm_l", x: 62, y: 200 },
+    { part: "bracer_l", bone: "forearm_l", x: 80, y: 140 },
+    { part: "head", bone: "head", x: 6, y: 294 },
+    { part: "sword", bone: "sword", x: -10, y: 75, rotation: -26 },
+    { part: "gauntlet_r", bone: "forearm_r", x: -84, y: 140 },
+    { part: "pauldron_r", bone: "arm_r", x: -58, y: 205 },
+  ],
+  animations: {
+    idle: {
+      hip: { translate: [[0, 0, 0], [0.6, 0, -3], [1.2, 0, 0]] },
+      torso: { rotate: [[0, 0], [0.6, 1.2], [1.2, 0]] },
+      head: { rotate: [[0, 0], [0.6, -2], [1.2, 0]] },
+      cape: { rotate: [[0, 0], [0.6, 4], [1.2, 0]] },
+      arm_r: { rotate: [[0, 0], [0.6, 3], [1.2, 0]] },
+      arm_l: { rotate: [[0, 0], [0.6, -3], [1.2, 0]] },
+    },
+    // overhead slash: the sword arm winds up behind the head and cuts down through a wide arc
+    attack: {
+      hip: { translate: [[0, 0, 0], [0.28, -8, 2], [0.42, 18, -6], [0.8, 0, 0]] },
+      torso: { rotate: [[0, 0], [0.28, 10], [0.42, -12], [0.8, 0]] },
+      head: { rotate: [[0, 0], [0.28, 6], [0.42, -6], [0.8, 0]] },
+      // the slash key is split so no step exceeds 180° (3.8 interpolates rotations the short way round)
+      arm_r: { rotate: [[0, 0], [0.28, -150, "linear"], [0.35, -55, "linear"], [0.42, 45], [0.8, 0]] },
+      forearm_r: { rotate: [[0, 0], [0.28, -25], [0.42, 15], [0.8, 0]] },
+      arm_l: { rotate: [[0, 0], [0.28, 20], [0.42, -25], [0.8, 0]] },
+      cape: { rotate: [[0, 0], [0.28, -6], [0.42, 12], [0.8, 0]] },
+      leg_r: { rotate: [[0, 0], [0.42, -10], [0.8, 0]] },
+      leg_l: { rotate: [[0, 0], [0.42, 12], [0.8, 0]] },
+    },
+    walk: {
+      hip: { translate: [[0, 0, 0], [0.2, 0, 6], [0.4, 0, 0], [0.6, 0, 6], [0.8, 0, 0]] },
+      leg_r: { rotate: [[0, 18], [0.4, -18], [0.8, 18]] },
+      shin_r: { rotate: [[0, 0], [0.2, 20], [0.4, 0], [0.8, 0]] },
+      leg_l: { rotate: [[0, -18], [0.4, 18], [0.8, -18]] },
+      shin_l: { rotate: [[0, 0], [0.4, 0], [0.6, 20], [0.8, 0]] },
+      arm_r: { rotate: [[0, -8], [0.4, 8], [0.8, -8]] },
+      arm_l: { rotate: [[0, 10], [0.4, -10], [0.8, 10]] },
+      torso: { rotate: [[0, 1.5], [0.4, -1.5], [0.8, 1.5]] },
+      cape: { rotate: [[0, 6], [0.4, 2], [0.8, 6]] },
+    },
+  },
+};
+
+
+const WIZARD: CharDef = {
+  name: "wizard",
+  bones: [
+    { name: "root", x: 0, y: 0 },
+    { name: "hip", parent: "root", x: 0, y: 100 },
+    { name: "torso", parent: "hip", x: 0, y: 130 },
+    { name: "head", parent: "torso", x: 0, y: 210 },
+    { name: "hat", parent: "head", x: -6, y: 278 },
+    { name: "hat_gem", parent: "hat", x: 15, y: 316, color: ANCHOR },
+    { name: "robe", parent: "torso", x: 0, y: 200 },
+    { name: "chest_gem", parent: "torso", x: 0, y: 196, color: ANCHOR },
+    { name: "arm_l", parent: "torso", x: -52, y: 196 },
+    { name: "forearm_l", parent: "arm_l", x: -58, y: 160 },
+    { name: "arm_r", parent: "torso", x: 54, y: 196 },
+    { name: "forearm_r", parent: "arm_r", x: 60, y: 160 },
+    { name: "staff_hand", parent: "forearm_r", x: 72, y: 84, color: ANCHOR },
+    { name: "staff", parent: "staff_hand", x: 72, y: 84 },
+    { name: "staff_orb", parent: "staff", x: 120, y: 226, color: ANCHOR },
+    { name: "leg_r", parent: "hip", x: -26, y: 70 },
+    { name: "leg_l", parent: "hip", x: 26, y: 70 },
+    { name: "potion", parent: "hip", x: -38, y: 87, color: ANCHOR },
+  ],
+  parts: [
+    { part: "robe", bone: "robe", x: -2, y: 120 },
+    { part: "hand_l", bone: "forearm_l", x: -62, y: 128 },
+    { part: "sleeve_l", bone: "arm_l", x: -56, y: 184 },
+    { part: "boot_l", bone: "leg_l", x: 26, y: 62 },
+    { part: "boot_r", bone: "leg_r", x: -28, y: 64 },
+    { part: "skirt", bone: "hip", x: 0, y: 72 },
+    { part: "coat_skirt", bone: "hip", x: 0, y: 112 },
+    { part: "pouch", bone: "hip", x: -10, y: 96 },
+    { part: "coat", bone: "torso", x: 0, y: 172 },
+    { part: "head", bone: "head", x: -2, y: 238 },
+    { part: "hat", bone: "hat", x: -15, y: 306 },
+    { part: "staff", bone: "staff", x: 84, y: 126, rotation: 75, scale: 0.8 },
+    { part: "hand_r", bone: "forearm_r", x: 70, y: 128 },
+    { part: "sleeve_r", bone: "arm_r", x: 56, y: 184 },
+  ],
+  animations: {
+    idle: {
+      hip: { translate: [[0, 0, 0], [0.8, 0, 4], [1.6, 0, 0]] },
+      torso: { rotate: [[0, 0], [0.8, 1.5], [1.6, 0]] },
+      robe: { rotate: [[0, 0], [0.8, 2.5], [1.6, 0]] },
+      hat: { rotate: [[0, 0], [0.8, -3], [1.6, 0]] },
+      arm_r: { rotate: [[0, 0], [0.8, -3], [1.6, 0]] },
+      arm_l: { rotate: [[0, 0], [0.8, 3], [1.6, 0]] },
+    },
+    // raises the staff high, then thrusts it forward
+    cast: {
+      hip: { translate: [[0, 0, 0], [0.35, -4, 10], [0.55, 10, 2], [1, 0, 0]] },
+      torso: { rotate: [[0, 0], [0.35, 6], [0.55, -8], [1, 0]] },
+      head: { rotate: [[0, 0], [0.35, 5], [0.55, -4], [1, 0]] },
+      hat: { rotate: [[0, 0], [0.35, -6], [0.55, 6], [1, 0]] },
+      arm_r: { rotate: [[0, 0], [0.35, 75], [0.55, 45], [1, 0]] },
+      forearm_r: { rotate: [[0, 0], [0.35, 20], [0.55, -10], [1, 0]] },
+      // keep the orb up while the arm lifts, then tip it forward on the thrust
+      staff: { rotate: [[0, 0], [0.35, -85], [0.55, -38], [1, 0]] },
+      arm_l: { rotate: [[0, 0], [0.35, -30], [0.55, 10], [1, 0]] },
+      robe: { rotate: [[0, 0], [0.35, -4], [0.55, 6], [1, 0]] },
+    },
+  },
+};
+
+const DEFS = [KNIGHT, WIZARD];
+
+const loadPart = (character: string, part: string): Image => decodePng(new Uint8Array(readFileSync(join("art", "parts", character, `${part}.png`))));
+
+function premultiplied(img: Image): Image {
+  const data = new Uint8Array(img.data);
+  for (let i = 0; i < data.length; i += 4) { const a = data[i + 3] / 255; data[i] = Math.round(data[i] * a); data[i + 1] = Math.round(data[i + 1] * a); data[i + 2] = Math.round(data[i + 2] * a); }
+  return { width: img.width, height: img.height, data };
+}
+
+export function buildCharacter(d: CharDef, version: "3.8" | "4.2") {
+  const v3 = version === "3.8";
+  const world = new Map(d.bones.map((b) => [b.name, b]));
+  const bones = d.bones.map((b) => {
+    const p = b.parent ? world.get(b.parent)! : { x: 0, y: 0 };
+    return { name: b.name, ...(b.parent ? { parent: b.parent } : {}), ...nz({ x: r2(b.x - p.x), y: r2(b.y - p.y) }), ...(b.color ? { color: b.color } : {}) };
+  });
+  const textures: Texture[] = [...new Set(d.parts.map((p) => p.part))].map((part) => ({ name: part, image: premultiplied(loadPart(d.name, part)) }));
+  const tex = new Map(textures.map((t) => [t.name, t]));
+  const slots = d.parts.map((p) => ({ name: p.part, bone: p.bone, attachment: p.part }));
+  const attachments: Record<string, Record<string, unknown>> = {};
+  for (const p of d.parts) {
+    const b = world.get(p.bone)!;
+    const t = tex.get(p.part)!;
+    const s = p.scale ?? 1;
+    attachments[p.part] = { [p.part]: { ...nz({ x: r2(p.x - b.x), y: r2(p.y - b.y), rotation: p.rotation ?? 0 }), ...(p.flipX ? { scaleX: -s } : s !== 1 ? { scaleX: s } : {}), ...(s !== 1 ? { scaleY: s } : {}), width: t.image.width, height: t.image.height } };
+  }
+  const animations: Record<string, unknown> = {};
+  for (const [name, tls] of Object.entries(d.animations)) {
+    const bonesTl: Record<string, unknown> = {};
+    for (const [bone, tl] of Object.entries(tls)) {
+      const out: Record<string, Key[]> = {};
+      if (tl.rotate) out.rotate = eased(tl.rotate.map(([time, a, l]) => ({ time: time as number, ...(v3 ? { angle: a as number } : { value: a as number }), ...(l === "linear" ? { _linear: 1 } : {}) })), v3);
+      if (tl.translate) out.translate = eased(tl.translate.map(([time, x, y]) => ({ time, x, y })), v3);
+      if (tl.scale) out.scale = eased(tl.scale.map(([time, x, y]) => ({ time, x, y })), v3);
+      bonesTl[bone] = out;
     }
-    const alpha = a / n;
-    // premultiplied: colour × alpha (the alpha-weighted mean colour times the coverage)
-    const o = (y * w + x) * 4;
-    if (a > 0) out.data.set([Math.round((r / a) * alpha / 255), Math.round((g / a) * alpha / 255), Math.round((b / a) * alpha / 255), Math.round(alpha)], o);
+    animations[name] = { bones: bonesTl };
   }
-  return out;
+  const atlas = buildAtlas(d.name, textures);
+  const json = {
+    skeleton: { hash: d.name, spine: v3 ? "3.8.99" : "4.2.43", x: -200, y: 0, width: 400, height: 400, images: "./", audio: "" },
+    bones, slots, skins: [{ name: "default", attachments }], animations,
+  };
+  // 4.x atlases record premultiplied alpha; 3.8 atlases cannot (Spine assumes it)
+  const atlasText = v3 ? atlas.text : atlas.text.replace(/^repeat: none$/m, "repeat: none\npma: true");
+  return { json, atlasText, page: atlas.page, pageName: atlas.pageName };
 }
 
-interface Def {
-  name: string;
-  /** source-pixel crop and the point between the feet (skeleton origin) */
-  box: [number, number, number, number];
-  feet: [number, number];
-  /** where the body bone (the pivot for leaning and swinging) sits, source pixels; default = feet */
-  pivot?: [number, number];
-  /** anchor bones under "body", at source-pixel positions */
-  anchors: Record<string, [number, number]>;
-  animations: (v3: boolean) => Record<string, unknown>;
+/** ease in-out between keys: 3.8 curve/c2/c3/c4; 4.x absolute bezier handles per value channel */
+function eased(keys: Key[], v3: boolean): Key[] {
+  return keys.map((k, i) => {
+    const next = keys[i + 1];
+    if (k._linear) { const { _linear, ...rest } = k; return rest as Key; }
+    if (!next) return k;
+    if (v3) return { ...k, curve: 0.42, c2: 0, c3: 0.58, c4: 1 };
+    const channels = "value" in k ? ["value"] : ["x", "y"];
+    const t0 = k.time, t1 = next.time;
+    return { ...k, curve: channels.flatMap((c) => [t0 + (t1 - t0) * 0.42, k[c] as number, t0 + (t1 - t0) * 0.58, next[c] as number]) };
+  });
 }
 
-const rot = (v3: boolean, time: number, angle: number, curve?: boolean) => ({ time, ...(v3 ? { angle } : { value: angle }), ...(curve ? smooth(v3) : {}) });
-const tr = (v3: boolean, time: number, x: number, y: number, curve?: boolean) => ({ time, x, y, ...(curve ? smooth(v3) : {}) });
-const sc = (v3: boolean, time: number, x: number, y: number, curve?: boolean) => ({ time, x, y, ...(curve ? smooth(v3) : {}) });
-/** ease in-out to the next key. 3.8: normalized curve/c2/c3/c4. 4.x needs absolute handles per value, filled in by ease4x(). */
-const smooth = (v3: boolean) => (v3 ? { curve: 0.42, c2: 0, c3: 0.58, c4: 1 } : { _ease: true });
-
-/** 4.x bezier: [cx1, cy1, cx2, cy2] per value channel, in time/value units, for keys marked _ease. */
-function ease4x(animations: Record<string, any>) {
-  for (const anim of Object.values<any>(animations)) for (const tls of Object.values<any>(anim.bones ?? {})) for (const keys of Object.values<any[]>(tls)) {
-    keys.forEach((k, i) => {
-      const next = keys[i + 1];
-      if (!k._ease || !next) { delete k._ease; return; }
-      delete k._ease;
-      const t0 = k.time, t1 = next.time;
-      const channels = "value" in k ? ["value"] : ["x", "y"];
-      k.curve = channels.flatMap((c) => [t0 + (t1 - t0) * 0.42, k[c], t0 + (t1 - t0) * 0.58, next[c]]);
-    });
-  }
-  return animations;
-}
-
-const DEFS: Def[] = [
-  {
-    name: "knight",
-    box: [36, 54, 728, 840],
-    feet: [470, 835],
-    pivot: [470, 560],
-    anchors: { sword_tip: [640, 770], blade_mid: [485, 695], grip: [255, 580], chest: [440, 385], head: [470, 210] },
-    animations: (v3) => ({
-      idle: { bones: {
-        body: { scale: [sc(v3, 0, 1, 1, true), sc(v3, 0.6, 1, 1.025, true), sc(v3, 1.2, 1, 1)], rotate: [rot(v3, 0, 0, true), rot(v3, 0.6, -1, true), rot(v3, 1.2, 0)] },
-      } },
-      // a hop-slash pivoting at the hip: wind up raises the blade, the slash sweeps the tip down through a wide arc
-      attack: { bones: {
-        body: {
-          rotate: [rot(v3, 0, 0, true), rot(v3, 0.3, 40, true), rot(v3, 0.5, -30, true), rot(v3, 0.9, 0)],
-          translate: [tr(v3, 0, 0, 0, true), tr(v3, 0.3, -12, 8, true), tr(v3, 0.5, 34, 24, true), tr(v3, 0.9, 0, 0)],
-        },
-      } },
-      walk: { bones: {
-        body: {
-          translate: [tr(v3, 0, 0, 0, true), tr(v3, 0.25, 0, 10, true), tr(v3, 0.5, 0, 0, true), tr(v3, 0.75, 0, 10, true), tr(v3, 1, 0, 0)],
-          rotate: [rot(v3, 0, -2, true), rot(v3, 0.5, 2, true), rot(v3, 1, -2)],
-        },
-      } },
-    }),
-  },
-  {
-    name: "wizard",
-    box: [968, 46, 1742, 842],
-    feet: [1300, 835],
-    anchors: { staff_orb: [1663, 300], staff_hand: [1505, 520], hat_gem: [1360, 190], chest_gem: [1310, 470], potion: [1262, 640] },
-    animations: (v3) => ({
-      idle: { bones: {
-        body: {
-          translate: [tr(v3, 0, 0, 0, true), tr(v3, 0.8, 0, 6, true), tr(v3, 1.6, 0, 0)],
-          rotate: [rot(v3, 0, 0, true), rot(v3, 0.8, 1.5, true), rot(v3, 1.6, 0)],
-        },
-      } },
-      // rises, rears back and thrusts the staff forward
-      cast: { bones: {
-        body: {
-          translate: [tr(v3, 0, 0, 0, true), tr(v3, 0.3, -6, 16, true), tr(v3, 0.55, 14, 10, true), tr(v3, 1, 0, 0)],
-          rotate: [rot(v3, 0, 0, true), rot(v3, 0.3, 5, true), rot(v3, 0.55, -7, true), rot(v3, 1, 0)],
-          scale: [sc(v3, 0, 1, 1, true), sc(v3, 0.3, 1.03, 1.03, true), sc(v3, 1, 1, 1)],
-        },
-      } },
-    }),
-  },
-];
-
-for (const d of DEFS) {
-  const [x0, y0, x1, y1] = d.box;
-  const [fx, fy] = d.feet;
-  const at = (px: number, py: number) => ({ x: r2((px - fx) * SCALE), y: r2((fy - py) * SCALE) });
-  const [bx, by] = d.pivot ?? d.feet;
-  const bodyAt = at(bx, by);
-  /** position relative to the body bone */
-  const rel = (px: number, py: number) => { const p = at(px, py); return { x: r2(p.x - bodyAt.x), y: r2(p.y - bodyAt.y) }; };
-  const image = cutout(x0, y0, x1, y1);
-  const atlas = buildAtlas(d.name, [{ name: d.name, image }]);
-  const centre = rel((x0 + x1) / 2, (y0 + y1) / 2);
-  for (const version of ["3.8", "4.2"] as const) {
-    const v3 = version === "3.8";
-    const json = {
-      skeleton: { hash: d.name, spine: v3 ? "3.8.99" : "4.2.43", x: r2((x0 - fx) * SCALE), y: 0, width: image.width, height: image.height, images: "./", audio: "" },
-      bones: [
-        { name: "root" },
-        { name: "body", parent: "root", ...bodyAt, color: "ffffffff" },
-        ...Object.entries(d.anchors).map(([name, [px, py]]) => ({ name, parent: "body", ...rel(px, py), color: "ffcc00ff" })),
-      ],
-      slots: [{ name: d.name, bone: "body", attachment: d.name }],
-      skins: [{ name: "default", attachments: { [d.name]: { [d.name]: { ...centre, width: image.width, height: image.height } } } }],
-      animations: v3 ? d.animations(v3) : ease4x(d.animations(v3)),
-    };
-    const dir = join("samples", "characters", `${d.name}-${version}`);
-    mkdirSync(dir, { recursive: true });
-    writeFileSync(join(dir, `${d.name}.json`), JSON.stringify(json, null, 2));
-    // 4.x atlases record premultiplied alpha; 3.8 atlases cannot (Spine assumes it)
-    writeFileSync(join(dir, `${d.name}.atlas`), v3 ? atlas.text : atlas.text.replace(/^repeat: none$/m, "repeat: none\npma: true"));
-    writeFileSync(join(dir, atlas.pageName), encodePng(atlas.page));
-    console.log(`wrote ${dir}`);
-  }
-}
-
+function nz(o: Record<string, number>) { return Object.fromEntries(Object.entries(o).filter(([, v]) => v !== 0)); }
 function r2(v: number) { return Math.round(v * 100) / 100; }
+
+for (const d of DEFS) for (const version of ["3.8", "4.2"] as const) {
+  const c = buildCharacter(d, version);
+  const dir = join("samples", "characters", `${d.name}-${version}`);
+  mkdirSync(dir, { recursive: true });
+  writeFileSync(join(dir, `${d.name}.json`), JSON.stringify(c.json, null, 2));
+  writeFileSync(join(dir, `${d.name}.atlas`), c.atlasText);
+  writeFileSync(join(dir, c.pageName), encodePng(c.page));
+  console.log(`wrote ${dir}`);
+}

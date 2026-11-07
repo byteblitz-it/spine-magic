@@ -1,13 +1,104 @@
 
 knight.png
-size: 512,512
+size: 512,1024
 format: RGBA8888
 filter: Linear,Linear
 repeat: none
-knight
+leg_r
   rotate: false
   xy: 2, 2
-  size: 346, 393
-  orig: 346, 393
+  size: 96, 184
+  orig: 96, 184
+  offset: 0, 0
+  index: -1
+cape
+  rotate: false
+  xy: 100, 2
+  size: 202, 182
+  orig: 202, 182
+  offset: 0, 0
+  index: -1
+leg_l
+  rotate: false
+  xy: 304, 2
+  size: 83, 180
+  orig: 83, 180
+  offset: 0, 0
+  index: -1
+boot_r
+  rotate: false
+  xy: 389, 2
+  size: 111, 178
+  orig: 111, 178
+  offset: 0, 0
+  index: -1
+torso
+  rotate: false
+  xy: 2, 188
+  size: 136, 149
+  orig: 136, 149
+  offset: 0, 0
+  index: -1
+head
+  rotate: false
+  xy: 140, 188
+  size: 148, 137
+  orig: 148, 137
+  offset: 0, 0
+  index: -1
+boot_l
+  rotate: false
+  xy: 290, 188
+  size: 87, 134
+  orig: 87, 134
+  offset: 0, 0
+  index: -1
+gauntlet_r
+  rotate: false
+  xy: 379, 188
+  size: 96, 104
+  orig: 96, 104
+  offset: 0, 0
+  index: -1
+bracer_l
+  rotate: false
+  xy: 2, 339
+  size: 86, 92
+  orig: 86, 92
+  offset: 0, 0
+  index: -1
+pauldron_r
+  rotate: false
+  xy: 90, 339
+  size: 94, 91
+  orig: 94, 91
+  offset: 0, 0
+  index: -1
+sword
+  rotate: false
+  xy: 2, 433
+  size: 327, 89
+  orig: 327, 89
+  offset: 0, 0
+  index: -1
+pauldron_l
+  rotate: false
+  xy: 331, 433
+  size: 86, 84
+  orig: 86, 84
+  offset: 0, 0
+  index: -1
+crotch
+  rotate: false
+  xy: 2, 524
+  size: 123, 73
+  orig: 123, 73
+  offset: 0, 0
+  index: -1
+tasset
+  rotate: false
+  xy: 127, 524
+  size: 128, 73
+  orig: 128, 73
   offset: 0, 0
   index: -1

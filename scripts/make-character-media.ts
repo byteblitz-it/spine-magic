@@ -10,29 +10,18 @@ interface Shot { out: string; character: string; effect: unknown; attach: Attach
 
 const SHOTS: Shot[] = [
   {
-    // enchanted blade: electric sparks and glow along the sword, riding it through the attack
-    out: "knight-enchanted-blade.png", character: "knight", frames: 4, times: [0.15, 0.32, 0.48, 0.7],
+    // overhead slash: a blade-wide ribbon in trail mode, with sparks shed from the tip
+    out: "knight-sword-trail.png", character: "knight", frames: 4, times: [0.3, 0.34, 0.38, 0.44],
     effect: {
-      name: "enchanted_blade", loop: true,
+      name: "sword_trail", loop: true,
       emitters: [
         {
-          name: "glow", texture: "blurred-circle", blend: "additive",
-          emission: { rate: 30, limit: 30 }, shape: { type: "line", width: 150 }, direction: { spread: 360 },
-          transform: { rotation: -26 },
-          initial: { lifetime: [0.4, 0.7], speed: [0, 8], size: [30, 44], color: "#3a90ff", alpha: 0.3 },
-          overLifetime: { alpha: [[0, 0], [0.3, 1], [1, 0]] },
-        },
-        {
-          name: "sparks", texture: "soft-circle", blend: "additive",
-          emission: { rate: 40, limit: 40 }, shape: { type: "line", width: 160 }, direction: { angle: 64, spread: 120 },
-          transform: { rotation: -26 },
-          initial: { lifetime: [0.3, 0.55], speed: [220, 380], size: [20, 30] },
-          overLifetime: { alignToVelocity: true, size: [[0, 1], [1, 0.2]], alpha: [[0, 1], [1, 0]], color: [[0, "#ffffff"], [1, "#5ac8ff"]] },
-          affectors: [{ type: "turbulence", strength: 400, frequency: 0.05, speed: 4 }, { type: "velocityStretch", amount: 1.5, max: 4, minSpeed: 0, volume: 0.3 }],
+          name: "slash", simulationSpace: "world", blend: "additive", emission: { rate: 0 },
+          ribbon: { enabled: true, length: 0.12, segments: 24, width: 190, widthOverLength: [[0, 1], [1, 0.6]], color: "#a8e8ff", alpha: 0.75 },
         },
       ],
     },
-    attach: { bone: "blade_mid", animation: "attack" },
+    attach: { bone: "blade_mid", animation: "attack", mode: "trail" },
   },
   {
     out: "wizard-orb-magic.png", character: "wizard", frames: 4,

@@ -124,14 +124,15 @@ exactly on the bone.
 
 | | |
 |---|---|
-| **Enchanted blade** — knight, `attack`, follow `blade_mid`: glow and sparks ride the sword | <img src="docs/media/knight-enchanted-blade.png" width="520" alt="knight with an enchanted blade" /> |
+| **Sword trail** — knight, `attack`, trail on `blade_mid`: a blade-wide ribbon sweeps with the slash | <img src="docs/media/knight-sword-trail.png" width="520" alt="knight slash with a sword trail" /> |
 | **Orb magic** — wizard, `cast`, follow `staff_orb` (upright): pulsing glow and swirling stars | <img src="docs/media/wizard-orb-magic.png" width="520" alt="wizard with orb magic" /> |
 
 Try it yourself with the sample **knight** and **wizard** (Spine 3.8 and 4.2, in `samples/characters/`): in the
 editor's **Character** panel choose *add the sample knight & wizard*, or point `attach_effect` at
-`samples/characters/knight-4.2/knight.json`. Their anchor bones (`sword_tip`, `blade_mid`, `grip`, `staff_orb`,
-`hat_gem`, …) sit on the art, ready to attach to. They are whole-sprite rigs (one image that leans, hops and
-swings), so the sword and staff move with the body rather than on their own.
+`samples/characters/knight-4.2/knight.json`. They are cut-out rigs built from layered parts
+(`art/rig-parts-sheet.png`): the knight has `idle`, `attack` (an overhead slash) and `walk`; the wizard has `idle`
+and `cast` (staff raised, then thrust). Anchor bones sit on the art, ready to attach to: `sword_tip`, `blade_mid`,
+`grip` and `chest` on the knight; `staff_orb`, `staff_hand`, `hat_gem`, `chest_gem` and `potion` on the wizard.
 
 ## MCP tools
 
@@ -162,7 +163,9 @@ The details are in [docs/DESIGN.md](docs/DESIGN.md).
 | Command | What it does |
 |---|---|
 | `npm test` | Unit, character and end-to-end MCP tests — baked bones are compared with the simulation inside the real 3.8 / 4.x runtimes |
-| `npx tsx scripts/make-sample-characters.ts` | Rebuild the knight and wizard skeletons from `art/sample-characters.png` |
+| `npx tsx scripts/cut-rig-parts.ts` | Cut the layered parts out of `art/rig-parts-sheet.png` into `art/parts/` |
+| `npx tsx scripts/make-sample-characters.ts` | Rebuild the knight and wizard cut-out rigs (3.8 + 4.2) from `art/parts/` |
+| `npx tsx scripts/preview-rig.ts knight attack 6` | Render a rig through an animation next to the reference art, for tuning |
 | `npx tsx scripts/make-character-media.ts` | Re-render the on-character README images (merged with `attach_effect`, posed by the 4.2 runtime) |
 | `node scripts/fetch-spine-examples.mjs` | Download Esoteric's example skeletons for the `.skel` converter tests (skipped without them) |
 | `npm run web` | Visual editor with live agent sync |
