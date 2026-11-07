@@ -53,23 +53,30 @@ boot_l
   orig: 87, 134
   offset: 0, 0
   index: -1
-glove_l
+hand_l
   rotate: false
   xy: 379, 188
   size: 82, 112
   orig: 82, 112
   offset: 0, 0
   index: -1
-gauntlet_r
+lower_arm_r
   rotate: false
   xy: 2, 339
   size: 96, 104
   orig: 96, 104
   offset: 0, 0
   index: -1
-pauldron_r
+hand_r
   rotate: false
   xy: 100, 339
+  size: 86, 92
+  orig: 86, 92
+  offset: 0, 0
+  index: -1
+upper_arm_r
+  rotate: false
+  xy: 188, 339
   size: 94, 91
   orig: 94, 91
   offset: 0, 0
@@ -81,7 +88,7 @@ sword
   orig: 327, 89
   offset: 0, 0
   index: -1
-pauldron_l
+upper_arm_l
   rotate: false
   xy: 331, 445
   size: 86, 84

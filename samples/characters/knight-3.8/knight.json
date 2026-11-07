@@ -38,24 +38,26 @@
     {
       "name": "arm_r",
       "parent": "torso",
-      "x": -52,
-      "y": 65
+      "x": -48,
+      "y": 80
     },
     {
       "name": "forearm_r",
       "parent": "arm_r",
-      "x": -8,
-      "y": -19
+      "x": -22,
+      "y": -44
     },
     {
       "name": "hand_r",
       "parent": "forearm_r",
-      "x": -36,
-      "y": -68
+      "x": -18,
+      "y": -38
     },
     {
       "name": "sword",
-      "parent": "hand_r"
+      "parent": "hand_r",
+      "x": -12,
+      "y": -30
     },
     {
       "name": "grip",
@@ -79,14 +81,14 @@
     {
       "name": "arm_l",
       "parent": "torso",
-      "x": 56,
-      "y": 60
+      "x": 54,
+      "y": 76
     },
     {
       "name": "forearm_l",
       "parent": "arm_l",
-      "x": 8,
-      "y": -18
+      "x": 12,
+      "y": -36
     },
     {
       "name": "leg_r",
@@ -161,14 +163,19 @@
       "attachment": "tasset"
     },
     {
-      "name": "pauldron_l",
-      "bone": "torso",
-      "attachment": "pauldron_l"
+      "name": "head",
+      "bone": "head",
+      "attachment": "head"
     },
     {
-      "name": "glove_l",
+      "name": "hand_l",
       "bone": "forearm_l",
-      "attachment": "glove_l"
+      "attachment": "hand_l"
+    },
+    {
+      "name": "upper_arm_l",
+      "bone": "arm_l",
+      "attachment": "upper_arm_l"
     },
     {
       "name": "sword",
@@ -176,19 +183,19 @@
       "attachment": "sword"
     },
     {
-      "name": "gauntlet_r",
+      "name": "lower_arm_r",
       "bone": "forearm_r",
-      "attachment": "gauntlet_r"
+      "attachment": "lower_arm_r"
     },
     {
-      "name": "head",
-      "bone": "head",
-      "attachment": "head"
+      "name": "hand_r",
+      "bone": "hand_r",
+      "attachment": "hand_r"
     },
     {
-      "name": "pauldron_r",
-      "bone": "torso",
-      "attachment": "pauldron_r"
+      "name": "upper_arm_r",
+      "bone": "arm_r",
+      "attachment": "upper_arm_r"
     }
   ],
   "skins": [
@@ -259,20 +266,28 @@
             "height": 73
           }
         },
-        "pauldron_l": {
-          "pauldron_l": {
-            "x": 62,
-            "y": 60,
-            "width": 86,
-            "height": 84
+        "head": {
+          "head": {
+            "x": 2,
+            "y": 72,
+            "width": 148,
+            "height": 137
           }
         },
-        "glove_l": {
-          "glove_l": {
+        "hand_l": {
+          "hand_l": {
             "x": 4,
-            "y": -36,
+            "y": -38,
             "width": 82,
             "height": 112
+          }
+        },
+        "upper_arm_l": {
+          "upper_arm_l": {
+            "x": 8,
+            "y": -14,
+            "width": 86,
+            "height": 84
           }
         },
         "sword": {
@@ -284,27 +299,27 @@
             "height": 89
           }
         },
-        "gauntlet_r": {
-          "gauntlet_r": {
+        "lower_arm_r": {
+          "lower_arm_r": {
             "x": -10,
-            "y": -34,
+            "y": -20,
             "scaleX": -1,
             "width": 96,
             "height": 104
           }
         },
-        "head": {
-          "head": {
-            "x": 2,
-            "y": 72,
-            "width": 148,
-            "height": 137
+        "hand_r": {
+          "hand_r": {
+            "y": -14,
+            "scaleX": -1,
+            "width": 86,
+            "height": 92
           }
         },
-        "pauldron_r": {
-          "pauldron_r": {
-            "x": -58,
-            "y": 65,
+        "upper_arm_r": {
+          "upper_arm_r": {
+            "x": -10,
+            "y": -15,
             "width": 94,
             "height": 91
           }
@@ -479,17 +494,17 @@
             },
             {
               "time": 0.28,
-              "x": -8,
-              "y": 2,
+              "x": -6,
+              "y": -2,
               "curve": 0.42,
               "c2": 0,
               "c3": 0.58,
               "c4": 1
             },
             {
-              "time": 0.42,
-              "x": 18,
-              "y": -6,
+              "time": 0.45,
+              "x": 14,
+              "y": 2,
               "curve": 0.42,
               "c2": 0,
               "c3": 0.58,
@@ -514,15 +529,15 @@
             },
             {
               "time": 0.28,
-              "angle": 10,
+              "angle": 6,
               "curve": 0.42,
               "c2": 0,
               "c3": 0.58,
               "c4": 1
             },
             {
-              "time": 0.42,
-              "angle": -12,
+              "time": 0.45,
+              "angle": -8,
               "curve": 0.42,
               "c2": 0,
               "c3": 0.58,
@@ -546,15 +561,15 @@
             },
             {
               "time": 0.28,
-              "angle": 6,
+              "angle": 4,
               "curve": 0.42,
               "c2": 0,
               "c3": 0.58,
               "c4": 1
             },
             {
-              "time": 0.42,
-              "angle": -6,
+              "time": 0.45,
+              "angle": -4,
               "curve": 0.42,
               "c2": 0,
               "c3": 0.58,
@@ -578,15 +593,19 @@
             },
             {
               "time": 0.28,
-              "angle": -150
+              "angle": -40,
+              "curve": 0.42,
+              "c2": 0,
+              "c3": 0.58,
+              "c4": 1
             },
             {
-              "time": 0.35,
-              "angle": -232
+              "time": 0.38,
+              "angle": 15
             },
             {
-              "time": 0.42,
-              "angle": -310,
+              "time": 0.45,
+              "angle": 50,
               "curve": 0.42,
               "c2": 0,
               "c3": 0.58,
@@ -594,7 +613,7 @@
             },
             {
               "time": 0.8,
-              "angle": -360
+              "angle": 0
             }
           ]
         },
@@ -610,15 +629,19 @@
             },
             {
               "time": 0.28,
-              "angle": -15,
+              "angle": -35,
               "curve": 0.42,
               "c2": 0,
               "c3": 0.58,
               "c4": 1
             },
             {
-              "time": 0.42,
-              "angle": 8,
+              "time": 0.38,
+              "angle": 0
+            },
+            {
+              "time": 0.45,
+              "angle": 12,
               "curve": 0.42,
               "c2": 0,
               "c3": 0.58,
@@ -642,15 +665,19 @@
             },
             {
               "time": 0.28,
-              "angle": 0,
+              "angle": -25,
               "curve": 0.42,
               "c2": 0,
               "c3": 0.58,
               "c4": 1
             },
             {
-              "time": 0.42,
-              "angle": -30,
+              "time": 0.38,
+              "angle": 10
+            },
+            {
+              "time": 0.45,
+              "angle": 22,
               "curve": 0.42,
               "c2": 0,
               "c3": 0.58,
@@ -674,15 +701,47 @@
             },
             {
               "time": 0.28,
-              "angle": 20,
+              "angle": 15,
               "curve": 0.42,
               "c2": 0,
               "c3": 0.58,
               "c4": 1
             },
             {
-              "time": 0.42,
-              "angle": -25,
+              "time": 0.45,
+              "angle": -20,
+              "curve": 0.42,
+              "c2": 0,
+              "c3": 0.58,
+              "c4": 1
+            },
+            {
+              "time": 0.8,
+              "angle": 0
+            }
+          ]
+        },
+        "forearm_l": {
+          "rotate": [
+            {
+              "time": 0,
+              "angle": 0,
+              "curve": 0.42,
+              "c2": 0,
+              "c3": 0.58,
+              "c4": 1
+            },
+            {
+              "time": 0.28,
+              "angle": 10,
+              "curve": 0.42,
+              "c2": 0,
+              "c3": 0.58,
+              "c4": 1
+            },
+            {
+              "time": 0.45,
+              "angle": -15,
               "curve": 0.42,
               "c2": 0,
               "c3": 0.58,
@@ -706,15 +765,15 @@
             },
             {
               "time": 0.28,
-              "angle": -6,
+              "angle": -4,
               "curve": 0.42,
               "c2": 0,
               "c3": 0.58,
               "c4": 1
             },
             {
-              "time": 0.42,
-              "angle": 12,
+              "time": 0.45,
+              "angle": 10,
               "curve": 0.42,
               "c2": 0,
               "c3": 0.58,
@@ -737,8 +796,8 @@
               "c4": 1
             },
             {
-              "time": 0.42,
-              "angle": -10,
+              "time": 0.45,
+              "angle": -8,
               "curve": 0.42,
               "c2": 0,
               "c3": 0.58,
@@ -761,8 +820,8 @@
               "c4": 1
             },
             {
-              "time": 0.42,
-              "angle": 12,
+              "time": 0.45,
+              "angle": 10,
               "curve": 0.42,
               "c2": 0,
               "c3": 0.58,

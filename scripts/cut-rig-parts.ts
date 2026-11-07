@@ -9,8 +9,8 @@ import { createImage, decodePng, encodePng } from "../src/core/index.js";
 export const PARTS: Record<string, Record<string, [number, number, number, number]>> = {
   knight: {
     head: [50, 100, 193, 232], torso: [227, 122, 358, 266], tasset: [234, 272, 357, 340], crotch: [62, 286, 180, 354],
-    pauldron_r: [409, 121, 498, 207], pauldron_l: [559, 127, 640, 206],
-    gauntlet_r: [436, 214, 527, 313], bracer_l: [532, 224, 613, 311], glove_l: [610, 207, 687, 314],
+    upper_arm_r: [409, 121, 498, 207], upper_arm_l: [559, 127, 640, 206],
+    lower_arm_r: [436, 214, 527, 313], hand_r: [532, 224, 613, 311], hand_l: [610, 207, 687, 314],
     leg_r: [270, 373, 361, 552], leg_l: [377, 377, 455, 552], boot_r: [478, 377, 584, 550], boot_l: [603, 420, 685, 549],
     cape: [32, 405, 229, 582], sword: [198, 594, 520, 678],
   },
