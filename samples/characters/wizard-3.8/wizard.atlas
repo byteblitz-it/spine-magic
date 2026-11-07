@@ -60,44 +60,58 @@ head
   orig: 152, 125
   offset: 0, 0
   index: -1
-hand_l
+glove_l
   rotate: false
   xy: 395, 242
   size: 62, 116
   orig: 62, 116
   offset: 0, 0
   index: -1
-hand_r
+lower_sleeve_l
   rotate: false
   xy: 459, 242
+  size: 62, 116
+  orig: 62, 116
+  offset: 0, 0
+  index: -1
+glove_r
+  rotate: false
+  xy: 523, 242
+  size: 76, 116
+  orig: 76, 116
+  offset: 0, 0
+  index: -1
+lower_sleeve_r
+  rotate: false
+  xy: 601, 242
   size: 76, 116
   orig: 76, 116
   offset: 0, 0
   index: -1
 staff
   rotate: false
-  xy: 537, 242
+  xy: 2, 372
   size: 391, 105
   orig: 391, 105
   offset: 0, 0
   index: -1
 sleeve_r
   rotate: false
-  xy: 930, 242
+  xy: 395, 372
   size: 51, 72
   orig: 51, 72
   offset: 0, 0
   index: -1
 sleeve_l
   rotate: false
-  xy: 2, 372
+  xy: 448, 372
   size: 48, 71
   orig: 48, 71
   offset: 0, 0
   index: -1
 pouch
   rotate: false
-  xy: 52, 372
+  xy: 498, 372
   size: 91, 59
   orig: 91, 59
   offset: 0, 0

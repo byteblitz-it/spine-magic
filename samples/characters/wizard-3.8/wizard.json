@@ -53,46 +53,60 @@
       "color": "ffcc00ff"
     },
     {
-      "name": "arm_l",
-      "parent": "torso",
-      "x": -52,
-      "y": 66
-    },
-    {
-      "name": "forearm_l",
-      "parent": "arm_l",
-      "x": -6,
-      "y": -36
-    },
-    {
       "name": "arm_r",
       "parent": "torso",
-      "x": 54,
-      "y": 66
+      "x": 52,
+      "y": 62
     },
     {
       "name": "forearm_r",
       "parent": "arm_r",
-      "x": 6,
-      "y": -36
+      "x": 28,
+      "y": -32
+    },
+    {
+      "name": "hand_r",
+      "parent": "forearm_r",
+      "x": 8,
+      "y": -8
     },
     {
       "name": "staff_hand",
-      "parent": "forearm_r",
+      "parent": "hand_r",
       "x": 12,
-      "y": -76,
+      "y": -14,
       "color": "ffcc00ff"
     },
     {
       "name": "staff",
-      "parent": "staff_hand"
+      "parent": "hand_r",
+      "x": 12,
+      "y": -14
     },
     {
       "name": "staff_orb",
       "parent": "staff",
-      "x": 48,
-      "y": 142,
+      "x": 64,
+      "y": 107,
       "color": "ffcc00ff"
+    },
+    {
+      "name": "arm_l",
+      "parent": "torso",
+      "x": -58,
+      "y": 62
+    },
+    {
+      "name": "forearm_l",
+      "parent": "arm_l",
+      "x": -12,
+      "y": -30
+    },
+    {
+      "name": "hand_l",
+      "parent": "forearm_l",
+      "x": 12,
+      "y": -47
     },
     {
       "name": "leg_r",
@@ -121,16 +135,6 @@
       "attachment": "robe"
     },
     {
-      "name": "hand_l",
-      "bone": "forearm_l",
-      "attachment": "hand_l"
-    },
-    {
-      "name": "sleeve_l",
-      "bone": "arm_l",
-      "attachment": "sleeve_l"
-    },
-    {
       "name": "boot_l",
       "bone": "leg_l",
       "attachment": "boot_l"
@@ -151,14 +155,49 @@
       "attachment": "coat_skirt"
     },
     {
+      "name": "coat",
+      "bone": "torso",
+      "attachment": "coat"
+    },
+    {
+      "name": "glove_l",
+      "bone": "hand_l",
+      "attachment": "glove_l"
+    },
+    {
+      "name": "lower_sleeve_l",
+      "bone": "forearm_l",
+      "attachment": "lower_sleeve_l"
+    },
+    {
+      "name": "sleeve_l",
+      "bone": "arm_l",
+      "attachment": "sleeve_l"
+    },
+    {
       "name": "pouch",
       "bone": "hip",
       "attachment": "pouch"
     },
     {
-      "name": "coat",
-      "bone": "torso",
-      "attachment": "coat"
+      "name": "staff",
+      "bone": "staff",
+      "attachment": "staff"
+    },
+    {
+      "name": "glove_r",
+      "bone": "hand_r",
+      "attachment": "glove_r"
+    },
+    {
+      "name": "lower_sleeve_r",
+      "bone": "forearm_r",
+      "attachment": "lower_sleeve_r"
+    },
+    {
+      "name": "sleeve_r",
+      "bone": "arm_r",
+      "attachment": "sleeve_r"
     },
     {
       "name": "head",
@@ -169,21 +208,6 @@
       "name": "hat",
       "bone": "hat",
       "attachment": "hat"
-    },
-    {
-      "name": "staff",
-      "bone": "staff",
-      "attachment": "staff"
-    },
-    {
-      "name": "hand_r",
-      "bone": "forearm_r",
-      "attachment": "hand_r"
-    },
-    {
-      "name": "sleeve_r",
-      "bone": "arm_r",
-      "attachment": "sleeve_r"
     }
   ],
   "skins": [
@@ -196,22 +220,6 @@
             "y": -80,
             "width": 197,
             "height": 238
-          }
-        },
-        "hand_l": {
-          "hand_l": {
-            "x": -4,
-            "y": -32,
-            "width": 62,
-            "height": 116
-          }
-        },
-        "sleeve_l": {
-          "sleeve_l": {
-            "x": -4,
-            "y": -12,
-            "width": 48,
-            "height": 71
           }
         },
         "boot_l": {
@@ -243,6 +251,40 @@
             "height": 139
           }
         },
+        "coat": {
+          "coat": {
+            "y": 42,
+            "width": 145,
+            "height": 140
+          }
+        },
+        "glove_l": {
+          "glove_l": {
+            "x": -3,
+            "y": 14,
+            "rotation": -8,
+            "width": 62,
+            "height": 116
+          }
+        },
+        "lower_sleeve_l": {
+          "lower_sleeve_l": {
+            "x": 9,
+            "y": -33,
+            "rotation": -8,
+            "width": 62,
+            "height": 116
+          }
+        },
+        "sleeve_l": {
+          "sleeve_l": {
+            "x": -4,
+            "y": -14,
+            "rotation": -6,
+            "width": 48,
+            "height": 71
+          }
+        },
         "pouch": {
           "pouch": {
             "x": -10,
@@ -251,11 +293,42 @@
             "height": 59
           }
         },
-        "coat": {
-          "coat": {
-            "y": 42,
-            "width": 145,
-            "height": 140
+        "staff": {
+          "staff": {
+            "x": 9,
+            "y": 16,
+            "rotation": 59,
+            "scaleX": 0.8,
+            "scaleY": 0.8,
+            "width": 391,
+            "height": 105
+          }
+        },
+        "glove_r": {
+          "glove_r": {
+            "x": -18,
+            "y": 18,
+            "rotation": 25,
+            "width": 76,
+            "height": 116
+          }
+        },
+        "lower_sleeve_r": {
+          "lower_sleeve_r": {
+            "x": -10,
+            "y": 10,
+            "rotation": 25,
+            "width": 76,
+            "height": 116
+          }
+        },
+        "sleeve_r": {
+          "sleeve_r": {
+            "x": 14,
+            "y": -16,
+            "rotation": 42,
+            "width": 51,
+            "height": 72
           }
         },
         "head": {
@@ -272,33 +345,6 @@
             "y": 28,
             "width": 228,
             "height": 129
-          }
-        },
-        "staff": {
-          "staff": {
-            "x": 12,
-            "y": 42,
-            "rotation": 75,
-            "scaleX": 0.8,
-            "scaleY": 0.8,
-            "width": 391,
-            "height": 105
-          }
-        },
-        "hand_r": {
-          "hand_r": {
-            "x": 10,
-            "y": -32,
-            "width": 76,
-            "height": 116
-          }
-        },
-        "sleeve_r": {
-          "sleeve_r": {
-            "x": 2,
-            "y": -12,
-            "width": 51,
-            "height": 72
           }
         }
       }
@@ -418,6 +464,30 @@
             },
             {
               "time": 0.8,
+              "angle": 3,
+              "curve": 0.42,
+              "c2": 0,
+              "c3": 0.58,
+              "c4": 1
+            },
+            {
+              "time": 1.6,
+              "angle": 0
+            }
+          ]
+        },
+        "hand_r": {
+          "rotate": [
+            {
+              "time": 0,
+              "angle": 0,
+              "curve": 0.42,
+              "c2": 0,
+              "c3": 0.58,
+              "c4": 1
+            },
+            {
+              "time": 0.8,
               "angle": -3,
               "curve": 0.42,
               "c2": 0,
@@ -442,7 +512,31 @@
             },
             {
               "time": 0.8,
-              "angle": 3,
+              "angle": -3,
+              "curve": 0.42,
+              "c2": 0,
+              "c3": 0.58,
+              "c4": 1
+            },
+            {
+              "time": 1.6,
+              "angle": 0
+            }
+          ]
+        },
+        "hand_l": {
+          "rotate": [
+            {
+              "time": 0,
+              "angle": 0,
+              "curve": 0.42,
+              "c2": 0,
+              "c3": 0.58,
+              "c4": 1
+            },
+            {
+              "time": 0.8,
+              "angle": 4,
               "curve": 0.42,
               "c2": 0,
               "c3": 0.58,
@@ -506,7 +600,7 @@
             },
             {
               "time": 0.35,
-              "angle": 6,
+              "angle": 5,
               "curve": 0.42,
               "c2": 0,
               "c3": 0.58,
@@ -514,7 +608,7 @@
             },
             {
               "time": 0.55,
-              "angle": -8,
+              "angle": -6,
               "curve": 0.42,
               "c2": 0,
               "c3": 0.58,
@@ -538,7 +632,7 @@
             },
             {
               "time": 0.35,
-              "angle": 5,
+              "angle": 4,
               "curve": 0.42,
               "c2": 0,
               "c3": 0.58,
@@ -546,7 +640,7 @@
             },
             {
               "time": 0.55,
-              "angle": -4,
+              "angle": -3,
               "curve": 0.42,
               "c2": 0,
               "c3": 0.58,
@@ -570,7 +664,7 @@
             },
             {
               "time": 0.35,
-              "angle": -6,
+              "angle": -5,
               "curve": 0.42,
               "c2": 0,
               "c3": 0.58,
@@ -578,7 +672,7 @@
             },
             {
               "time": 0.55,
-              "angle": 6,
+              "angle": 5,
               "curve": 0.42,
               "c2": 0,
               "c3": 0.58,
@@ -602,7 +696,7 @@
             },
             {
               "time": 0.35,
-              "angle": 75,
+              "angle": 18,
               "curve": 0.42,
               "c2": 0,
               "c3": 0.58,
@@ -610,7 +704,7 @@
             },
             {
               "time": 0.55,
-              "angle": 45,
+              "angle": -8,
               "curve": 0.42,
               "c2": 0,
               "c3": 0.58,
@@ -634,7 +728,7 @@
             },
             {
               "time": 0.35,
-              "angle": 20,
+              "angle": 8,
               "curve": 0.42,
               "c2": 0,
               "c3": 0.58,
@@ -642,7 +736,7 @@
             },
             {
               "time": 0.55,
-              "angle": -10,
+              "angle": -3,
               "curve": 0.42,
               "c2": 0,
               "c3": 0.58,
@@ -654,7 +748,7 @@
             }
           ]
         },
-        "staff": {
+        "hand_r": {
           "rotate": [
             {
               "time": 0,
@@ -666,7 +760,7 @@
             },
             {
               "time": 0.35,
-              "angle": -85,
+              "angle": -10,
               "curve": 0.42,
               "c2": 0,
               "c3": 0.58,
@@ -674,7 +768,7 @@
             },
             {
               "time": 0.55,
-              "angle": -38,
+              "angle": -4,
               "curve": 0.42,
               "c2": 0,
               "c3": 0.58,
@@ -698,7 +792,7 @@
             },
             {
               "time": 0.35,
-              "angle": -30,
+              "angle": -14,
               "curve": 0.42,
               "c2": 0,
               "c3": 0.58,
@@ -706,7 +800,71 @@
             },
             {
               "time": 0.55,
-              "angle": 10,
+              "angle": 8,
+              "curve": 0.42,
+              "c2": 0,
+              "c3": 0.58,
+              "c4": 1
+            },
+            {
+              "time": 1,
+              "angle": 0
+            }
+          ]
+        },
+        "forearm_l": {
+          "rotate": [
+            {
+              "time": 0,
+              "angle": 0,
+              "curve": 0.42,
+              "c2": 0,
+              "c3": 0.58,
+              "c4": 1
+            },
+            {
+              "time": 0.35,
+              "angle": -10,
+              "curve": 0.42,
+              "c2": 0,
+              "c3": 0.58,
+              "c4": 1
+            },
+            {
+              "time": 0.55,
+              "angle": 6,
+              "curve": 0.42,
+              "c2": 0,
+              "c3": 0.58,
+              "c4": 1
+            },
+            {
+              "time": 1,
+              "angle": 0
+            }
+          ]
+        },
+        "hand_l": {
+          "rotate": [
+            {
+              "time": 0,
+              "angle": 0,
+              "curve": 0.42,
+              "c2": 0,
+              "c3": 0.58,
+              "c4": 1
+            },
+            {
+              "time": 0.35,
+              "angle": -12,
+              "curve": 0.42,
+              "c2": 0,
+              "c3": 0.58,
+              "c4": 1
+            },
+            {
+              "time": 0.55,
+              "angle": 8,
               "curve": 0.42,
               "c2": 0,
               "c3": 0.58,

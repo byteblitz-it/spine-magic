@@ -30,6 +30,9 @@ export const PARTS: Record<string, Record<string, [number, number, number, numbe
 const SPLITS: Record<string, { line: [[number, number], [number, number]]; pieces: Record<string, (below: number) => boolean> }> = {
   // "Hand L" is vambrace + fist in one drawing: cut at the lower gold cuff to give the left arm a wrist
   "knight/hand_l": { line: [[30, 66], [62, 58]], pieces: { forearm_l: (d) => d < 3, fist_l: (d) => d > -3 } },
+  // the mage's hands are lower sleeve + glove: cut below the cuff trim for wrist joints
+  "wizard/hand_r": { line: [[24, 90], [68, 68]], pieces: { lower_sleeve_r: (d) => d < 3, glove_r: (d) => d > -3 } },
+  "wizard/hand_l": { line: [[10, 76], [60, 68]], pieces: { lower_sleeve_l: (d) => d < 3, glove_l: (d) => d > -3 } },
 };
 
 const src = decodePng(new Uint8Array(readFileSync(join("art", "rig-parts-sheet.png"))));
