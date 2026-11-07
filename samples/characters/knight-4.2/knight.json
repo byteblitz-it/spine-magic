@@ -44,14 +44,14 @@
     {
       "name": "forearm_r",
       "parent": "arm_r",
-      "x": -26,
-      "y": -45
+      "x": -8,
+      "y": -19
     },
     {
       "name": "hand_r",
       "parent": "forearm_r",
-      "x": -18,
-      "y": -42
+      "x": -36,
+      "y": -68
     },
     {
       "name": "sword",
@@ -85,8 +85,8 @@
     {
       "name": "forearm_l",
       "parent": "arm_l",
-      "x": 18,
-      "y": -40
+      "x": 8,
+      "y": -18
     },
     {
       "name": "leg_r",
@@ -162,18 +162,13 @@
     },
     {
       "name": "pauldron_l",
-      "bone": "arm_l",
+      "bone": "torso",
       "attachment": "pauldron_l"
     },
     {
       "name": "bracer_l",
       "bone": "forearm_l",
       "attachment": "bracer_l"
-    },
-    {
-      "name": "head",
-      "bone": "head",
-      "attachment": "head"
     },
     {
       "name": "sword",
@@ -186,8 +181,13 @@
       "attachment": "gauntlet_r"
     },
     {
+      "name": "head",
+      "bone": "head",
+      "attachment": "head"
+    },
+    {
       "name": "pauldron_r",
-      "bone": "arm_r",
+      "bone": "torso",
       "attachment": "pauldron_r"
     }
   ],
@@ -261,25 +261,18 @@
         },
         "pauldron_l": {
           "pauldron_l": {
-            "x": 6,
+            "x": 62,
+            "y": 60,
             "width": 86,
             "height": 84
           }
         },
         "bracer_l": {
           "bracer_l": {
-            "x": 6,
-            "y": -20,
+            "x": 16,
+            "y": -42,
             "width": 86,
             "height": 92
-          }
-        },
-        "head": {
-          "head": {
-            "x": 2,
-            "y": 72,
-            "width": 148,
-            "height": 137
           }
         },
         "sword": {
@@ -293,15 +286,24 @@
         },
         "gauntlet_r": {
           "gauntlet_r": {
-            "x": -6,
-            "y": -20,
+            "x": -24,
+            "y": -46,
             "width": 96,
             "height": 104
           }
         },
+        "head": {
+          "head": {
+            "x": 2,
+            "y": 72,
+            "width": 148,
+            "height": 137
+          }
+        },
         "pauldron_r": {
           "pauldron_r": {
-            "x": -6,
+            "x": -58,
+            "y": 65,
             "width": 94,
             "height": 91
           }
@@ -643,21 +645,21 @@
             },
             {
               "time": 0.35,
-              "value": -55
+              "value": -232
             },
             {
               "time": 0.42,
-              "value": 45,
+              "value": -310,
               "curve": [
                 0.5796,
-                45,
+                -310,
                 0.6404,
-                0
+                -360
               ]
             },
             {
               "time": 0.8,
-              "value": 0
+              "value": -360
             }
           ]
         },
@@ -670,25 +672,63 @@
                 0.11760000000000001,
                 0,
                 0.16240000000000002,
-                -25
+                -15
               ]
             },
             {
               "time": 0.28,
-              "value": -25,
+              "value": -15,
               "curve": [
                 0.3388,
-                -25,
+                -15,
                 0.36119999999999997,
-                15
+                8
               ]
             },
             {
               "time": 0.42,
-              "value": 15,
+              "value": 8,
               "curve": [
                 0.5796,
-                15,
+                8,
+                0.6404,
+                0
+              ]
+            },
+            {
+              "time": 0.8,
+              "value": 0
+            }
+          ]
+        },
+        "hand_r": {
+          "rotate": [
+            {
+              "time": 0,
+              "value": 0,
+              "curve": [
+                0.11760000000000001,
+                0,
+                0.16240000000000002,
+                0
+              ]
+            },
+            {
+              "time": 0.28,
+              "value": 0,
+              "curve": [
+                0.3388,
+                0,
+                0.36119999999999997,
+                -30
+              ]
+            },
+            {
+              "time": 0.42,
+              "value": -30,
+              "curve": [
+                0.5796,
+                -30,
                 0.6404,
                 0
               ]

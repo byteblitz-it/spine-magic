@@ -11,17 +11,17 @@ interface Shot { out: string; character: string; effect: unknown; attach: Attach
 const SHOTS: Shot[] = [
   {
     // overhead slash: a blade-wide ribbon in trail mode, with sparks shed from the tip
-    out: "knight-sword-trail.png", character: "knight", frames: 4, times: [0.3, 0.34, 0.38, 0.44],
+    out: "knight-sword-trail.png", character: "knight", frames: 4, times: [0.31, 0.35, 0.39, 0.44],
     effect: {
       name: "sword_trail", loop: true,
       emitters: [
         {
           name: "slash", simulationSpace: "world", blend: "additive", emission: { rate: 0 },
-          ribbon: { enabled: true, length: 0.12, segments: 24, width: 190, widthOverLength: [[0, 1], [1, 0.6]], color: "#a8e8ff", alpha: 0.75 },
+          ribbon: { enabled: true, length: 0.1, segments: 24, width: 170, widthOverLength: [[0, 1], [1, 0.6]], color: "#a8e8ff", alpha: 0.75 },
         },
       ],
     },
-    attach: { bone: "blade_mid", animation: "attack", mode: "trail" },
+    attach: { bone: "blade_mid", animation: "attack", mode: "trail", slot: "head", place: "below" },
   },
   {
     out: "wizard-orb-magic.png", character: "wizard", frames: 4,
