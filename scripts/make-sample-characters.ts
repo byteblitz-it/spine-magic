@@ -34,9 +34,9 @@ const KNIGHT: CharDef = {
     { name: "blade_mid", parent: "sword", x: 31, y: 43, color: ANCHOR },
     { name: "sword_tip", parent: "sword", x: 129, y: -5, color: ANCHOR },
     // left arm chain: shoulder (upper arm L) → elbow (vambrace) → wrist (fist); "Hand L" is split at the cuff
-    { name: "arm_l", parent: "torso", x: 54, y: 216 },
-    { name: "forearm_l", parent: "arm_l", x: 66, y: 180 },
-    { name: "hand_l", parent: "forearm_l", x: 75, y: 136 },
+    { name: "arm_l", parent: "torso", x: 48, y: 216 },
+    { name: "forearm_l", parent: "arm_l", x: 62, y: 180 },
+    { name: "hand_l", parent: "forearm_l", x: 71, y: 136 },
     { name: "leg_r", parent: "hip", x: -30, y: 110 },
     { name: "shin_r", parent: "leg_r", x: -42, y: 60 },
     { name: "leg_l", parent: "hip", x: 30, y: 110 },
@@ -46,6 +46,10 @@ const KNIGHT: CharDef = {
   // back to front
   parts: [
     { part: "cape", bone: "cape", x: -100, y: 130 },
+    // left arm is the far arm (3/4 view facing right): it hangs behind the torso, only its edge shows
+    { part: "fist_l", bone: "hand_l", x: 66, y: 142 },
+    { part: "forearm_l", bone: "forearm_l", x: 66, y: 142 },
+    { part: "upper_arm_l", bone: "arm_l", x: 56, y: 202 },
     { part: "leg_l", bone: "leg_l", x: 38, y: 104 },
     { part: "boot_l", bone: "shin_l", x: 64, y: 64 },
     { part: "leg_r", bone: "leg_r", x: -34, y: 104 },
@@ -54,10 +58,6 @@ const KNIGHT: CharDef = {
     { part: "torso", bone: "torso", x: 2, y: 192 },
     { part: "tasset", bone: "hip", x: 4, y: 112 },
     { part: "head", bone: "head", x: 6, y: 294 },
-    // left arm: the hand/vambrace hangs under its shoulder plate
-    { part: "fist_l", bone: "hand_l", x: 70, y: 142 },
-    { part: "forearm_l", bone: "forearm_l", x: 70, y: 142 },
-    { part: "upper_arm_l", bone: "arm_l", x: 62, y: 202 },
     // sword arm: blade under the fist, forearm under the shoulder plate (pieces mirrored to point down-left)
     { part: "sword", bone: "sword", x: -14, y: 65, rotation: -26 },
     { part: "lower_arm_r", bone: "forearm_r", x: -80, y: 156, flipX: true },

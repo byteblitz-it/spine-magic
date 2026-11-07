@@ -81,13 +81,13 @@
     {
       "name": "arm_l",
       "parent": "torso",
-      "x": 54,
+      "x": 48,
       "y": 76
     },
     {
       "name": "forearm_l",
       "parent": "arm_l",
-      "x": 12,
+      "x": 14,
       "y": -36
     },
     {
@@ -134,6 +134,21 @@
       "attachment": "cape"
     },
     {
+      "name": "fist_l",
+      "bone": "hand_l",
+      "attachment": "fist_l"
+    },
+    {
+      "name": "forearm_l",
+      "bone": "forearm_l",
+      "attachment": "forearm_l"
+    },
+    {
+      "name": "upper_arm_l",
+      "bone": "arm_l",
+      "attachment": "upper_arm_l"
+    },
+    {
       "name": "leg_l",
       "bone": "leg_l",
       "attachment": "leg_l"
@@ -174,21 +189,6 @@
       "attachment": "head"
     },
     {
-      "name": "fist_l",
-      "bone": "hand_l",
-      "attachment": "fist_l"
-    },
-    {
-      "name": "forearm_l",
-      "bone": "forearm_l",
-      "attachment": "forearm_l"
-    },
-    {
-      "name": "upper_arm_l",
-      "bone": "arm_l",
-      "attachment": "upper_arm_l"
-    },
-    {
       "name": "sword",
       "bone": "sword",
       "attachment": "sword"
@@ -219,6 +219,30 @@
             "y": -70,
             "width": 202,
             "height": 182
+          }
+        },
+        "fist_l": {
+          "fist_l": {
+            "x": -5,
+            "y": 6,
+            "width": 82,
+            "height": 112
+          }
+        },
+        "forearm_l": {
+          "forearm_l": {
+            "x": 4,
+            "y": -38,
+            "width": 82,
+            "height": 112
+          }
+        },
+        "upper_arm_l": {
+          "upper_arm_l": {
+            "x": 8,
+            "y": -14,
+            "width": 86,
+            "height": 84
           }
         },
         "leg_l": {
@@ -283,30 +307,6 @@
             "y": 72,
             "width": 148,
             "height": 137
-          }
-        },
-        "fist_l": {
-          "fist_l": {
-            "x": -5,
-            "y": 6,
-            "width": 82,
-            "height": 112
-          }
-        },
-        "forearm_l": {
-          "forearm_l": {
-            "x": 4,
-            "y": -38,
-            "width": 82,
-            "height": 112
-          }
-        },
-        "upper_arm_l": {
-          "upper_arm_l": {
-            "x": 8,
-            "y": -14,
-            "width": 86,
-            "height": 84
           }
         },
         "sword": {
