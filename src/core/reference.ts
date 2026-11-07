@@ -25,6 +25,11 @@ Gradient = [[t, "#rrggbb"], ...].
 | texture | "soft-circle" | builtin name (see list_textures) or path to an 8-bit PNG |
 | pivot | [0.5,0.5] | sprite origin, 0..1 from texture left/top (rotation + scale happen around it) |
 | colorize | true | false = keep the texture's own colours (ignore initial.color / overLifetime.color) |
+| sprite.frames | [] | several sprites (builtins or PNG paths); non-empty replaces texture. Builtin flipbooks: spin-1…spin-4 (coin turning), flicker-1…flicker-4 (flame) |
+| sprite.mode | "flipbook" | random = each particle keeps one random frame (mixed debris, leaves); flipbook = frames play in order |
+| sprite.fps | 12 | flipbook frame rate; 0 = the frames play once across the particle's lifetime |
+| sprite.loop | true | flipbook wraps (false = holds the last frame) |
+| sprite.randomStart | false | flipbook starts on a random frame per particle (de-syncs spinning coins) |
 | blend | "additive" | normal / additive (glow, fire, magic) / multiply / screen |
 | simulationSpace | "local" | local: particles parented to an emitter bone (they travel with a moving emitter). world: left behind = trails |
 | emission.type | "continuous" | continuous / burst |
@@ -62,6 +67,13 @@ Gradient = [[t, "#rrggbb"], ...].
 | overLifetime.color | none | gradient |
 | overLifetime.alignToVelocity | false | rotate along motion (use with "spark" / "dash") |
 | affectors | [] | see below; each has enabled:true and runs in list order |
+| ribbon.enabled | false | smooth textured strip trailing the emitter's path (one Spine mesh + deform keys; costs 1 bone). Needs motion.enabled or attach_effect mode "trail"; a still emitter has no trail |
+| ribbon.length | 0.35 | seconds of path history the strip covers |
+| ribbon.width | 28 | px at the head |
+| ribbon.widthOverLength | [[0,1],[1,0]] | width multiplier head (t=0) → tail (t=1) |
+| ribbon.segments | 16 | quads along the length (2 vertices each); more = smoother curves, more deform data |
+| ribbon.texture | "ribbon" | builtin "ribbon" fades head → tail; any texture works (u runs along the length) |
+| ribbon.color / ribbon.alpha | "#ffffff" / 1 | tint; blend follows the emitter's blend |
 
 ## Affectors
 - {type:"gravity", x:0, y:-300, useWeight:false} — acceleration px/s². Presets: Earth y:-981, Floaty -150, Heavy -2000, Rise +300
@@ -87,6 +99,9 @@ lower fps, or raise export tolerance.
 - Smoke: blend normal, texture "smoke", grey colour, size grows (overLifetime.size up to ~2), slow speed, long lifetime.
 - Explosion: burst, spread 360, drag 1-2 (quadratic for a sharp stop), size shrinking, colour white → orange → red.
 - Perfect ring: burst, spread 360, distribution "uniform".
+- Sword arc / dash streak / comet tail: ribbon.enabled true on an emitter with motion (or attach_effect mode "trail"), simulationSpace "world", length 0.3–0.5 s, width 20–40, blend additive; emission.rate 0 for a ribbon only, or rateOverDistance for sparks shed along it.
+- Spinning coins: sprite.frames spin-1…spin-4 (or the user's coin frames), mode flipbook, fps ~12, randomStart true, blend normal, colour #ffcc33 (colorize:false for full-colour art).
+- Mixed debris / leaves: sprite.frames with several PNGs, mode random.
 - Shockwave: burst count 1, texture "ring", speed 0, size curve 0.2 → 5, alpha 1 → 0.
 - Pulsing emission: rateOverTime [[0,1],[0.5,0.1],[1,1]].
 - Seamless loops: loop:true. Burst effects loop each duration; motion.loops whole numbers.

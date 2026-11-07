@@ -77,6 +77,11 @@ export const api = {
     if (!r.ok) throw new Error(`${file} not found in characters/${name}`);
     return r.text();
   },
+  async characterBytes(name: string, file: string): Promise<Uint8Array> {
+    const r = await fetch(`/api/characters/${encodeURIComponent(name)}/${encodeURIComponent(file)}`);
+    if (!r.ok) throw new Error(`${file} not found in characters/${name}`);
+    return new Uint8Array(await r.arrayBuffer());
+  },
   async characterImage(name: string, file: string): Promise<ImageBitmap> {
     const r = await fetch(`/api/characters/${encodeURIComponent(name)}/${encodeURIComponent(file)}`);
     if (!r.ok) throw new Error(`atlas page ${file} not found in characters/${name} — upload it with the skeleton`);

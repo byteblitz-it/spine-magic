@@ -102,7 +102,9 @@ unticked, then set `premultiplied: false`.
 
 ### Limits
 
-- JSON skeletons only (3.8–4.3). Binary `.skel`: re-export as JSON.
+- Input: JSON skeletons 3.8–4.3, or binary `.skel` / `.skel.bytes` from 3.8 and 4.2 (converted with a reader
+  ported from the official runtime). The merged output is always JSON (`<character>_fx.json`); if the game loads
+  binary, import that JSON into the Spine editor and export binary again. Binary 4.0, 4.1 and 4.3: export JSON.
 - If the character has draw-order keys, inserted slots can shift them; a warning says so — tell the user to
   check those animations in Spine.
 - Added bones count toward the character's budget everywhere the character is used. For a heavy effect that

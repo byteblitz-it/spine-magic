@@ -9,6 +9,7 @@
 Describe an effect — or show a reference image — and get a Spine skeleton you can drop into the editor or any runtime.
 Stick it to a character's hand, leave a trail behind a sword swing, ship it to 3.8 or 4.x.
 
+[![CI](https://github.com/byteblitz-it/spine-magic/actions/workflows/ci.yml/badge.svg)](https://github.com/byteblitz-it/spine-magic/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-22b8cf.svg)](LICENSE)
 ![Spine 3.8–4.3](https://img.shields.io/badge/Spine-3.8%20%E2%80%93%204.3-ff7a1a.svg)
 ![MCP](https://img.shields.io/badge/MCP-16%20tools-7c5cff.svg)
@@ -34,6 +35,8 @@ build → look at the rendered preview → adjust → export.
 
 | | |
 |---|---|
+| **Light ribbon** — a smooth mesh trail (one bone) sweeping a figure-eight | <img src="docs/media/light-ribbon.png" width="520" alt="light ribbon" /> |
+| **Coin shower** — flipbook sprites: every coin spins on its own | <img src="docs/media/coin-shower.png" width="520" alt="coin shower" /> |
 | **Comet trail** — emitter on a motion path, world-space trail | <img src="docs/media/comet.png" width="520" alt="comet" /> |
 | **Portal** — vortex + attractor, sparks aligned to velocity | <img src="docs/media/portal.png" width="520" alt="portal" /> |
 | **Fire** — rising, shrinking, yellow → red additive puffs | <img src="docs/media/fire.png" width="520" alt="fire" /> |
@@ -46,13 +49,19 @@ build → look at the rendered preview → adjust → export.
   every export loaded and played in the matching official runtime.
 - **Effects on characters** — bake an effect *into* your character's skeleton under any bone and inside any
   animation. **Follow** sticks it to the bone; **trail** emits along the bone's animated path. One-shot start
-  frame, draw-order slot, inherit rotation/scale, premultiplied-alpha matching. Your original files are never touched.
+  frame, draw-order slot, inherit rotation/scale, premultiplied-alpha matching. Characters can be JSON (3.8–4.3)
+  or binary `.skel` (3.8 and 4.2). Your original files are never touched.
+- **Ribbon trails** — a smooth textured strip behind a moving emitter or a character bone: sword arcs, dashes,
+  streaks. Baked as one mesh with deform keys, so it costs a single bone.
+- **Sprite sets and flipbooks** — random sprite per particle, or frames played over the particle's life
+  (spinning coins, flickering flames), with built-in spin and flicker sets.
 - **A real particle toolkit** — continuous and burst emission, rate over time and over distance, shapes,
   motion paths, inherit velocity, curves and gradients over life, separate size axes, velocity stretch, pivot,
-  gravity / drag / wind / noise / vortex / attractor, 11 presets and 11 built-in sprites (or your own PNGs).
+  gravity / drag / wind / noise / vortex / attractor, 13 presets and 20 built-in sprites (or your own PNGs).
 - **Agent-first** — 16 MCP tools, previews returned as images the agent can look at, readable validation errors,
   and a bundled **`spine-vfx` skill** that teaches art direction, reference-image matching and bone budgets.
-- **Visual editor** — layers, inspector, curve and gradient editors, timeline, live Spine preview, and a
+- **Visual editor** — layers, inspector, curve and gradient editors, timeline, live Spine preview, drag handles
+  for direction, spread, shape size and rotation right in the viewport, and a
   **Character** panel that previews the effect on your 3.8 or 4.2 character with that version's own runtime.
   Edits made by an agent show up live.
 
@@ -105,9 +114,10 @@ Most of the time an effect belongs *on* something: a glow in a hand, sparks off 
 | Mode | What happens | Use it for |
 |---|---|---|
 | **follow** | The effect is baked under the chosen bone and moves with it — in Spine and in every engine. Optionally stays upright (no rotation) or keeps its size (no scale). | auras, held magic, muzzle flashes, impact points |
-| **trail** | The bone's path is sampled from the animation with the real Spine runtime; world-space emitters emit along it, so particles are left behind. | sword arcs, dash streaks, comets from a hand |
+| **trail** | The bone's path is sampled from the animation with the real Spine runtime; world-space emitters emit along it, so particles are left behind — add a ribbon for a solid streak. | sword arcs, dash streaks, comets from a hand |
 
-The result is written next to your character as `<character>_fx.json` / `.atlas` + `fx_<effect>.png`.
+The result is written next to your character as `<character>_fx.json` / `.atlas` + `fx_<effect>.png`
+(always JSON, also for a `.skel` input — import it in Spine and export binary again if your game loads binary).
 Re-attaching replaces the previous copy, several effects stack, and detaching removes one cleanly.
 Every merged file is played through all its animations in the runtime, and the effect's anchor is checked to sit
 exactly on the bone.
@@ -144,6 +154,7 @@ The details are in [docs/DESIGN.md](docs/DESIGN.md).
 | Command | What it does |
 |---|---|
 | `npm test` | Unit, character and end-to-end MCP tests — baked bones are compared with the simulation inside the real 3.8 / 4.x runtimes |
+| `node scripts/fetch-spine-examples.mjs` | Download Esoteric's example skeletons for the `.skel` converter tests (skipped without them) |
 | `npm run web` | Visual editor with live agent sync |
 | `npm run demo [preset]` | Export every preset for every version into `out/` and validate |
 | `npm run build:plugin` | Rebuild the bundled server in `plugin/server/` — run after changing `src/` |
@@ -160,7 +171,8 @@ vendor/      official Spine 3.8 runtime (not published on npm)
 
 ## License
 
-SpineMagic is MIT-licensed — © 2026 ByteBlitz IT Solutions. See [LICENSE](LICENSE).
+SpineMagic is MIT-licensed — © 2026 ByteBlitz IT Solutions. See [LICENSE](LICENSE). One exception:
+`src/core/skel.ts`, the binary `.skel` reader, is ported from the Spine Runtimes and stays under their license.
 
 The Spine runtimes used for validation and previews are © Esoteric Software under the Spine Runtimes License,
 and using Spine data in a product requires a Spine license from Esoteric Software — see

@@ -75,6 +75,31 @@ describe.each(VERSIONS)("character merge — Spine %s", (v) => {
     expect(checked).toBe(6);
   });
 
+  it("trail + ribbon: the ribbon head follows the hand; detach removes its deform keys", async () => {
+    const f = fixture(v);
+    const swish = parseEffect({ name: "swish", loop: true, emitters: [{ name: "r", simulationSpace: "world", emission: { rate: 0 }, ribbon: { enabled: true, length: 0.3, segments: 8, width: 20 } }] });
+    const r = await attachToCharacter({ effect: swish, jsonPath: f.json, attach: { bone: "hand", animation: "swing", mode: "trail" } });
+    expect(r.validation.ok).toBe(true);
+    const merged = read(r.files.json);
+    const { core } = await loadRuntime(v);
+    const s = openSkeleton(core, merged, readFileSync(r.files.atlas, "utf8"));
+    const slot = s.skeleton.findSlot("fx_swish__r_0_ribbon");
+    expect(slot).toBeTruthy();
+    for (let fr = 0; fr < 30; fr += 6) {
+      s.pose("swing", fr / 30 + 1e-4);
+      const att = slot.getAttachment?.() ?? slot.appliedPose.attachment;
+      const out = new Float32Array(att.worldVerticesLength);
+      if (slot.appliedPose) att.computeWorldVertices(s.skeleton, slot, 0, out.length, out, 0, 2);
+      else att.computeWorldVertices(slot, 0, out.length, out, 0, 2);
+      const hand = s.bone("hand");
+      // the two head vertices straddle the hand
+      expect(Math.hypot((out[0] + out[2]) / 2 - hand.x, (out[1] + out[3]) / 2 - hand.y)).toBeLessThan(1);
+    }
+    const d = await detachFromCharacter({ jsonPath: r.files.json, effectName: "swish" });
+    const after = read(d.files.json);
+    expect(JSON.stringify(after)).not.toContain("fx_swish__");
+  });
+
   it("startTime shifts a one-shot burst; re-attach replaces; detach restores the character", async () => {
     const f = fixture(v);
     const burst = parseEffect({ ...PRESETS.fireworks.effect, name: "pop", loop: false, duration: 0.2 });

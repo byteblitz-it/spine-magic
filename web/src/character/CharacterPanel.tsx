@@ -44,9 +44,9 @@ export function CharacterPanel({ effect, character, loading, error, previewing, 
 
   const upload = async (files: FileList | null) => {
     if (!files?.length) return;
-    const json = [...files].find((f) => f.name.toLowerCase().endsWith(".json"));
-    if (!json) { onError("include the skeleton .json (plus its .atlas and .png pages)"); return; }
-    const name = json.name.replace(/\.json$/i, "").replace(/[^\w.-]/g, "_");
+    const json = [...files].find((f) => /\.(json|skel|skel\.bytes)$/i.test(f.name));
+    if (!json) { onError("include the skeleton .json or .skel (plus its .atlas and .png pages)"); return; }
+    const name = json.name.replace(/\.json$|\.skel(\.bytes)?$/i, "").replace(/[^\w.-]/g, "_");
     try {
       for (const f of files) await api.uploadCharacterFile(name, f);
       await refresh();
@@ -61,11 +61,11 @@ export function CharacterPanel({ effect, character, loading, error, previewing, 
   return (
     <section className="character-panel">
       <header className="panel-head"><span>Character</span>
-        <label className="btn small" title="Upload the skeleton .json with its .atlas and .png pages">Upload<input type="file" multiple hidden accept=".json,.atlas,.txt,.png" onChange={(e) => { upload(e.target.files); e.target.value = ""; }} /></label>
+        <label className="btn small" title="Upload the skeleton .json or .skel with its .atlas and .png pages">Upload<input type="file" multiple hidden accept=".json,.skel,.bytes,.atlas,.txt,.png" onChange={(e) => { upload(e.target.files); e.target.value = ""; }} /></label>
       </header>
       <div className="character-body">
         {options.length === 0 && (
-          <p className="muted small">No characters yet. Upload a Spine 3.8–4.3 skeleton (.json + .atlas + .png) or{" "}
+          <p className="muted small">No characters yet. Upload a Spine skeleton (.json 3.8–4.3, or .skel 3.8 / 4.2, + .atlas + .png) or{" "}
             <button className="link-btn" onClick={async () => { await api.addSampleCharacters(); await refresh(); }}>add the sample heroes</button>.</p>
         )}
         {options.length > 0 && (
@@ -127,7 +127,7 @@ export function CharacterPanel({ effect, character, loading, error, previewing, 
                 {busy ? "Baking…" : "Bake into character"}
               </button>
             </div>
-            <p className="muted small">Writes {character!.file.replace(/(_fx)?\.json$/i, "_fx.json")} next to the original (never overwritten).</p>
+            <p className="muted small">Writes {character!.file.replace(/(_fx)?(\.json|\.skel(\.bytes)?)$/i, "_fx.json")} next to the original (never overwritten).</p>
           </>
         )}
       </div>

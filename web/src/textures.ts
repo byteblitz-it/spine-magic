@@ -1,7 +1,7 @@
 import { Texture as PixiTexture } from "pixi.js";
 import { builtinTexture, isBuiltinTexture, textureNameFromPath, type Texture, type TextureResolver } from "@core/textures";
 import { decodePng, encodePng, type Image } from "@core/png";
-import type { Effect } from "@core/schema";
+import { emitterSprites, type Effect } from "@core/schema";
 import { api } from "./api";
 
 /** Custom (uploaded) textures keyed by their effect ref, e.g. "textures/leaf.png". */
@@ -18,13 +18,13 @@ export const resolveTexture: TextureResolver = (ref) => {
 /** Loads any custom textures an effect references. Missing ones fall back to soft-circle. */
 export async function ensureTextures(effect: Effect): Promise<string[]> {
   const missing: string[] = [];
-  for (const e of effect.emitters) {
-    if (isBuiltinTexture(e.texture) || custom.has(e.texture)) continue;
+  for (const e of effect.emitters) for (const ref of new Set([e.texture, ...emitterSprites(e), e.ribbon.texture])) {
+    if (isBuiltinTexture(ref) || custom.has(ref)) continue;
     try {
-      custom.set(e.texture, { name: textureNameFromPath(e.texture), image: decodePng(await api.fetchTexture(e.texture)) });
+      custom.set(ref, { name: textureNameFromPath(ref), image: decodePng(await api.fetchTexture(ref)) });
     } catch {
-      missing.push(e.texture);
-      custom.set(e.texture, { ...builtinTexture("soft-circle"), name: textureNameFromPath(e.texture) });
+      missing.push(ref);
+      custom.set(ref, { ...builtinTexture("soft-circle"), name: textureNameFromPath(ref) });
     }
   }
   return missing;

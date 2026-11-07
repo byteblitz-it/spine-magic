@@ -5,17 +5,27 @@ import type { AttachmentInput, Effect, SpineVersion } from "../core/schema.js";
 import { encodePng } from "../core/png.js";
 import { loadRuntime, openSkeleton, sampleRuntime, validateData, type ValidationResult } from "./validate.js";
 import { nodeTextureResolver } from "./textures.js";
+import { skelToJson } from "../core/skel.js";
 
 export interface CharacterFiles { json: any; atlasText: string; jsonPath: string; atlasPath: string; dir: string }
 
-/** Reads a character's skeleton JSON and its atlas (default: same name with .atlas or .atlas.txt). */
+const SKEL = /\.skel(\.bytes)?$/i;
+
+/** Skeleton data from .json, or from binary .skel / .skel.bytes (3.8, 4.2) converted to the equivalent JSON. */
+export function readSkeletonFile(path: string): any {
+  const p = resolve(path);
+  if (!existsSync(p)) throw new Error(`character file ${p} not found`);
+  if (SKEL.test(p)) return skelToJson(new Uint8Array(readFileSync(p)));
+  return JSON.parse(readFileSync(p, "utf8"));
+}
+
+/** Reads a character's skeleton (JSON or binary .skel) and its atlas (default: same name with .atlas or .atlas.txt). */
 export function loadCharacterFiles(jsonPath: string, atlasPath?: string): CharacterFiles {
   const jp = resolve(jsonPath);
-  if (!existsSync(jp)) throw new Error(`character file ${jp} not found`);
-  if (extname(jp).toLowerCase() === ".skel") throw new Error("binary .skel is not supported — export the skeleton as JSON from Spine");
-  const json = JSON.parse(readFileSync(jp, "utf8"));
-  const base = jp.slice(0, -extname(jp).length);
-  const candidates = atlasPath ? [resolve(atlasPath)] : [`${base}.atlas`, `${base}.atlas.txt`, `${base.replace(/_fx$/, "")}.atlas`];
+  const json = readSkeletonFile(jp);
+  const base = SKEL.test(jp) ? jp.replace(SKEL, "") : jp.slice(0, -extname(jp).length);
+  const plain = base.replace(/_fx$/, "").replace(/-(pro|ess)$/, "");
+  const candidates = atlasPath ? [resolve(atlasPath)] : [...new Set([`${base}.atlas`, `${base}.atlas.txt`, `${plain}.atlas`, `${plain}.atlas.txt`])];
   const ap = candidates.find((p) => existsSync(p));
   if (!ap) throw new Error(`atlas not found (tried ${candidates.join(", ")}); pass atlasPath`);
   return { json, atlasText: readFileSync(ap, "utf8"), jsonPath: jp, atlasPath: ap, dir: dirname(jp) };
@@ -23,7 +33,7 @@ export function loadCharacterFiles(jsonPath: string, atlasPath?: string): Charac
 
 export function inspectCharacterFile(jsonPath: string): CharacterInfo & { jsonPath: string } {
   const jp = resolve(jsonPath);
-  return { ...inspectCharacter(JSON.parse(readFileSync(jp, "utf8"))), jsonPath: jp };
+  return { ...inspectCharacter(readSkeletonFile(jp)), jsonPath: jp, ...(SKEL.test(jp) ? { binary: true } : {}) };
 }
 
 /** Bone sampler backed by the official runtime for the character's version (3.8 vendored, 4.x npm). */
@@ -102,7 +112,7 @@ export async function detachFromCharacter(opts: { jsonPath: string; atlasPath?: 
 
 /** <dir>/<name>_fx.json + .atlas(.txt) by default; a merged file keeps its own name. */
 function outputPaths(ch: CharacterFiles, out: string | undefined, pageName: string) {
-  const name = basename(ch.jsonPath, extname(ch.jsonPath));
+  const name = SKEL.test(ch.jsonPath) ? basename(ch.jsonPath).replace(SKEL, "") : basename(ch.jsonPath, extname(ch.jsonPath));
   const jsonOut = out ? resolve(ch.dir, out) : join(ch.dir, name.endsWith("_fx") ? `${name}.json` : `${name}_fx.json`);
   const atlasExt = ch.atlasPath.endsWith(".atlas.txt") ? ".atlas.txt" : ".atlas";
   const atlasOut = jsonOut.replace(/\.json$/i, "") + atlasExt;

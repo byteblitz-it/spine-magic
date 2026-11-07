@@ -1,8 +1,9 @@
-import type { Effect } from "./schema.js";
+import { emitterSprites, type Effect } from "./schema.js";
 import type { Simulation, PState } from "./simulate.js";
 import { createImage, type Image } from "./png.js";
 import { builtinTexture, type TextureResolver } from "./textures.js";
-import { DEG } from "./math.js";
+import { DEG, hexToRgb } from "./math.js";
+import { ribbonTopology, ribbonVertices } from "./ribbon.js";
 
 export interface PreviewOptions {
   /** Number of frames sampled evenly across the animation. */
@@ -48,6 +49,10 @@ export function renderPreview(effect: Effect, sim: Simulation, opts: PreviewOpti
 
   // bounds over all frames, square, with margin
   let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+  for (const e of effect.emitters) if (e.enabled && e.ribbon.enabled) for (const f of frameIndices) {
+    const v = ribbonVertices(e, sim.period, f / sim.fps, sim.loop);
+    for (let k = 0; k < v.length; k += 2) { minX = Math.min(minX, v[k]); maxX = Math.max(maxX, v[k]); minY = Math.min(minY, v[k + 1]); maxY = Math.max(maxY, v[k + 1]); }
+  }
   for (const t of sim.emitters) for (const p of t.particles) for (const s of p.samples) {
     const h = Math.max(s.size, s.sizeY) / 2;
     minX = Math.min(minX, s.x - h); maxX = Math.max(maxX, s.x + h);
@@ -65,7 +70,8 @@ export function renderPreview(effect: Effect, sim: Simulation, opts: PreviewOpti
   for (let i = 0; i < W * img.height; i++) buf.set([10 / 255, 10 / 255, 12 / 255], i * 3);
 
   const load = opts.resolveTexture ?? builtinTexture;
-  const textures = effect.emitters.map((e) => (e.enabled ? load(e.texture) : null));
+  const textures = effect.emitters.map((e) => (e.enabled ? emitterSprites(e).map(load) : null));
+  const ribbonTex = effect.emitters.map((e) => (e.enabled && e.ribbon.enabled ? load(e.ribbon.texture) : null));
 
   frameIndices.forEach((f, ci) => {
     const ox = 2 + (ci % cols) * (cell + 2), oy = 2 + Math.floor(ci / cols) * (cell + 2);
@@ -76,10 +82,23 @@ export function renderPreview(effect: Effect, sim: Simulation, opts: PreviewOpti
       plot(buf, W, ox, oy, cell, Math.round(ax + k), Math.round(ay), [0.3, 0.8, 0.4]);
       plot(buf, W, ox, oy, cell, Math.round(ax), Math.round(ay + k), [0.3, 0.8, 0.4]);
     }
+    // ribbons first: they sit under the particles
+    effect.emitters.forEach((e, ei) => {
+      if (!e.enabled || !e.ribbon.enabled) return;
+      const tex = ribbonTex[ei]!;
+      const v = ribbonVertices(e, sim.period, f / sim.fps, sim.loop);
+      const { uvs, triangles } = ribbonTopology(e.ribbon.segments);
+      const [cr, cg, cb] = hexToRgb(e.ribbon.color);
+      const sx = (i: number) => (v[i * 2] - bounds.x) * scale, sy = (i: number) => cell - (v[i * 2 + 1] - bounds.y) * scale;
+      for (let k = 0; k < triangles.length; k += 3) {
+        const [a, b, c] = [triangles[k], triangles[k + 1], triangles[k + 2]];
+        fillTriangle(buf, W, ox, oy, cell, [sx(a), sy(a), sx(b), sy(b), sx(c), sy(c)], [uvs[a * 2], uvs[a * 2 + 1], uvs[b * 2], uvs[b * 2 + 1], uvs[c * 2], uvs[c * 2 + 1]], tex.image, [cr, cg, cb, e.ribbon.alpha], e.blend);
+      }
+    });
     for (const { s, emitter } of visible(f)) {
-      const tex = textures[emitter];
-      if (!tex) continue;
-      drawSprite(buf, W, ox, oy, cell, tex.image, s, (s.x - bounds.x) * scale, cell - (s.y - bounds.y) * scale, scale, effect.emitters[emitter].blend, effect.emitters[emitter].pivot);
+      const set = textures[emitter];
+      if (!set) continue;
+      drawSprite(buf, W, ox, oy, cell, set[s.frame] ?? set[0], s, (s.x - bounds.x) * scale, cell - (s.y - bounds.y) * scale, scale, effect.emitters[emitter].blend, effect.emitters[emitter].pivot);
     }
   });
 
@@ -94,7 +113,9 @@ function plot(buf: Float32Array, W: number, ox: number, oy: number, cell: number
   buf.set(c, ((oy + y) * W + ox + x) * 3);
 }
 
-function drawSprite(buf: Float32Array, W: number, ox: number, oy: number, cell: number, tex: Image, s: PState, px: number, py: number, scale: number, blend: string, pivot: [number, number]) {
+function drawSprite(buf: Float32Array, W: number, ox: number, oy: number, cell: number, texture: { image: Image }, s: PState, px: number, py: number, scale: number, blend: string, pivot: [number, number]) {
+  const tex = texture.image;
+  // like the bake: the particle size is the longest edge of whichever frame is shown
   const texMax = Math.max(tex.width, tex.height);
   const kx = (s.size / texMax) * scale, ky = (s.sizeY / texMax) * scale; // texture px → screen px
   if (kx * tex.width < 0.1 || ky * tex.height < 0.1 || s.a <= 0) return;
@@ -125,6 +146,35 @@ function drawSprite(buf: Float32Array, W: number, ox: number, oy: number, cell: 
       }
     }
     buf[o] = d[0]; buf[o + 1] = d[1]; buf[o + 2] = d[2];
+  }
+}
+
+/** Textured triangle (screen-space points, texture-space 0..1 UVs), tinted, with the emitter's blend mode. */
+function fillTriangle(buf: Float32Array, W: number, ox: number, oy: number, cell: number, p: number[], uv: number[], tex: Image, tint: number[], blend: string) {
+  const [x0, y0, x1, y1, x2, y2] = p;
+  const area = (x1 - x0) * (y2 - y0) - (x2 - x0) * (y1 - y0);
+  if (Math.abs(area) < 1e-6) return;
+  const minX = Math.max(0, Math.floor(Math.min(x0, x1, x2))), maxX = Math.min(cell - 1, Math.ceil(Math.max(x0, x1, x2)));
+  const minY = Math.max(0, Math.floor(Math.min(y0, y1, y2))), maxY = Math.min(cell - 1, Math.ceil(Math.max(y0, y1, y2)));
+  for (let y = minY; y <= maxY; y++) for (let x = minX; x <= maxX; x++) {
+    const px = x + 0.5, py = y + 0.5;
+    const w0 = ((x1 - px) * (y2 - py) - (x2 - px) * (y1 - py)) / area;
+    const w1 = ((x2 - px) * (y0 - py) - (x0 - px) * (y2 - py)) / area;
+    const w2 = 1 - w0 - w1;
+    if (w0 < 0 || w1 < 0 || w2 < 0) continue;
+    const u = w0 * uv[0] + w1 * uv[2] + w2 * uv[4], v = w0 * uv[1] + w1 * uv[3] + w2 * uv[5];
+    const tx = Math.min(tex.width - 1, Math.max(0, Math.floor(u * tex.width))), ty = Math.min(tex.height - 1, Math.max(0, Math.floor(v * tex.height)));
+    const ti = (ty * tex.width + tx) * 4;
+    const a = (tex.data[ti + 3] / 255) * tint[3];
+    if (a <= 0) continue;
+    const o = ((oy + y) * W + ox + x) * 3;
+    for (let c = 0; c < 3; c++) {
+      const s = (tex.data[ti + c] / 255) * tint[c];
+      if (blend === "additive") buf[o + c] += s * a;
+      else if (blend === "multiply") buf[o + c] *= 1 - a + s * a;
+      else if (blend === "screen") buf[o + c] = 1 - (1 - buf[o + c]) * (1 - s * a);
+      else buf[o + c] = s * a + buf[o + c] * (1 - a);
+    }
   }
 }
 

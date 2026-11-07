@@ -40,6 +40,32 @@ const BUILTIN: Record<string, { w: number; h: number; desc: string; shade: Shade
   confetti: { w: 32, h: 16, desc: "2:1 paper strip — confetti with spin", shade: (u, v) => 0.85 + 0.15 * (1 - Math.abs(v)) },
 };
 
+BUILTIN.ribbon = {
+  w: 128, h: 32, desc: "ribbon strip: soft edges, fades from head (left) to tail (right) — for emitter.ribbon",
+  shade: (u, v) => Math.pow(Math.max(0, 1 - Math.abs(v)), 1.4) * Math.pow(clamp01((1 - u) / 2), 0.8),
+};
+
+// flipbook sets: name-1 … name-4, meant for emitter.sprite.frames
+const SPIN_WIDTH = [1, 0.7, 0.18, 0.7];
+SPIN_WIDTH.forEach((k, i) => {
+  BUILTIN[`spin-${i + 1}`] = {
+    w: 64, h: 64, desc: `disc turning on its axis, frame ${i + 1}/4 — coins, tokens (flipbook: spin-1 … spin-4)`,
+    shade: (u, v) => { const r = Math.hypot(u / k, v); return clamp01((1 - r) * 16 * k) * (0.75 + 0.25 * clamp01(1 - r * 0.9)); },
+  };
+});
+for (let i = 0; i < 4; i++) {
+  BUILTIN[`flicker-${i + 1}`] = {
+    w: 64, h: 64, desc: `licking flame tongue, frame ${i + 1}/4 — fire, torches (flipbook: flicker-1 … flicker-4)`,
+    shade: (u, v) => {
+      // teardrop pointing up (v = -1 is the top), wobbling with noise per frame
+      const w = 0.55 + 0.45 * ((v + 1) / 2);
+      const du = u + 0.18 * noise2(v * 2.2, i * 1.7, 11) * (1 - v) / 2;
+      const r = Math.hypot(du / w, v * 0.95);
+      return clamp01(Math.pow(Math.max(0, 1 - r), 1.2) * (0.7 + 0.5 * noise2(u * 3, v * 3 + i * 2.1, 3)) * 1.6);
+    },
+  };
+}
+
 export function listBuiltinTextures(): { name: string; width: number; height: number; description: string }[] {
   return Object.entries(BUILTIN).map(([name, t]) => ({ name, width: t.w, height: t.h, description: t.desc }));
 }

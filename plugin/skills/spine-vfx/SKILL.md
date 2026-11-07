@@ -63,6 +63,8 @@ Critique checklist — the usual problems and the fix:
 - **Glow looks muddy or invisible** → additive for light/fire/magic; normal for solid things (coins, rocks, smoke, confetti). Colourful custom art → `colorize: false`.
 - **Cut off at the edges of the preview** → the effect is larger than you think; reduce speed/lifetime or tell the user its real size.
 - **Moving effects (trails, comets)** → `motion` path + `simulationSpace: "world"` leaves a trail; `"local"` makes particles ride along with the emitter.
+- **A trail of dots should be one solid streak (sword arc, dash)** → `ribbon.enabled` — a single mesh, so it costs one bone instead of dozens of particles.
+- **Objects that should spin or flicker (coins, flames, leaves)** → `sprite.frames` flipbook (builtin `spin-1…4`, `flicker-1…4`, or the user's frames) with `randomStart`; mixed debris → `sprite.mode: "random"`.
 
 Patching rules that avoid surprises: objects deep-merge, **arrays replace wholesale** (send the full curve,
 affector list or point list), and `null` resets a field to its default.
@@ -109,7 +111,7 @@ Spine animators usually want the effect *on* their character: glowing on a hand,
 behind a swing. Use `attach_effect` — it bakes the effect into a copy of the character skeleton, under one of
 its bones and inside one of its animations, so it opens in the Spine editor already riding on the character.
 
-1. `inspect_character` on the character's skeleton `.json` (3.8–4.3; binary `.skel` must be re-exported as JSON)
+1. `inspect_character` on the character's skeleton: `.json` (3.8–4.3) or binary `.skel` (3.8, 4.2 — the merged result is written as JSON)
    to see bones, slots in draw order, and animations with durations. Choose the bone from the user's words
    ("right hand", "sword tip") — ask if several fit.
 2. Build or tune the effect as usual. Size it for the character: preview_effect shows it alone, so compare its

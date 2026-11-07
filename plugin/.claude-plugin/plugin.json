@@ -1,6 +1,6 @@
 {
   "name": "spinemagic",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Author particle effects for Spine 3.8–4.3 with an AI agent: simulate, preview, bake to Spine skeletons and validate them in the real Spine runtime.",
   "author": { "name": "ByteBlitz" },
   "license": "MIT",

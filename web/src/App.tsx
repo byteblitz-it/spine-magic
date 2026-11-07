@@ -14,6 +14,7 @@ import { exportZip } from "./exporter";
 import { playback } from "./playback";
 import { formatZodError } from "./errors";
 import { inspectCharacter, mergeEffect, type MergeResult } from "@core/character";
+import { skelToJson } from "@core/skel";
 import type { AttachmentInput } from "@core/schema";
 import { CharacterPanel, type LoadedCharacter } from "./character/CharacterPanel";
 import { CharacterView } from "./character/CharacterView";
@@ -28,10 +29,12 @@ async function loadCharacter(path: string): Promise<LoadedCharacter> {
   const m = /^characters\/([^/]+)\/([^/]+)$/.exec(path);
   if (!m) throw new Error(`bad character path ${path}`);
   const [, name, file] = m;
-  const json = JSON.parse(await api.characterText(name, file));
-  const base = file.replace(/\.json$/i, "");
+  const binary = /\.skel(\.bytes)?$/i.test(file);
+  const json = binary ? skelToJson(await api.characterBytes(name, file)) : JSON.parse(await api.characterText(name, file));
+  const base = file.replace(/\.json$|\.skel(\.bytes)?$/i, "");
+  const plain = base.replace(/_fx$/, "").replace(/-(pro|ess)$/, "");
   let atlasText = "";
-  for (const cand of [`${base}.atlas`, `${base}.atlas.txt`, `${base.replace(/_fx$/, "")}.atlas`, `${base.replace(/_fx$/, "")}.atlas.txt`]) {
+  for (const cand of new Set([`${base}.atlas`, `${base}.atlas.txt`, `${plain}.atlas`, `${plain}.atlas.txt`])) {
     try { atlasText = await api.characterText(name, cand); break; } catch { /* try next */ }
   }
   if (!atlasText) throw new Error(`no .atlas found next to ${file} — upload it with the skeleton`);
@@ -355,6 +358,10 @@ export function App() {
           onMovePathPoint={(i, p, x, y, done) => {
             if (done) { commit(); return; }
             update((d) => { d.emitters[i].motion.points[p] = [x, y]; return d; }, true);
+          }}
+          onHandle={(i, patch, done) => {
+            if (done) { commit(); return; }
+            update((d) => { d.emitters[i] = deepMerge(d.emitters[i], patch); return d; }, true);
           }}
         />
         )}

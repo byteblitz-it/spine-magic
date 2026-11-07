@@ -1,6 +1,6 @@
 {
   "name": "spinemagic",
-  "version": "0.1.0",
+  "version": "0.3.0",
   "description": "Particle effects for Spine 3.8+, authored by AI agents over MCP",
   "type": "module",
   "license": "MIT",

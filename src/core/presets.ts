@@ -15,6 +15,48 @@ export const PRESETS: Record<string, { description: string; effect: EffectInput 
       }],
     },
   },
+  "coin-shower": {
+    description: "Fountain of spinning gold coins (flipbook sprites) arcing up and falling, with a few glints.",
+    effect: {
+      name: "coin_shower", duration: 2, loop: true,
+      emitters: [
+        {
+          name: "coins", texture: "spin-1", blend: "normal",
+          sprite: { frames: ["spin-1", "spin-2", "spin-3", "spin-4"], mode: "flipbook", fps: 14, randomStart: true },
+          emission: { type: "continuous", rate: 14, limit: 40 },
+          direction: { angle: 90, spread: 50 },
+          initial: { lifetime: [1.1, 1.5], speed: [260, 360], size: [32, 42], rotation: [-15, 15], color: "#ffffff" },
+          overLifetime: { alpha: [[0, 0], [0.05, 1], [0.85, 1], [1, 0]], color: [[0, "#fff2a8"], [1, "#ffc22e"]] },
+          affectors: [{ type: "gravity", x: 0, y: -700 }],
+        },
+        {
+          name: "glints", texture: "star", blend: "additive",
+          emission: { type: "continuous", rate: 8, limit: 20 },
+          shape: { type: "circle", radius: 60 },
+          direction: { angle: 90, spread: 60 },
+          transform: { y: 120 },
+          initial: { lifetime: [0.4, 0.7], speed: [10, 40], size: [14, 24], rotation: [0, 90] },
+          overLifetime: { size: [[0, 0.2], [0.4, 1], [1, 0]], alpha: [[0, 0], [0.3, 1], [1, 0]], color: [[0, "#fff8d0"], [1, "#ffc040"]] },
+        },
+      ],
+    },
+  },
+  "light-ribbon": {
+    description: "Glowing ribbon trail sweeping a figure-eight, with sparks shed along it — sword arcs, dashes, magic streaks.",
+    effect: {
+      name: "light_ribbon", duration: 2, loop: true,
+      emitters: [
+        {
+          name: "streak", texture: "soft-circle", blend: "additive", simulationSpace: "world",
+          motion: { enabled: true, points: [[-140, 0], [-70, 70], [0, 0], [70, -70], [140, 0], [70, 70], [0, 0], [-70, -70]], closed: true, smooth: true },
+          emission: { type: "continuous", rate: 0, rateOverDistance: 3, limit: 50 },
+          initial: { lifetime: [0.3, 0.6], speed: [10, 40], size: [8, 14] },
+          overLifetime: { size: [[0, 1], [1, 0]], alpha: [[0, 1], [1, 0]], color: [[0, "#e8fbff"], [1, "#40b8ff"]] },
+          ribbon: { enabled: true, length: 0.45, segments: 20, width: 34, widthOverLength: [[0, 1], [0.15, 0.85], [1, 0]], color: "#7fd8ff" },
+        },
+      ],
+    },
+  },
   "magic-sparkles": {
     description: "Twinkling stars rising gently from a circle, cyan/violet.",
     effect: {

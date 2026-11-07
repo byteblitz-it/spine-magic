@@ -1,7 +1,9 @@
 import { useEffect, useRef } from "react";
-import { Application, Container, Graphics, Sprite, Texture } from "pixi.js";
+import { Application, Container, Graphics, MeshSimple, Sprite, Texture } from "pixi.js";
+import { ribbonTopology, ribbonVertices } from "@core/ribbon";
+import { hexToRgb } from "@core/math";
 import { Spine, SpineTexture, TextureAtlas, AtlasAttachmentLoader, SkeletonJson } from "@esotericsoftware/spine-pixi-v8";
-import type { Effect } from "@core/schema";
+import { emitterSprites, type Effect } from "@core/schema";
 import type { Simulation, PState } from "@core/simulate";
 import type { BakeResult } from "@core/bake";
 import { buildPath, emitterOrigin } from "@core/motion";
@@ -21,6 +23,8 @@ export interface ViewportProps {
   onMoveEmitter: (index: number, x: number, y: number, done: boolean) => void;
   /** Drag of a motion-path control point, in path (emitter-local) coordinates. */
   onMovePathPoint: (index: number, point: number, x: number, y: number, done: boolean) => void;
+  /** Drag of a direction / spread / shape / rotation handle: a partial emitter patch (done = drag ended). */
+  onHandle: (index: number, patch: Record<string, unknown>, done: boolean) => void;
   onStats: (s: { visible: number; fps: number }) => void;
 }
 
@@ -41,6 +45,52 @@ function worldToPath(e: Emitter, wx: number, wy: number): [number, number] {
   return [dx * c - dy * s, dx * s + dy * c];
 }
 const BLEND = { normal: "normal", additive: "add", multiply: "multiply", screen: "screen" } as const;
+
+type HandleKind = "direction" | "spreadA" | "spreadB" | "radius" | "size" | "rotation";
+const HANDLE_COLOR: Record<HandleKind, number> = { direction: 0xffb030, spreadA: 0xffb030, spreadB: 0xffb030, radius: 0x22b8cf, size: 0x22b8cf, rotation: 0xc070ff };
+
+/**
+ * Draggable handles of an emitter, in world coordinates (y up), with what dragging each one to `w` changes.
+ * `o` is the emitter origin at the current time; `z` = 1 / zoom so handles keep their on-screen size.
+ */
+function emitterHandles(e: Emitter, o: [number, number], z: number) {
+  const { rotation, scale } = e.transform;
+  const out: { kind: HandleKind; x: number; y: number; patch: (wx: number, wy: number) => Record<string, unknown> }[] = [];
+  const at = (deg: number, r: number): [number, number] => [o[0] + Math.cos(deg * DEG) * r, o[1] + Math.sin(deg * DEG) * r];
+  const angleTo = (wx: number, wy: number) => Math.atan2(wy - o[1], wx - o[0]) / DEG;
+  const wrap = (a: number) => ((((a + 180) % 360) + 360) % 360) - 180;
+  const round1 = (v: number) => Math.round(v * 10) / 10;
+  if (e.direction.mode === "angle") {
+    const dir = e.direction.angle + rotation;
+    out.push({ kind: "direction", ...xy(at(dir, 60 * z)), patch: (wx, wy) => ({ direction: { angle: Math.round(wrap(angleTo(wx, wy) - rotation)) } }) });
+    for (const [kind, sign] of [["spreadA", 1], ["spreadB", -1]] as const) {
+      out.push({
+        kind, ...xy(at(dir + (sign * e.direction.spread) / 2, 48 * z)),
+        patch: (wx, wy) => ({ direction: { spread: Math.round(Math.min(360, Math.abs(wrap(angleTo(wx, wy) - dir)) * 2)) } }),
+      });
+    }
+  }
+  const s = e.shape;
+  if (s.type === "circle") {
+    out.push({ kind: "radius", ...xy(at(rotation, Math.max(s.radius * scale, 12 * z))), patch: (wx, wy) => ({ shape: { radius: Math.round(Math.hypot(wx - o[0], wy - o[1]) / scale) } }) });
+  } else if (s.type === "rectangle" || s.type === "line") {
+    const c = Math.cos(rotation * DEG), sn = Math.sin(rotation * DEG);
+    const hx = (s.width * scale) / 2, hy = s.type === "line" ? 0 : (s.height * scale) / 2;
+    out.push({
+      kind: "size", x: o[0] + hx * c - hy * sn, y: o[1] + hx * sn + hy * c,
+      patch: (wx, wy) => {
+        // into emitter axes: half extents → full size
+        const dx = wx - o[0], dy = wy - o[1];
+        const lx = dx * c + dy * sn, ly = -dx * sn + dy * c;
+        return { shape: { width: Math.round(Math.abs(lx) * 2 / scale), ...(s.type === "rectangle" ? { height: Math.round(Math.abs(ly) * 2 / scale) } : {}) } };
+      },
+    });
+  }
+  // emitter rotation: a knob on a ring, opposite the direction arrow so they never overlap
+  out.push({ kind: "rotation", ...xy(at(rotation + 180, 34 * z)), patch: (wx, wy) => ({ transform: { rotation: round1(wrap(angleTo(wx, wy) - 180)) } }) });
+  return out;
+}
+const xy = (p: [number, number]) => ({ x: p[0], y: p[1] });
 
 export function Viewport(props: ViewportProps) {
   const host = useRef<HTMLDivElement>(null);
@@ -87,15 +137,39 @@ export function Viewport(props: ViewportProps) {
         grid.moveTo(0, -ext).lineTo(0, ext).stroke({ width: 1 / cam.zoom, color: 0x50d070, alpha: 0.35 });
       };
 
+      // current pointer drag (declared early: the frame loop highlights the dragged handle)
+      let drag: { kind: "pan" | "emitter" | "point" | "handle"; sx: number; sy: number; cx: number; cy: number; ex: number; ey: number; point?: number; handle?: HandleKind } | null = null;
+
       // --- simulation sprites (pooled per emitter)
-      const pools: { container: Container; sprites: Sprite[] }[] = [];
+      const pools: { container: Container; sprites: Sprite[]; ribbon: MeshSimple | null; ribbonKey: string }[] = [];
       const pool = (i: number) => {
         while (pools.length <= i) {
           const c = new Container();
           particles.addChild(c);
-          pools.push({ container: c, sprites: [] });
+          pools.push({ container: c, sprites: [], ribbon: null, ribbonKey: "" });
         }
         return pools[i];
+      };
+      /** ribbon mesh for an emitter, rebuilt when its texture or resolution changes; hidden when off */
+      const drawRibbon = (p: (typeof pools)[number], e: Emitter | undefined, period: number, t: number, loop: boolean) => {
+        if (!e?.enabled || !e.ribbon.enabled) { if (p.ribbon) p.ribbon.visible = false; return; }
+        const key = `${e.ribbon.texture}/${e.ribbon.segments}`;
+        if (!p.ribbon || p.ribbonKey !== key) {
+          p.ribbon?.destroy();
+          const topo = ribbonTopology(e.ribbon.segments);
+          p.ribbon = new MeshSimple({ texture: pixiTexture(e.ribbon.texture), vertices: new Float32Array(topo.uvs.length), uvs: new Float32Array(topo.uvs), indices: new Uint32Array(topo.triangles) });
+          p.ribbonKey = key;
+          p.container.addChildAt(p.ribbon, 0); // under the particles
+        }
+        const v = ribbonVertices(e, period, t, loop);
+        const out = p.ribbon.vertices as Float32Array;
+        for (let k = 0; k < v.length; k += 2) { out[k] = v[k]; out[k + 1] = -v[k + 1]; }
+        p.ribbon.vertices = out;
+        const [r, g, b] = hexToRgb(e.ribbon.color);
+        p.ribbon.tint = ((r * 255) << 16) | ((g * 255) << 8) | (b * 255);
+        p.ribbon.alpha = e.ribbon.alpha;
+        p.ribbon.blendMode = BLEND[e.blend];
+        p.ribbon.visible = true;
       };
 
       // --- spine preview
@@ -121,7 +195,7 @@ export function Viewport(props: ViewportProps) {
 
       const lerp = (a: PState, b: PState, k: number): PState => ({
         x: a.x + (b.x - a.x) * k, y: a.y + (b.y - a.y) * k, rotation: a.rotation + (b.rotation - a.rotation) * k,
-        size: a.size + (b.size - a.size) * k, sizeY: a.sizeY + (b.sizeY - a.sizeY) * k, r: a.r + (b.r - a.r) * k, g: a.g + (b.g - a.g) * k, b: a.b + (b.b - a.b) * k, a: a.a + (b.a - a.a) * k,
+        size: a.size + (b.size - a.size) * k, sizeY: a.sizeY + (b.sizeY - a.sizeY) * k, r: a.r + (b.r - a.r) * k, g: a.g + (b.g - a.g) * k, b: a.b + (b.b - a.b) * k, a: a.a + (b.a - a.a) * k, frame: a.frame,
       });
 
       let fpsAcc = 0, fpsFrames = 0, statT = 0, visibleCount = 0, gridShown = latest.current.showGrid;
@@ -140,10 +214,10 @@ export function Viewport(props: ViewportProps) {
           sim.emitters.forEach((track, ei) => {
             const p = pool(ei);
             const e = effect.emitters[ei];
+            drawRibbon(p, e, sim.period, t, sim.loop);
             let n = 0;
             if (e?.enabled) {
-              const tex = pixiTexture(e.texture);
-              const texMax = Math.max(tex.width, tex.height);
+              const texs = emitterSprites(e).map(pixiTexture);
               for (const part of track.particles) {
                 const len = sim.loop ? Math.min(part.samples.length, sim.frames) : part.samples.length;
                 const j = sim.loop ? (((f0 - part.startFrame) % sim.frames) + sim.frames) % sim.frames : f0 - part.startFrame;
@@ -151,6 +225,8 @@ export function Viewport(props: ViewportProps) {
                 const s = j + 1 < len ? lerp(part.samples[j], part.samples[j + 1], k) : part.samples[j];
                 let sp = p.sprites[n];
                 if (!sp) { sp = new Sprite(); sp.anchor.set(0.5); p.container.addChild(sp); p.sprites.push(sp); }
+                const tex = texs[part.samples[j].frame] ?? texs[0];
+                const texMax = Math.max(tex.width, tex.height);
                 sp.texture = tex;
                 sp.visible = true;
                 sp.anchor.set(e.pivot[0], e.pivot[1]);
@@ -166,7 +242,7 @@ export function Viewport(props: ViewportProps) {
             for (let i = n; i < p.sprites.length; i++) p.sprites[i].visible = false;
             visibleCount += n;
           });
-          for (let i = sim.emitters.length; i < pools.length; i++) pools[i].sprites.forEach((s) => (s.visible = false));
+          for (let i = sim.emitters.length; i < pools.length; i++) { pools[i].sprites.forEach((s) => (s.visible = false)); if (pools[i].ribbon) pools[i].ribbon!.visible = false; }
         } else if (spine) {
           const entry = spine.state.tracks[0];
           if (entry) { entry.loop = effect.loop; entry.trackTime = t; }
@@ -208,6 +284,11 @@ export function Viewport(props: ViewportProps) {
               handles.moveTo(sx, sy).lineTo(sx + Math.cos(b) * L * 0.8, sy + Math.sin(b) * L * 0.8).stroke({ width: 1 * z, color: 0xffb030, alpha: 0.5 });
             }
           }
+          handles.circle(sx, sy, 34 * z).stroke({ width: 1 * z, color: HANDLE_COLOR.rotation, alpha: 0.35 });
+          for (const h of emitterHandles(e, [ox, oy], z)) {
+            const hot = drag?.kind === "handle" && drag.handle === h.kind;
+            handles.circle(h.x, -h.y, (hot ? 6 : 4.5) * z).fill({ color: HANDLE_COLOR[h.kind] }).stroke({ width: 1.5 * z, color: 0x000000, alpha: 0.7 });
+          }
           handles.circle(sx, sy, 6 * z).fill({ color: col }).stroke({ width: 2 * z, color: 0xffffff });
         }
 
@@ -242,12 +323,19 @@ export function Viewport(props: ViewportProps) {
         cam.y -= (after.y - before.y) * cam.zoom;
         applyCam();
       };
-      let drag: { kind: "pan" | "emitter" | "point"; sx: number; sy: number; cx: number; cy: number; ex: number; ey: number; point?: number } | null = null;
       const onDown = (ev: PointerEvent) => {
         const { effect, selected, sim } = latest.current;
         const e = effect.emitters[selected];
         if (ev.button === 0 && e) {
           const w = toWorld(ev.clientX, ev.clientY);
+          // direction / spread / shape / rotation knobs first: they are small and sit on top
+          const origin = emitterOrigin(e, sim.period, Math.min(playback.time, sim.period));
+          const knob = emitterHandles(e, origin, 1 / cam.zoom).find((h) => Math.hypot(w.x - h.x, w.y - h.y) * cam.zoom < 8);
+          if (knob) {
+            drag = { kind: "handle", handle: knob.kind, sx: ev.clientX, sy: ev.clientY, cx: 0, cy: 0, ex: origin[0], ey: origin[1] };
+            canvas.setPointerCapture(ev.pointerId);
+            return;
+          }
           // path points take priority over the emitter handle
           if (e.motion.enabled) {
             const hit = e.motion.points.findIndex(([px, py]) => {
@@ -275,6 +363,13 @@ export function Viewport(props: ViewportProps) {
         if (!drag) return;
         const dx = ev.clientX - drag.sx, dy = ev.clientY - drag.sy;
         if (drag.kind === "pan") { cam.x = drag.cx + dx; cam.y = drag.cy + dy; applyCam(); }
+        else if (drag.kind === "handle") {
+          const { effect, selected } = latest.current;
+          const e = effect.emitters[selected];
+          // the origin is frozen at drag start so a moving emitter doesn't fight the drag
+          const h = e && emitterHandles(e, [drag.ex, drag.ey], 1 / cam.zoom).find((k) => k.kind === drag!.handle);
+          if (h) { const w = toWorld(ev.clientX, ev.clientY); latest.current.onHandle(selected, h.patch(w.x, w.y), false); }
+        }
         else if (drag.kind === "point") {
           const e = latest.current.effect.emitters[latest.current.selected];
           const w = toWorld(ev.clientX, ev.clientY);
@@ -286,6 +381,7 @@ export function Viewport(props: ViewportProps) {
       const onUp = (ev: PointerEvent) => {
         if (drag?.kind === "emitter") latest.current.onMoveEmitter(latest.current.selected, NaN, NaN, true);
         if (drag?.kind === "point") latest.current.onMovePathPoint(latest.current.selected, drag.point!, NaN, NaN, true);
+        if (drag?.kind === "handle") latest.current.onHandle(latest.current.selected, {}, true);
         drag = null;
         canvas.releasePointerCapture?.(ev.pointerId);
       };

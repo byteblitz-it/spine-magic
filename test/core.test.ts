@@ -1,14 +1,15 @@
 import { describe, expect, it } from "vitest";
 import * as spine40 from "spine-core-40";
+import * as spine41 from "spine-core-41";
 import * as spine42 from "spine-core-42";
 import * as spine43 from "spine-core-43";
 import {
-  PRESETS, assignLanes, bakeSimulation, decodePng, encodePng, createImage, parseEffect, reduce, sampleRuntime, simulate, structuralCheck, safe, loadRuntime,
+  PRESETS, assignLanes, bakeSimulation, decodePng, encodePng, createImage, parseEffect, reduce, sampleRuntime, simulate, structuralCheck, safe, loadRuntime, openSkeleton, ribbonVertices,
 } from "../src/node/index.js";
 
 // 3.8 comes from the vendored official build (no npm package)
 const spine38 = (await loadRuntime("3.8")).core;
-const runtimes = { "3.8": spine38, "4.0": spine40, "4.2": spine42, "4.3": spine43 } as const;
+const runtimes = { "3.8": spine38, "4.0": spine40, "4.1": spine41, "4.2": spine42, "4.3": spine43 } as const;
 
 /** A local-space emitter that moves, rotates, scales and stretches: the hardest case for bone-space conversion. */
 const MOVING_LOCAL = {
@@ -87,6 +88,81 @@ describe("new emitter features", () => {
     expect(tr[0].y).toBeCloseTo(tr[tr.length - 1].y, 1);
     const att = Object.values((json as any).skins[0].attachments.m_0_p0)[0] as any;
     expect(att.x).toBe(att.width / 2); // pivot on the left edge → region centred half a width to the right
+  });
+
+  for (const [version, core] of Object.entries(runtimes)) {
+    it(`sprite frames: flipbook and random pick the right attachment @ ${version}`, () => {
+      const e = parseEffect({
+        duration: 2, loop: true, emitters: [
+          { name: "flip", sprite: { frames: ["spin-1", "spin-2", "spin-3", "spin-4"], fps: 10, randomStart: true }, emission: { rate: 6 }, initial: { lifetime: 1 } },
+          { name: "mix", sprite: { frames: ["star", "spark", "hexagon"], mode: "random" }, emission: { rate: 6 }, initial: { lifetime: 1 } },
+        ],
+      });
+      const sim = simulate(e);
+      const { json, atlas } = bakeSimulation(e, sim, { version: version as "4.0", tolerance: 0 });
+      expect(structuralCheck(json, atlas.text, version as "4.0")).toEqual([]);
+      const s = openSkeleton(core, json, atlas.text);
+      let checked = 0;
+      const seenRandom = new Set<number>();
+      sim.emitters.forEach((track, ei) => {
+        const names = track.emitter.sprite.frames;
+        const { lanes } = assignLanes(track, sim.frames, sim.loop);
+        lanes.forEach((lane, li) => {
+          for (let f = 0; f < sim.frames; f += 2) {
+            s.pose("animation", f / sim.fps + 1e-4);
+            const slot = s.skeleton.findSlot(`${track.emitter.name}_${ei}_p${li}`);
+            const att = (slot.appliedPose ?? slot).attachment ?? slot.getAttachment?.();
+            const st = lane.state[f];
+            expect(att?.name ?? null).toBe(st ? names[st.frame] : null);
+            if (st && ei === 1) seenRandom.add(st.frame);
+            checked++;
+          }
+        });
+      });
+      expect(checked).toBeGreaterThan(50);
+      expect(seenRandom.size).toBe(3);
+      // a flipbook particle advances one frame every 1/10 s
+      const p = sim.emitters[0].particles[0];
+      expect(p.samples[3].frame).toBe((p.samples[0].frame + 1) % 4);
+    });
+  }
+
+  for (const [version, core] of Object.entries(runtimes)) {
+    it(`ribbon mesh vertices follow the emitter path in the runtime @ ${version}`, () => {
+      const e = parseEffect({
+        duration: 2, loop: true, emitters: [{
+          name: "r", emission: { rate: 0 }, motion: { enabled: true, points: [[-120, 0], [0, 90], [120, 0], [0, -90]] },
+          ribbon: { enabled: true, length: 0.4, segments: 10, width: 30 },
+        }],
+      });
+      const sim = simulate(e);
+      const { json, atlas } = bakeSimulation(e, sim, { version: version as "4.0", tolerance: 0.1 });
+      expect(structuralCheck(json, atlas.text, version as "4.0")).toEqual([]);
+      const s = openSkeleton(core, json, atlas.text);
+      const slot = s.skeleton.findSlot("r_0_ribbon");
+      let worst = 0;
+      for (let f = 0; f < sim.frames; f += 5) {
+        const t = f / sim.fps;
+        s.pose("animation", t);
+        const att = (slot.appliedPose ?? slot).attachment ?? slot.getAttachment();
+        const n = att.worldVerticesLength;
+        const out = new Float32Array(n);
+        // 4.3 takes the skeleton first
+        if (slot.appliedPose) att.computeWorldVertices(s.skeleton, slot, 0, n, out, 0, 2);
+        else att.computeWorldVertices(slot, 0, n, out, 0, 2);
+        const want = ribbonVertices(e.emitters[0], sim.period, t, true);
+        for (let k = 0; k < n; k++) worst = Math.max(worst, Math.abs(out[k] - want[k]));
+      }
+      expect(worst).toBeLessThan(1);
+    });
+  }
+
+  it("frames of different sizes keep the particle size on the longest edge", () => {
+    const e = parseEffect({ emitters: [{ name: "m", sprite: { frames: ["soft-circle", "spark", "square"] } }] });
+    const { json } = bakeSimulation(e, simulate(e), { version: "4.2" });
+    const regs = (json as any).skins[0].attachments.m_0_p0;
+    expect(Object.keys(regs)).toEqual(["soft-circle", "spark", "square"]);
+    for (const r of Object.values<any>(regs)) expect(Math.max(r.width, r.height)).toBe(64);
   });
 
   it("old documents still parse (affectors gain enabled:true)", () => {

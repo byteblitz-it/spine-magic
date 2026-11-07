@@ -28,7 +28,7 @@ export function detectVersion(json: any): SpineVersion {
   const s: string = json?.skeleton?.spine ?? "";
   const mm = s.split(".").slice(0, 2).join(".");
   if ((SPINE_VERSIONS as readonly string[]).includes(mm)) return mm as SpineVersion;
-  throw new Error(`unsupported Spine version "${s || "unknown"}" — SpineMagic merges into ${SPINE_VERSIONS.join(", ")} skeletons (export JSON from Spine; binary .skel is not supported)`);
+  throw new Error(`unsupported Spine version "${s || "unknown"}" — SpineMagic merges into ${SPINE_VERSIONS.join(", ")} skeletons (JSON from 3.8–4.3, or binary .skel from 3.8 / 4.2)`);
 }
 
 /** Longest key time in an animation (Spine's animation duration). */
@@ -191,6 +191,16 @@ export function mergeEffect(input: MergeInput): MergeResult {
   anim.slots = anim.slots ?? {};
   for (const [b, tls] of Object.entries<any>(fxAnim.bones ?? {})) anim.bones[b] = shift(tls);
   for (const [s, tls] of Object.entries<any>(fxAnim.slots ?? {})) anim.slots[s] = shift(tls);
+  // ribbon deform keys go under the character's default skin
+  const shiftKeys = (keys: any[]) => keys.map((key) => ({ ...key, time: round((key.time ?? 0) + offset) }));
+  if (fxAnim.deform) {
+    const dst = ((anim.deform ??= {}).default ??= {});
+    for (const [s, atts] of Object.entries<any>(fxAnim.deform.default)) dst[s] = Object.fromEntries(Object.entries<any>(atts).map(([a, k]) => [a, shiftKeys(k)]));
+  }
+  if (fxAnim.attachments) {
+    const dst = ((anim.attachments ??= {}).default ??= {});
+    for (const [s, atts] of Object.entries<any>(fxAnim.attachments.default)) dst[s] = Object.fromEntries(Object.entries<any>(atts).map(([a, tl]) => [a, { deform: shiftKeys(tl.deform) }]));
+  }
   const end = offset + baked.stats.durationSeconds;
   if (end > animDur + 1e-6) warnings.push(`the effect runs to ${round(end)} s, past the animation's ${round(animDur)} s, which lengthens "${attach.animation}"`);
   if (effect.loop && !attach.matchLoop && Math.abs(baked.stats.durationSeconds - animDur) > 1e-3) warnings.push("the effect loop length differs from the animation; the loops will drift (set matchLoop)");
@@ -230,6 +240,7 @@ function removeEffectFromJson(json: any, prefix: string): number {
   for (const a of Object.values<any>(json.animations ?? {})) {
     for (const k of Object.keys(a.bones ?? {})) if (ours(k)) delete a.bones[k];
     for (const k of Object.keys(a.slots ?? {})) if (ours(k)) delete a.slots[k];
+    for (const group of [a.deform, a.attachments]) for (const skin of Object.values<any>(group ?? {})) for (const k of Object.keys(skin ?? {})) if (ours(k)) delete skin[k];
   }
   return before - json.bones.length;
 }

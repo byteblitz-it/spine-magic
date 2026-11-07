@@ -17,7 +17,7 @@ const store = new EffectStore(join(HOME, "projects"));
 const OUT = join(HOME, "out");
 const textures = nodeTextureResolver(HOME);
 
-const server = new McpServer({ name: "spinemagic", version: "0.1.0" }, {
+const server = new McpServer({ name: "spinemagic", version: "0.3.0" }, {
   instructions:
     "SpineMagic builds particle effects and bakes them to Spine 3.8–4.3 skeletons. Call get_effect_reference once, " +
     "start from a preset with create_effect, LOOK at preview_effect images while iterating with update_effect/update_emitter, " +
@@ -212,8 +212,8 @@ server.registerTool("validate_export", {
 
 server.registerTool("inspect_character", {
   title: "Inspect character skeleton",
-  description: "Read a character's Spine skeleton JSON (3.8–4.3): version, bone hierarchy, slots in draw order, skins, animations with durations, and effects already merged. Use before attach_effect to pick the bone, animation and draw-order slot.",
-  inputSchema: { character: z.string().describe("path to the character's skeleton .json (relative to the SpineMagic home)") },
+  description: "Read a character's Spine skeleton — JSON (3.8–4.3) or binary .skel / .skel.bytes (3.8, 4.2): version, bone hierarchy, slots in draw order, skins, animations with durations, and effects already merged. Use before attach_effect to pick the bone, animation and draw-order slot.",
+  inputSchema: { character: z.string().describe("path to the character's skeleton .json or .skel (relative to the SpineMagic home)") },
   annotations: { readOnlyHint: true },
 }, safe(async ({ character }) => json(inspectCharacterFile(resolve(HOME, character)))));
 
@@ -225,11 +225,11 @@ server.registerTool("attach_effect", {
     "next to the character (the original files are untouched), validates in the real Spine runtime for the character's version, and checks the " +
     "effect anchor follows the bone. mode follow: everything moves rigidly with the bone. mode trail: world-space emitters emit from the bone's " +
     "animated path and leave trails (sampled from the animation). Re-attaching the same effect replaces the previous copy; attach to the _fx file " +
-    "to stack several effects.",
+    "to stack several effects. A binary .skel character (3.8, 4.2) is converted and the result is written as JSON.",
   inputSchema: {
     id: z.string().describe("effect id"),
-    character: z.string().describe("character skeleton .json path (relative to the SpineMagic home)"),
-    atlas: z.string().optional().describe("character .atlas path; default: same name as the json"),
+    character: z.string().describe("character skeleton .json or .skel path (relative to the SpineMagic home)"),
+    atlas: z.string().optional().describe("character .atlas path; default: same name as the skeleton"),
     bone: z.string().describe("character bone the effect sticks to (inspect_character lists them)"),
     animation: z.string().describe("character animation that receives the effect"),
     mode: z.enum(["follow", "trail"]).default("follow"),

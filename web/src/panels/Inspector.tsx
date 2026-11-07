@@ -14,6 +14,7 @@ export function Inspector({ emitter, onPatch, onCommit, onError }: { emitter: Em
   // live edits (drags) coalesce into one undo step; onCommit closes it
   const live = (patch: Record<string, unknown>) => onPatch(patch, true);
   const pts = e.motion.points;
+  const frames = e.sprite.frames;
 
   return (
     <aside className="inspector">
@@ -43,11 +44,41 @@ export function Inspector({ emitter, onPatch, onCommit, onError }: { emitter: Em
             </Section>
             <Section title="Rendering">
               <Row label="Blend"><Select value={e.blend} options={["normal", "additive", "multiply", "screen"] as const} onChange={(v) => onPatch({ blend: v })} /></Row>
-              <TexturePicker value={e.texture} onChange={(t) => onPatch({ texture: t })} onError={onError} />
+              {frames.length === 0 && <TexturePicker value={e.texture} onChange={(t) => onPatch({ texture: t })} onError={onError} />}
               <Toggle label="Colorize sprite" value={e.colorize} onChange={(v) => onPatch({ colorize: v })} />
               <Row label="Sprite origin" hint="Rotation and scale happen around this point">
                 <PivotGrid value={e.pivot} onChange={(p) => onPatch({ pivot: p })} />
               </Row>
+            </Section>
+            <Section title="Sprite set" right={<Toggle label="" value={frames.length > 0} onChange={(on) => onPatch({ sprite: { frames: on ? [e.texture] : [] } })} />}>
+              {frames.length === 0 ? <p className="muted">Off: one sprite. Turn on for random sprites per particle, or a flipbook (spinning coin, flickering flame).</p> : (
+                <>
+                  <div className="chips">
+                    <button className="chip" onClick={() => onPatch({ sprite: { frames: ["spin-1", "spin-2", "spin-3", "spin-4"], mode: "flipbook" } })}>Coin spin</button>
+                    <button className="chip" onClick={() => onPatch({ sprite: { frames: ["flicker-1", "flicker-2", "flicker-3", "flicker-4"], mode: "flipbook" } })}>Flame flicker</button>
+                  </div>
+                  <div className="frames">
+                    {frames.map((f, i) => (
+                      <span className="frame" key={i} title={f}>
+                        <img src={textureThumb(f) || undefined} alt={f} />
+                        <button className="icon-btn" title="Remove frame" onClick={() => onPatch({ sprite: { frames: frames.filter((_, k) => k !== i) } })}>✕</button>
+                      </span>
+                    ))}
+                  </div>
+                  <span className="muted small">Click to add a frame:</span>
+                  <TexturePicker value="" onChange={(t) => onPatch({ sprite: { frames: [...frames, t] } })} onError={onError} />
+                  <Row label="Mode" hint="Random: each particle keeps one frame. Flipbook: frames play in order."><Select value={e.sprite.mode} options={["flipbook", "random"] as const} onChange={(v) => onPatch({ sprite: { mode: v } })} /></Row>
+                  {e.sprite.mode === "flipbook" && (
+                    <>
+                      <Row label="Frame rate" hint="0 = play the frames once across the particle's life"><NumberField value={e.sprite.fps} min={0} step={1} suffix="fps" onChange={(v) => live({ sprite: { fps: v } })} onCommit={onCommit} /></Row>
+                      <div className="pair">
+                        <Toggle label="Loop" value={e.sprite.loop} onChange={(v) => onPatch({ sprite: { loop: v } })} />
+                        <Toggle label="Random start" value={e.sprite.randomStart} onChange={(v) => onPatch({ sprite: { randomStart: v } })} />
+                      </div>
+                    </>
+                  )}
+                </>
+              )}
             </Section>
             <Section title="Shape">
               <Row label="Type"><Select value={e.shape.type} options={["point", "circle", "rectangle", "line"] as const} onChange={(v) => onPatch({ shape: { type: v } })} /></Row>
@@ -97,6 +128,20 @@ export function Inspector({ emitter, onPatch, onCommit, onError }: { emitter: Em
                     }}>+ Add point</button>
                     <p className="muted small">Drag the orange points in the viewport.</p>
                   </div>
+                </>
+              )}
+            </Section>
+            <Section title="Ribbon trail" right={<Toggle label="" value={e.ribbon.enabled} onChange={(v) => onPatch({ ribbon: { enabled: v }, ...(v && !e.motion.enabled ? { motion: { enabled: true } } : {}) })} />}>
+              {!e.ribbon.enabled ? <p className="muted">Off. A smooth strip trailing the emitter's path — sword arcs, dashes, streaks. Needs a motion path (or a character trail).</p> : (
+                <>
+                  <Row label="Length" hint="Seconds of path the strip covers"><NumberField value={e.ribbon.length} step={0.05} min={0.05} max={5} suffix="s" onChange={(v) => live({ ribbon: { length: v } })} onCommit={onCommit} /></Row>
+                  <Row label="Width" hint="At the head"><NumberField value={e.ribbon.width} step={1} min={0} suffix="px" onChange={(v) => live({ ribbon: { width: v } })} onCommit={onCommit} /></Row>
+                  <Row label="Segments" hint="Smoothness; each adds 2 vertices"><NumberField value={e.ribbon.segments} step={1} min={2} max={64} onChange={(v) => live({ ribbon: { segments: Math.round(v) } })} onCommit={onCommit} /></Row>
+                  <span className="muted small">Width head → tail</span>
+                  <CurveEditor value={e.ribbon.widthOverLength} max={1.5} onChange={(c) => live({ ribbon: { widthOverLength: c } })} onCommit={onCommit} />
+                  <Row label="Colour"><ColorField value={e.ribbon.color} onChange={(v) => live({ ribbon: { color: v } })} /></Row>
+                  <Row label="Alpha"><NumberField value={e.ribbon.alpha} step={0.05} min={0} max={1} onChange={(v) => live({ ribbon: { alpha: v } })} onCommit={onCommit} /></Row>
+                  <TexturePicker value={e.ribbon.texture} onChange={(t) => onPatch({ ribbon: { texture: t } })} onError={onError} />
                 </>
               )}
             </Section>
@@ -184,7 +229,7 @@ function Bursts({ bursts, onChange }: { bursts: { time: number; count: number }[
 
 function TexturePicker({ value, onChange, onError }: { value: string; onChange: (t: string) => void; onError: (m: string) => void }) {
   const builtins = listBuiltinTextures();
-  const custom = !builtins.some((b) => b.name === value);
+  const custom = !!value && !builtins.some((b) => b.name === value);
   return (
     <div className="textures">
       {builtins.map((t) => (

@@ -1,10 +1,12 @@
-import type { Effect, SpineVersion } from "./schema.js";
+import { emitterSprites, type Effect, type SpineVersion } from "./schema.js";
 import { simulate, type PState, type Simulation } from "./simulate.js";
 import { assignLanes, type Lane } from "./lanes.js";
 import { builtinTexture, type Texture, type TextureResolver } from "./textures.js";
 import { buildAtlas, type AtlasResult } from "./atlas.js";
 import { DEG } from "./math.js";
 import { emitterOffset, emitterOrigin } from "./motion.js";
+import { ribbonTopology, ribbonVertices } from "./ribbon.js";
+import { hexToRgb } from "./math.js";
 
 export interface BakeOptions {
   version: SpineVersion;
@@ -59,8 +61,8 @@ export function bakeSimulation(effect: Effect, sim: Simulation, opts: BakeOption
   const resolve = opts.resolveTexture ?? builtinTexture;
   const loadTexture = (ref: string): Texture => { const t = resolve(ref); return pre ? { ...t, name: pre + t.name } : t; };
   const textures = new Map<string, Texture>();
-  for (const e of effect.emitters) if (e.enabled) {
-    const t = loadTexture(e.texture);
+  for (const e of effect.emitters) if (e.enabled) for (const ref of [...emitterSprites(e), ...(e.ribbon.enabled ? [e.ribbon.texture] : [])]) {
+    const t = loadTexture(ref);
     textures.set(t.name, t);
   }
   const atlas = buildAtlas(name, [...textures.values()]);
@@ -70,13 +72,15 @@ export function bakeSimulation(effect: Effect, sim: Simulation, opts: BakeOption
   const skinAttachments: Record<string, Record<string, unknown>> = {};
   const animBones: Record<string, Record<string, Key[]>> = {};
   const animSlots: Record<string, Record<string, Key[]>> = {};
+  /** slot → attachment → deform keys (ribbons) */
+  const animDeform: Record<string, Record<string, Key[]>> = {};
   const stats: BakeStats = { frames: N, durationSeconds: round(length), particles: 0, lanes: 0, droppedParticles: 0, keys: 0, keysBeforeReduction: 0, perEmitter: [] };
   let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
 
   for (const track of sim.emitters) {
     const e = track.emitter;
     if (!e.enabled) continue;
-    const tex = loadTexture(e.texture);
+    const texs = emitterSprites(e).map(loadTexture);
     const { lanes, dropped } = assignLanes(track, N, sim.loop);
     stats.particles += track.particles.length - dropped;
     stats.lanes += lanes.length;
@@ -106,16 +110,21 @@ export function bakeSimulation(effect: Effect, sim: Simulation, opts: BakeOption
       const dx = s.x - ox, dy = s.y - oy;
       return { ...s, x: (dx * cos - dy * sin) / tf.scale, y: (dx * sin + dy * cos) / tf.scale, rotation: s.rotation - tf.rotation, size: s.size / tf.scale, sizeY: s.sizeY / tf.scale };
     };
-    const texMax = Math.max(tex.image.width, tex.image.height);
+    // particle size maps to the longest edge of each frame; frames are sized against the first one's basis
+    const texMax = Math.max(texs[0].image.width, texs[0].image.height);
     // pivot: the bone sits at the sprite origin, so the region is offset from it
     const [px, py] = e.pivot;
-    const offset = nz({ x: r2((0.5 - px) * tex.image.width), y: r2((py - 0.5) * tex.image.height) });
+    const regions = Object.fromEntries(texs.map((tex) => {
+      const k = texMax / Math.max(tex.image.width, tex.image.height);
+      const w = tex.image.width * k, h = tex.image.height * k;
+      return [tex.name, { ...nz({ x: r2((0.5 - px) * w), y: r2((py - 0.5) * h) }), width: r2(w), height: r2(h) }];
+    }));
 
     lanes.forEach((lane, li) => {
       const lname = `${ename}_p${li}`;
       bones.push({ name: lname, parent: local ? ename : "root" });
       slots.push({ name: lname, bone: lname, ...(e.blend !== "normal" ? { blend: e.blend } : {}) });
-      skinAttachments[lname] = { [tex.name]: { ...offset, width: tex.image.width, height: tex.image.height } };
+      skinAttachments[lname] = regions;
 
       const ch = bakeLane(lane, sim.loop, N, fps, (s, f) => {
         const b = toBone(s, f);
@@ -134,7 +143,7 @@ export function bakeSimulation(effect: Effect, sim: Simulation, opts: BakeOption
         scale: ch.s.map(({ time, v, stepped }) => key(time, stepped, { x: r4(v[0] / 100), y: r4(v[1] / 100) })),
       };
       animSlots[lname] = {
-        attachment: ch.att.map(({ time, on }) => ({ time: round(time), name: on ? tex.name : null })),
+        attachment: ch.att.map(({ time, frame }) => ({ time: round(time), name: frame >= 0 ? texs[frame].name : null })),
         [v3 ? "color" : "rgba"]: ch.c.map(({ time, v, stepped }) => key(time, stepped, { color: hex(v) })),
       };
       stats.keys += ch.t.length + ch.r.length + ch.s.length + ch.c.length + ch.att.length;
@@ -144,6 +153,37 @@ export function bakeSimulation(effect: Effect, sim: Simulation, opts: BakeOption
       const h = Math.max(s.size, s.sizeY) / 2;
       minX = Math.min(minX, s.x - h); maxX = Math.max(maxX, s.x + h);
       minY = Math.min(minY, s.y - h); maxY = Math.max(maxY, s.y + h);
+    }
+
+    // ribbon: one mesh on a root-level bone, its vertices keyed every frame
+    if (e.ribbon.enabled) {
+      const rname = `${ename}_ribbon`;
+      const rtex = loadTexture(e.ribbon.texture);
+      const topo = ribbonTopology(e.ribbon.segments);
+      const last = sim.loop ? N : N - 1;
+      const times: number[] = [], frames: number[][] = [];
+      for (let f = 0; f <= last; f++) { times.push(f / fps); frames.push(ribbonVertices(e, sim.period, f / fps, sim.loop)); }
+      const setup = frames[0];
+      const keep = reduce(times, frames, tol);
+      bones.push({ name: rname, parent: "root" });
+      const [cr, cg, cb] = hexToRgb(e.ribbon.color);
+      slots.push({ name: rname, bone: rname, color: hex([cr * 255, cg * 255, cb * 255, e.ribbon.alpha * 255]), attachment: rtex.name, ...(e.blend !== "normal" ? { blend: e.blend } : {}) });
+      skinAttachments[rname] = {
+        [rtex.name]: { type: "mesh", uvs: topo.uvs.map(r4), triangles: topo.triangles, vertices: setup.map(r2), hull: topo.hull, width: rtex.image.width, height: rtex.image.height },
+      };
+      animDeform[rname] = {
+        [rtex.name]: keep.map((i) => {
+          const delta = frames[i].map((v, k) => r2(v - setup[k]));
+          return delta.every((d) => d === 0) ? { time: round(times[i]) } : { time: round(times[i]), offset: 0, vertices: delta };
+        }),
+      };
+      stats.lanes += 1;
+      stats.keys += keep.length;
+      stats.keysBeforeReduction += times.length;
+      for (const fv of frames) for (let k = 0; k < fv.length; k += 2) {
+        minX = Math.min(minX, fv[k]); maxX = Math.max(maxX, fv[k]);
+        minY = Math.min(minY, fv[k + 1]); maxY = Math.max(maxY, fv[k + 1]);
+      }
     }
   }
   if (!isFinite(minX)) minX = minY = maxX = maxY = 0;
@@ -160,13 +200,24 @@ export function bakeSimulation(effect: Effect, sim: Simulation, opts: BakeOption
     bones,
     slots,
     skins: [{ name: "default", attachments: skinAttachments }],
-    animations: { [animName]: { slots: animSlots, bones: animBones } },
+    animations: {
+      [animName]: {
+        slots: animSlots, bones: animBones,
+        // deform keys: 3.8/4.0 "deform" { skin: { slot: { attachment: keys } } }, 4.1+ "attachments" { … { attachment: { deform: keys } } }
+        ...(Object.keys(animDeform).length
+          ? v3 || opts.version === "4.0"
+            ? { deform: { default: animDeform } }
+            : { attachments: { default: Object.fromEntries(Object.entries(animDeform).map(([s, atts]) => [s, Object.fromEntries(Object.entries(atts).map(([a, k]) => [a, { deform: k }]))])) } }
+          : {}),
+      },
+    },
   };
   return { json, atlas, stats };
 }
 
 interface ChKey { time: number; v: number[]; stepped: boolean }
-interface LaneChannels { t: ChKey[]; r: ChKey[]; s: ChKey[]; c: ChKey[]; att: { time: number; on: boolean }[]; raw: number }
+/** att: attachment changes; frame = sprite index, -1 = hidden */
+interface LaneChannels { t: ChKey[]; r: ChKey[]; s: ChKey[]; c: ChKey[]; att: { time: number; frame: number }[]; raw: number }
 /** `f` is the absolute frame (may be N when closing a loop — same state as frame 0, but bone-space conversion uses time). */
 type Extract = (s: PState, f: number) => { t: number[]; r: number[]; s: number[]; c: number[] };
 
@@ -201,15 +252,17 @@ function bakeLane(lane: Lane, loop: boolean, N: number, fps: number, ex: Extract
     }
     for (let f = seg.start; f <= seg.end; f++) visible[f] = true;
   }
-  // attachment on/off transitions
-  let prev: boolean | null = null;
+  // attachment changes: shown / hidden, and which sprite frame
+  const shown = (f: number) => (visible[f] ? lane.state[f]!.frame : -1);
+  let prev: number | null = null;
   for (let f = 0; f < N; f++) {
-    if (visible[f] !== prev) out.att.push({ time: f / fps, on: visible[f] });
-    prev = visible[f];
+    const cur = shown(f);
+    if (cur !== prev) out.att.push({ time: f / fps, frame: cur });
+    prev = cur;
   }
   // Spine's animation length is the last key time: pin it to the loop length / last frame.
   const end = loop ? N / fps : (N - 1) / fps;
-  if (out.att[out.att.length - 1].time < end - 1e-9) out.att.push({ time: end, on: loop ? visible[0] : false });
+  if (out.att[out.att.length - 1].time < end - 1e-9) out.att.push({ time: end, frame: loop ? shown(0) : -1 });
   if (out.t.length === 0) {
     const zero = { time: 0, v: [0, 0], stepped: false };
     out.t.push(zero); out.r.push({ ...zero, v: [0] }); out.s.push({ ...zero, v: [0, 0] }); out.c.push({ ...zero, v: [255, 255, 255, 0] });

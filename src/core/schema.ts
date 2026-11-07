@@ -59,6 +59,20 @@ export const Emitter = z.object({
   pivot: Point.default([0.5, 0.5]),
   /** false: ignore colour/gradient tint (keep the texture's own colours). */
   colorize: z.boolean().default(true),
+  /** Several sprites per emitter. Non-empty `frames` replaces `texture`. */
+  sprite: z
+    .object({
+      frames: z.array(z.string()).default([]),
+      /** random: each particle keeps one random frame. flipbook: frames play in order over the particle's life */
+      mode: z.enum(["random", "flipbook"]).default("flipbook"),
+      /** flipbook frames per second; 0 = play the frames once across the particle's lifetime */
+      fps: z.number().min(0).default(12),
+      /** flipbook: wrap around (true) or hold the last frame */
+      loop: z.boolean().default(true),
+      /** flipbook: each particle starts on a random frame */
+      randomStart: z.boolean().default(false),
+    })
+    .prefault({}),
   blend: z.enum(["normal", "additive", "multiply", "screen"]).default("additive"),
   simulationSpace: z.enum(["world", "local"]).default("local"),
   emission: z
@@ -139,8 +153,29 @@ export const Emitter = z.object({
     })
     .prefault({}),
   affectors: z.array(Affector).default([]),
+  /** A smooth textured strip trailing behind the emitter's path (needs motion, or a character trail). */
+  ribbon: z
+    .object({
+      enabled: z.boolean().default(false),
+      /** seconds of path history the strip covers */
+      length: z.number().positive().max(5).default(0.35),
+      /** strip resolution (quads along the length) */
+      segments: z.number().int().min(2).max(64).default(16),
+      /** px at the head */
+      width: z.number().min(0).default(28),
+      /** width multiplier from head (t=0) to tail (t=1) */
+      widthOverLength: Curve.default([[0, 1], [1, 0]]),
+      /** builtin "ribbon" fades along its length; any texture works (u runs head → tail) */
+      texture: z.string().default("ribbon"),
+      color: Hex.default("#ffffff"),
+      alpha: z.number().min(0).max(1).default(1),
+    })
+    .prefault({}),
 });
 export type Emitter = z.infer<typeof Emitter>;
+
+/** The emitter's sprite refs: `sprite.frames` when set, else `[texture]`. PState.frame indexes this list. */
+export const emitterSprites = (e: Pick<Emitter, "texture" | "sprite">): string[] => (e.sprite?.frames?.length ? e.sprite.frames : [e.texture]);
 
 /** How an effect is bound into a character skeleton (see merge.ts). */
 export const Attachment = z.object({

@@ -8000,9 +8000,9 @@ var init_Animation = __esm({
        * @param cy2 The value for the second Bezier handle.
        * @param time2 The time for the second key.
        * @param value2 The value for the second key. */
-      setBezier(bezier, frame, value, time1, value1, cx1, cy1, cx2, cy2, time22, value2) {
+      setBezier(bezier2, frame, value, time1, value1, cx1, cy1, cx2, cy2, time22, value2) {
         let curves = this.curves;
-        let i2 = this.getFrameCount() + bezier * 18;
+        let i2 = this.getFrameCount() + bezier2 * 18;
         if (value == 0)
           curves[frame] = 2 + i2;
         let tmpx = (time1 - cx1 * 2 + cx2) * 0.03, tmpy = (value1 - cy1 * 2 + cy2) * 0.03;
@@ -9629,9 +9629,9 @@ var init_Animation = __esm({
       }
       /** @param value1 Ignored (0 is used for a deform timeline).
        * @param value2 Ignored (1 is used for a deform timeline). */
-      setBezier(bezier, frame, value, time1, value1, cx1, cy1, cx2, cy2, time22, value2) {
+      setBezier(bezier2, frame, value, time1, value1, cx1, cy1, cx2, cy2, time22, value2) {
         let curves = this.curves;
-        let i2 = this.getFrameCount() + bezier * 18;
+        let i2 = this.getFrameCount() + bezier2 * 18;
         if (value == 0)
           curves[frame] = 2 + i2;
         let tmpx = (time1 - cx1 * 2 + cx2) * 0.03, tmpy = cy2 * 0.03 - cy1 * 0.06;
@@ -15317,17 +15317,17 @@ var init_TransformConstraintData = __esm({
 // node_modules/spine-core-41/dist/SkeletonBinary.js
 function readTimeline1(input2, timeline, scale) {
   let time3 = input2.readFloat(), value = input2.readFloat() * scale;
-  for (let frame = 0, bezier = 0, frameLast = timeline.getFrameCount() - 1; ; frame++) {
+  for (let frame = 0, bezier2 = 0, frameLast = timeline.getFrameCount() - 1; ; frame++) {
     timeline.setFrame(frame, time3, value);
     if (frame == frameLast)
       break;
     let time22 = input2.readFloat(), value2 = input2.readFloat() * scale;
     switch (input2.readByte()) {
-      case CURVE_STEPPED:
+      case CURVE_STEPPED2:
         timeline.setStepped(frame);
         break;
-      case CURVE_BEZIER:
-        setBezier(input2, timeline, bezier++, frame, 0, time3, time22, value, value2, scale);
+      case CURVE_BEZIER2:
+        setBezier(input2, timeline, bezier2++, frame, 0, time3, time22, value, value2, scale);
     }
     time3 = time22;
     value = value2;
@@ -15336,18 +15336,18 @@ function readTimeline1(input2, timeline, scale) {
 }
 function readTimeline2(input2, timeline, scale) {
   let time3 = input2.readFloat(), value1 = input2.readFloat() * scale, value2 = input2.readFloat() * scale;
-  for (let frame = 0, bezier = 0, frameLast = timeline.getFrameCount() - 1; ; frame++) {
+  for (let frame = 0, bezier2 = 0, frameLast = timeline.getFrameCount() - 1; ; frame++) {
     timeline.setFrame(frame, time3, value1, value2);
     if (frame == frameLast)
       break;
     let time22 = input2.readFloat(), nvalue1 = input2.readFloat() * scale, nvalue2 = input2.readFloat() * scale;
     switch (input2.readByte()) {
-      case CURVE_STEPPED:
+      case CURVE_STEPPED2:
         timeline.setStepped(frame);
         break;
-      case CURVE_BEZIER:
-        setBezier(input2, timeline, bezier++, frame, 0, time3, time22, value1, nvalue1, scale);
-        setBezier(input2, timeline, bezier++, frame, 1, time3, time22, value2, nvalue2, scale);
+      case CURVE_BEZIER2:
+        setBezier(input2, timeline, bezier2++, frame, 0, time3, time22, value1, nvalue1, scale);
+        setBezier(input2, timeline, bezier2++, frame, 1, time3, time22, value2, nvalue2, scale);
     }
     time3 = time22;
     value1 = nvalue1;
@@ -15355,10 +15355,10 @@ function readTimeline2(input2, timeline, scale) {
   }
   return timeline;
 }
-function setBezier(input2, timeline, bezier, frame, value, time1, time22, value1, value2, scale) {
-  timeline.setBezier(bezier, frame, value, time1, value1, input2.readFloat(), input2.readFloat() * scale, input2.readFloat(), input2.readFloat() * scale, time22, value2);
+function setBezier(input2, timeline, bezier2, frame, value, time1, time22, value1, value2, scale) {
+  timeline.setBezier(bezier2, frame, value, time1, value1, input2.readFloat(), input2.readFloat() * scale, input2.readFloat(), input2.readFloat() * scale, time22, value2);
 }
-var SkeletonBinary, BinaryInput, LinkedMesh, Vertices, AttachmentType, BONE_ROTATE, BONE_TRANSLATE, BONE_TRANSLATEX, BONE_TRANSLATEY, BONE_SCALE, BONE_SCALEX, BONE_SCALEY, BONE_SHEAR, BONE_SHEARX, BONE_SHEARY, SLOT_ATTACHMENT, SLOT_RGBA, SLOT_RGB, SLOT_RGBA2, SLOT_RGB2, SLOT_ALPHA, ATTACHMENT_DEFORM, ATTACHMENT_SEQUENCE, PATH_POSITION, PATH_SPACING, PATH_MIX, CURVE_STEPPED, CURVE_BEZIER;
+var SkeletonBinary, BinaryInput2, LinkedMesh, Vertices, AttachmentType, BONE_ROTATE, BONE_TRANSLATE, BONE_TRANSLATEX, BONE_TRANSLATEY, BONE_SCALE, BONE_SCALEX, BONE_SCALEY, BONE_SHEAR, BONE_SHEARX, BONE_SHEARY, SLOT_ATTACHMENT, SLOT_RGBA, SLOT_RGB, SLOT_RGBA2, SLOT_RGB2, SLOT_ALPHA, ATTACHMENT_DEFORM, ATTACHMENT_SEQUENCE, PATH_POSITION, PATH_SPACING, PATH_MIX, CURVE_STEPPED2, CURVE_BEZIER2;
 var init_SkeletonBinary = __esm({
   "node_modules/spine-core-41/dist/SkeletonBinary.js"() {
     init_Animation();
@@ -15388,7 +15388,7 @@ var init_SkeletonBinary = __esm({
         let scale = this.scale;
         let skeletonData = new SkeletonData();
         skeletonData.name = "";
-        let input2 = new BinaryInput(binary);
+        let input2 = new BinaryInput2(binary);
         let lowHash = input2.readInt32();
         let highHash = input2.readInt32();
         skeletonData.hash = highHash == 0 && lowHash == 0 ? null : highHash.toString(16) + lowHash.toString(16);
@@ -15867,7 +15867,7 @@ var init_SkeletonBinary = __esm({
                 let g = input2.readUnsignedByte() / 255;
                 let b = input2.readUnsignedByte() / 255;
                 let a = input2.readUnsignedByte() / 255;
-                for (let frame = 0, bezier = 0; ; frame++) {
+                for (let frame = 0, bezier2 = 0; ; frame++) {
                   timeline.setFrame(frame, time3, r, g, b, a);
                   if (frame == frameLast)
                     break;
@@ -15877,14 +15877,14 @@ var init_SkeletonBinary = __esm({
                   let b2 = input2.readUnsignedByte() / 255;
                   let a2 = input2.readUnsignedByte() / 255;
                   switch (input2.readByte()) {
-                    case CURVE_STEPPED:
+                    case CURVE_STEPPED2:
                       timeline.setStepped(frame);
                       break;
-                    case CURVE_BEZIER:
-                      setBezier(input2, timeline, bezier++, frame, 0, time3, time22, r, r22, 1);
-                      setBezier(input2, timeline, bezier++, frame, 1, time3, time22, g, g2, 1);
-                      setBezier(input2, timeline, bezier++, frame, 2, time3, time22, b, b2, 1);
-                      setBezier(input2, timeline, bezier++, frame, 3, time3, time22, a, a2, 1);
+                    case CURVE_BEZIER2:
+                      setBezier(input2, timeline, bezier2++, frame, 0, time3, time22, r, r22, 1);
+                      setBezier(input2, timeline, bezier2++, frame, 1, time3, time22, g, g2, 1);
+                      setBezier(input2, timeline, bezier2++, frame, 2, time3, time22, b, b2, 1);
+                      setBezier(input2, timeline, bezier2++, frame, 3, time3, time22, a, a2, 1);
                   }
                   time3 = time22;
                   r = r22;
@@ -15902,7 +15902,7 @@ var init_SkeletonBinary = __esm({
                 let r = input2.readUnsignedByte() / 255;
                 let g = input2.readUnsignedByte() / 255;
                 let b = input2.readUnsignedByte() / 255;
-                for (let frame = 0, bezier = 0; ; frame++) {
+                for (let frame = 0, bezier2 = 0; ; frame++) {
                   timeline.setFrame(frame, time3, r, g, b);
                   if (frame == frameLast)
                     break;
@@ -15911,13 +15911,13 @@ var init_SkeletonBinary = __esm({
                   let g2 = input2.readUnsignedByte() / 255;
                   let b2 = input2.readUnsignedByte() / 255;
                   switch (input2.readByte()) {
-                    case CURVE_STEPPED:
+                    case CURVE_STEPPED2:
                       timeline.setStepped(frame);
                       break;
-                    case CURVE_BEZIER:
-                      setBezier(input2, timeline, bezier++, frame, 0, time3, time22, r, r22, 1);
-                      setBezier(input2, timeline, bezier++, frame, 1, time3, time22, g, g2, 1);
-                      setBezier(input2, timeline, bezier++, frame, 2, time3, time22, b, b2, 1);
+                    case CURVE_BEZIER2:
+                      setBezier(input2, timeline, bezier2++, frame, 0, time3, time22, r, r22, 1);
+                      setBezier(input2, timeline, bezier2++, frame, 1, time3, time22, g, g2, 1);
+                      setBezier(input2, timeline, bezier2++, frame, 2, time3, time22, b, b2, 1);
                   }
                   time3 = time22;
                   r = r22;
@@ -15938,7 +15938,7 @@ var init_SkeletonBinary = __esm({
                 let r22 = input2.readUnsignedByte() / 255;
                 let g2 = input2.readUnsignedByte() / 255;
                 let b2 = input2.readUnsignedByte() / 255;
-                for (let frame = 0, bezier = 0; ; frame++) {
+                for (let frame = 0, bezier2 = 0; ; frame++) {
                   timeline.setFrame(frame, time3, r, g, b, a, r22, g2, b2);
                   if (frame == frameLast)
                     break;
@@ -15951,17 +15951,17 @@ var init_SkeletonBinary = __esm({
                   let ng2 = input2.readUnsignedByte() / 255;
                   let nb2 = input2.readUnsignedByte() / 255;
                   switch (input2.readByte()) {
-                    case CURVE_STEPPED:
+                    case CURVE_STEPPED2:
                       timeline.setStepped(frame);
                       break;
-                    case CURVE_BEZIER:
-                      setBezier(input2, timeline, bezier++, frame, 0, time3, time22, r, nr, 1);
-                      setBezier(input2, timeline, bezier++, frame, 1, time3, time22, g, ng, 1);
-                      setBezier(input2, timeline, bezier++, frame, 2, time3, time22, b, nb, 1);
-                      setBezier(input2, timeline, bezier++, frame, 3, time3, time22, a, na, 1);
-                      setBezier(input2, timeline, bezier++, frame, 4, time3, time22, r22, nr2, 1);
-                      setBezier(input2, timeline, bezier++, frame, 5, time3, time22, g2, ng2, 1);
-                      setBezier(input2, timeline, bezier++, frame, 6, time3, time22, b2, nb2, 1);
+                    case CURVE_BEZIER2:
+                      setBezier(input2, timeline, bezier2++, frame, 0, time3, time22, r, nr, 1);
+                      setBezier(input2, timeline, bezier2++, frame, 1, time3, time22, g, ng, 1);
+                      setBezier(input2, timeline, bezier2++, frame, 2, time3, time22, b, nb, 1);
+                      setBezier(input2, timeline, bezier2++, frame, 3, time3, time22, a, na, 1);
+                      setBezier(input2, timeline, bezier2++, frame, 4, time3, time22, r22, nr2, 1);
+                      setBezier(input2, timeline, bezier2++, frame, 5, time3, time22, g2, ng2, 1);
+                      setBezier(input2, timeline, bezier2++, frame, 6, time3, time22, b2, nb2, 1);
                   }
                   time3 = time22;
                   r = nr;
@@ -15985,7 +15985,7 @@ var init_SkeletonBinary = __esm({
                 let r22 = input2.readUnsignedByte() / 255;
                 let g2 = input2.readUnsignedByte() / 255;
                 let b2 = input2.readUnsignedByte() / 255;
-                for (let frame = 0, bezier = 0; ; frame++) {
+                for (let frame = 0, bezier2 = 0; ; frame++) {
                   timeline.setFrame(frame, time3, r, g, b, r22, g2, b2);
                   if (frame == frameLast)
                     break;
@@ -15997,16 +15997,16 @@ var init_SkeletonBinary = __esm({
                   let ng2 = input2.readUnsignedByte() / 255;
                   let nb2 = input2.readUnsignedByte() / 255;
                   switch (input2.readByte()) {
-                    case CURVE_STEPPED:
+                    case CURVE_STEPPED2:
                       timeline.setStepped(frame);
                       break;
-                    case CURVE_BEZIER:
-                      setBezier(input2, timeline, bezier++, frame, 0, time3, time22, r, nr, 1);
-                      setBezier(input2, timeline, bezier++, frame, 1, time3, time22, g, ng, 1);
-                      setBezier(input2, timeline, bezier++, frame, 2, time3, time22, b, nb, 1);
-                      setBezier(input2, timeline, bezier++, frame, 3, time3, time22, r22, nr2, 1);
-                      setBezier(input2, timeline, bezier++, frame, 4, time3, time22, g2, ng2, 1);
-                      setBezier(input2, timeline, bezier++, frame, 5, time3, time22, b2, nb2, 1);
+                    case CURVE_BEZIER2:
+                      setBezier(input2, timeline, bezier2++, frame, 0, time3, time22, r, nr, 1);
+                      setBezier(input2, timeline, bezier2++, frame, 1, time3, time22, g, ng, 1);
+                      setBezier(input2, timeline, bezier2++, frame, 2, time3, time22, b, nb, 1);
+                      setBezier(input2, timeline, bezier2++, frame, 3, time3, time22, r22, nr2, 1);
+                      setBezier(input2, timeline, bezier2++, frame, 4, time3, time22, g2, ng2, 1);
+                      setBezier(input2, timeline, bezier2++, frame, 5, time3, time22, b2, nb2, 1);
                   }
                   time3 = time22;
                   r = nr;
@@ -16022,18 +16022,18 @@ var init_SkeletonBinary = __esm({
               case SLOT_ALPHA: {
                 let timeline = new AlphaTimeline(frameCount2, input2.readInt(true), slotIndex);
                 let time3 = input2.readFloat(), a = input2.readUnsignedByte() / 255;
-                for (let frame = 0, bezier = 0; ; frame++) {
+                for (let frame = 0, bezier2 = 0; ; frame++) {
                   timeline.setFrame(frame, time3, a);
                   if (frame == frameLast)
                     break;
                   let time22 = input2.readFloat();
                   let a2 = input2.readUnsignedByte() / 255;
                   switch (input2.readByte()) {
-                    case CURVE_STEPPED:
+                    case CURVE_STEPPED2:
                       timeline.setStepped(frame);
                       break;
-                    case CURVE_BEZIER:
-                      setBezier(input2, timeline, bezier++, frame, 0, time3, time22, a, a2, 1);
+                    case CURVE_BEZIER2:
+                      setBezier(input2, timeline, bezier2++, frame, 0, time3, time22, a, a2, 1);
                   }
                   time3 = time22;
                   a = a2;
@@ -16084,18 +16084,18 @@ var init_SkeletonBinary = __esm({
           let index = input2.readInt(true), frameCount2 = input2.readInt(true), frameLast = frameCount2 - 1;
           let timeline = new IkConstraintTimeline(frameCount2, input2.readInt(true), index);
           let time3 = input2.readFloat(), mix = input2.readFloat(), softness = input2.readFloat() * scale;
-          for (let frame = 0, bezier = 0; ; frame++) {
+          for (let frame = 0, bezier2 = 0; ; frame++) {
             timeline.setFrame(frame, time3, mix, softness, input2.readByte(), input2.readBoolean(), input2.readBoolean());
             if (frame == frameLast)
               break;
             let time22 = input2.readFloat(), mix2 = input2.readFloat(), softness2 = input2.readFloat() * scale;
             switch (input2.readByte()) {
-              case CURVE_STEPPED:
+              case CURVE_STEPPED2:
                 timeline.setStepped(frame);
                 break;
-              case CURVE_BEZIER:
-                setBezier(input2, timeline, bezier++, frame, 0, time3, time22, mix, mix2, 1);
-                setBezier(input2, timeline, bezier++, frame, 1, time3, time22, softness, softness2, scale);
+              case CURVE_BEZIER2:
+                setBezier(input2, timeline, bezier2++, frame, 0, time3, time22, mix, mix2, 1);
+                setBezier(input2, timeline, bezier2++, frame, 1, time3, time22, softness, softness2, scale);
             }
             time3 = time22;
             mix = mix2;
@@ -16107,22 +16107,22 @@ var init_SkeletonBinary = __esm({
           let index = input2.readInt(true), frameCount2 = input2.readInt(true), frameLast = frameCount2 - 1;
           let timeline = new TransformConstraintTimeline(frameCount2, input2.readInt(true), index);
           let time3 = input2.readFloat(), mixRotate = input2.readFloat(), mixX = input2.readFloat(), mixY = input2.readFloat(), mixScaleX = input2.readFloat(), mixScaleY = input2.readFloat(), mixShearY = input2.readFloat();
-          for (let frame = 0, bezier = 0; ; frame++) {
+          for (let frame = 0, bezier2 = 0; ; frame++) {
             timeline.setFrame(frame, time3, mixRotate, mixX, mixY, mixScaleX, mixScaleY, mixShearY);
             if (frame == frameLast)
               break;
             let time22 = input2.readFloat(), mixRotate2 = input2.readFloat(), mixX2 = input2.readFloat(), mixY2 = input2.readFloat(), mixScaleX2 = input2.readFloat(), mixScaleY2 = input2.readFloat(), mixShearY2 = input2.readFloat();
             switch (input2.readByte()) {
-              case CURVE_STEPPED:
+              case CURVE_STEPPED2:
                 timeline.setStepped(frame);
                 break;
-              case CURVE_BEZIER:
-                setBezier(input2, timeline, bezier++, frame, 0, time3, time22, mixRotate, mixRotate2, 1);
-                setBezier(input2, timeline, bezier++, frame, 1, time3, time22, mixX, mixX2, 1);
-                setBezier(input2, timeline, bezier++, frame, 2, time3, time22, mixY, mixY2, 1);
-                setBezier(input2, timeline, bezier++, frame, 3, time3, time22, mixScaleX, mixScaleX2, 1);
-                setBezier(input2, timeline, bezier++, frame, 4, time3, time22, mixScaleY, mixScaleY2, 1);
-                setBezier(input2, timeline, bezier++, frame, 5, time3, time22, mixShearY, mixShearY2, 1);
+              case CURVE_BEZIER2:
+                setBezier(input2, timeline, bezier2++, frame, 0, time3, time22, mixRotate, mixRotate2, 1);
+                setBezier(input2, timeline, bezier2++, frame, 1, time3, time22, mixX, mixX2, 1);
+                setBezier(input2, timeline, bezier2++, frame, 2, time3, time22, mixY, mixY2, 1);
+                setBezier(input2, timeline, bezier2++, frame, 3, time3, time22, mixScaleX, mixScaleX2, 1);
+                setBezier(input2, timeline, bezier2++, frame, 4, time3, time22, mixScaleY, mixScaleY2, 1);
+                setBezier(input2, timeline, bezier2++, frame, 5, time3, time22, mixShearY, mixShearY2, 1);
             }
             time3 = time22;
             mixRotate = mixRotate2;
@@ -16148,19 +16148,19 @@ var init_SkeletonBinary = __esm({
               case PATH_MIX:
                 let timeline = new PathConstraintMixTimeline(input2.readInt(true), input2.readInt(true), index);
                 let time3 = input2.readFloat(), mixRotate = input2.readFloat(), mixX = input2.readFloat(), mixY = input2.readFloat();
-                for (let frame = 0, bezier = 0, frameLast = timeline.getFrameCount() - 1; ; frame++) {
+                for (let frame = 0, bezier2 = 0, frameLast = timeline.getFrameCount() - 1; ; frame++) {
                   timeline.setFrame(frame, time3, mixRotate, mixX, mixY);
                   if (frame == frameLast)
                     break;
                   let time22 = input2.readFloat(), mixRotate2 = input2.readFloat(), mixX2 = input2.readFloat(), mixY2 = input2.readFloat();
                   switch (input2.readByte()) {
-                    case CURVE_STEPPED:
+                    case CURVE_STEPPED2:
                       timeline.setStepped(frame);
                       break;
-                    case CURVE_BEZIER:
-                      setBezier(input2, timeline, bezier++, frame, 0, time3, time22, mixRotate, mixRotate2, 1);
-                      setBezier(input2, timeline, bezier++, frame, 1, time3, time22, mixX, mixX2, 1);
-                      setBezier(input2, timeline, bezier++, frame, 2, time3, time22, mixY, mixY2, 1);
+                    case CURVE_BEZIER2:
+                      setBezier(input2, timeline, bezier2++, frame, 0, time3, time22, mixRotate, mixRotate2, 1);
+                      setBezier(input2, timeline, bezier2++, frame, 1, time3, time22, mixX, mixX2, 1);
+                      setBezier(input2, timeline, bezier2++, frame, 2, time3, time22, mixY, mixY2, 1);
                   }
                   time3 = time22;
                   mixRotate = mixRotate2;
@@ -16192,7 +16192,7 @@ var init_SkeletonBinary = __esm({
                   let bezierCount = input2.readInt(true);
                   let timeline = new DeformTimeline(frameCount2, bezierCount, slotIndex, vertexAttachment);
                   let time3 = input2.readFloat();
-                  for (let frame = 0, bezier = 0; ; frame++) {
+                  for (let frame = 0, bezier2 = 0; ; frame++) {
                     let deform;
                     let end = input2.readInt(true);
                     if (end == 0)
@@ -16218,11 +16218,11 @@ var init_SkeletonBinary = __esm({
                       break;
                     let time22 = input2.readFloat();
                     switch (input2.readByte()) {
-                      case CURVE_STEPPED:
+                      case CURVE_STEPPED2:
                         timeline.setStepped(frame);
                         break;
-                      case CURVE_BEZIER:
-                        setBezier(input2, timeline, bezier++, frame, 0, time3, time22, 0, 1, 1);
+                      case CURVE_BEZIER2:
+                        setBezier(input2, timeline, bezier2++, frame, 0, time3, time22, 0, 1, 1);
                     }
                     time3 = time22;
                   }
@@ -16294,7 +16294,7 @@ var init_SkeletonBinary = __esm({
         return new Animation(name, timelines, duration3);
       }
     };
-    BinaryInput = class {
+    BinaryInput2 = class {
       strings;
       index;
       buffer;
@@ -16435,8 +16435,8 @@ var init_SkeletonBinary = __esm({
     PATH_POSITION = 0;
     PATH_SPACING = 1;
     PATH_MIX = 2;
-    CURVE_STEPPED = 1;
-    CURVE_BEZIER = 2;
+    CURVE_STEPPED2 = 1;
+    CURVE_BEZIER2 = 2;
   }
 });
 
@@ -17142,18 +17142,18 @@ function readTimeline12(keys, timeline, defaultValue, scale) {
   let keyMap = keys[0];
   let time3 = getValue(keyMap, "time", 0);
   let value = getValue(keyMap, "value", defaultValue) * scale;
-  let bezier = 0;
+  let bezier2 = 0;
   for (let frame = 0; ; frame++) {
     timeline.setFrame(frame, time3, value);
     let nextMap = keys[frame + 1];
     if (!nextMap) {
-      timeline.shrink(bezier);
+      timeline.shrink(bezier2);
       return timeline;
     }
     let time22 = getValue(nextMap, "time", 0);
     let value2 = getValue(nextMap, "value", defaultValue) * scale;
     if (keyMap.curve)
-      bezier = readCurve(keyMap.curve, timeline, bezier, frame, 0, time3, time22, value, value2, scale);
+      bezier2 = readCurve(keyMap.curve, timeline, bezier2, frame, 0, time3, time22, value, value2, scale);
     time3 = time22;
     value = value2;
     keyMap = nextMap;
@@ -17164,12 +17164,12 @@ function readTimeline22(keys, timeline, name1, name2, defaultValue, scale) {
   let time3 = getValue(keyMap, "time", 0);
   let value1 = getValue(keyMap, name1, defaultValue) * scale;
   let value2 = getValue(keyMap, name2, defaultValue) * scale;
-  let bezier = 0;
+  let bezier2 = 0;
   for (let frame = 0; ; frame++) {
     timeline.setFrame(frame, time3, value1, value2);
     let nextMap = keys[frame + 1];
     if (!nextMap) {
-      timeline.shrink(bezier);
+      timeline.shrink(bezier2);
       return timeline;
     }
     let time22 = getValue(nextMap, "time", 0);
@@ -17177,8 +17177,8 @@ function readTimeline22(keys, timeline, name1, name2, defaultValue, scale) {
     let nvalue2 = getValue(nextMap, name2, defaultValue) * scale;
     let curve = keyMap.curve;
     if (curve) {
-      bezier = readCurve(curve, timeline, bezier, frame, 0, time3, time22, value1, nvalue1, scale);
-      bezier = readCurve(curve, timeline, bezier, frame, 1, time3, time22, value2, nvalue2, scale);
+      bezier2 = readCurve(curve, timeline, bezier2, frame, 0, time3, time22, value1, nvalue1, scale);
+      bezier2 = readCurve(curve, timeline, bezier2, frame, 1, time3, time22, value2, nvalue2, scale);
     }
     time3 = time22;
     value1 = nvalue1;
@@ -17186,18 +17186,18 @@ function readTimeline22(keys, timeline, name1, name2, defaultValue, scale) {
     keyMap = nextMap;
   }
 }
-function readCurve(curve, timeline, bezier, frame, value, time1, time22, value1, value2, scale) {
+function readCurve(curve, timeline, bezier2, frame, value, time1, time22, value1, value2, scale) {
   if (curve == "stepped") {
     timeline.setStepped(frame);
-    return bezier;
+    return bezier2;
   }
   let i2 = value << 2;
   let cx1 = curve[i2];
   let cy1 = curve[i2 + 1] * scale;
   let cx2 = curve[i2 + 2];
   let cy2 = curve[i2 + 3] * scale;
-  timeline.setBezier(bezier, frame, value, time1, value1, cx1, cy1, cx2, cy2, time22, value2);
-  return bezier + 1;
+  timeline.setBezier(bezier2, frame, value, time1, value1, cx1, cy1, cx2, cy2, time22, value2);
+  return bezier2 + 1;
 }
 function getValue(map2, property, defaultValue) {
   return map2[property] !== void 0 ? map2[property] : defaultValue;
@@ -17649,21 +17649,21 @@ var init_SkeletonJson = __esm({
                 let keyMap = timelineMap[0];
                 let time3 = getValue(keyMap, "time", 0);
                 let color = Color.fromString(keyMap.color);
-                for (let frame = 0, bezier = 0; ; frame++) {
+                for (let frame = 0, bezier2 = 0; ; frame++) {
                   timeline.setFrame(frame, time3, color.r, color.g, color.b, color.a);
                   let nextMap = timelineMap[frame + 1];
                   if (!nextMap) {
-                    timeline.shrink(bezier);
+                    timeline.shrink(bezier2);
                     break;
                   }
                   let time22 = getValue(nextMap, "time", 0);
                   let newColor = Color.fromString(nextMap.color);
                   let curve = keyMap.curve;
                   if (curve) {
-                    bezier = readCurve(curve, timeline, bezier, frame, 0, time3, time22, color.r, newColor.r, 1);
-                    bezier = readCurve(curve, timeline, bezier, frame, 1, time3, time22, color.g, newColor.g, 1);
-                    bezier = readCurve(curve, timeline, bezier, frame, 2, time3, time22, color.b, newColor.b, 1);
-                    bezier = readCurve(curve, timeline, bezier, frame, 3, time3, time22, color.a, newColor.a, 1);
+                    bezier2 = readCurve(curve, timeline, bezier2, frame, 0, time3, time22, color.r, newColor.r, 1);
+                    bezier2 = readCurve(curve, timeline, bezier2, frame, 1, time3, time22, color.g, newColor.g, 1);
+                    bezier2 = readCurve(curve, timeline, bezier2, frame, 2, time3, time22, color.b, newColor.b, 1);
+                    bezier2 = readCurve(curve, timeline, bezier2, frame, 3, time3, time22, color.a, newColor.a, 1);
                   }
                   time3 = time22;
                   color = newColor;
@@ -17675,20 +17675,20 @@ var init_SkeletonJson = __esm({
                 let keyMap = timelineMap[0];
                 let time3 = getValue(keyMap, "time", 0);
                 let color = Color.fromString(keyMap.color);
-                for (let frame = 0, bezier = 0; ; frame++) {
+                for (let frame = 0, bezier2 = 0; ; frame++) {
                   timeline.setFrame(frame, time3, color.r, color.g, color.b);
                   let nextMap = timelineMap[frame + 1];
                   if (!nextMap) {
-                    timeline.shrink(bezier);
+                    timeline.shrink(bezier2);
                     break;
                   }
                   let time22 = getValue(nextMap, "time", 0);
                   let newColor = Color.fromString(nextMap.color);
                   let curve = keyMap.curve;
                   if (curve) {
-                    bezier = readCurve(curve, timeline, bezier, frame, 0, time3, time22, color.r, newColor.r, 1);
-                    bezier = readCurve(curve, timeline, bezier, frame, 1, time3, time22, color.g, newColor.g, 1);
-                    bezier = readCurve(curve, timeline, bezier, frame, 2, time3, time22, color.b, newColor.b, 1);
+                    bezier2 = readCurve(curve, timeline, bezier2, frame, 0, time3, time22, color.r, newColor.r, 1);
+                    bezier2 = readCurve(curve, timeline, bezier2, frame, 1, time3, time22, color.g, newColor.g, 1);
+                    bezier2 = readCurve(curve, timeline, bezier2, frame, 2, time3, time22, color.b, newColor.b, 1);
                   }
                   time3 = time22;
                   color = newColor;
@@ -17703,11 +17703,11 @@ var init_SkeletonJson = __esm({
                 let time3 = getValue(keyMap, "time", 0);
                 let color = Color.fromString(keyMap.light);
                 let color2 = Color.fromString(keyMap.dark);
-                for (let frame = 0, bezier = 0; ; frame++) {
+                for (let frame = 0, bezier2 = 0; ; frame++) {
                   timeline.setFrame(frame, time3, color.r, color.g, color.b, color.a, color2.r, color2.g, color2.b);
                   let nextMap = timelineMap[frame + 1];
                   if (!nextMap) {
-                    timeline.shrink(bezier);
+                    timeline.shrink(bezier2);
                     break;
                   }
                   let time22 = getValue(nextMap, "time", 0);
@@ -17715,13 +17715,13 @@ var init_SkeletonJson = __esm({
                   let newColor2 = Color.fromString(nextMap.dark);
                   let curve = keyMap.curve;
                   if (curve) {
-                    bezier = readCurve(curve, timeline, bezier, frame, 0, time3, time22, color.r, newColor.r, 1);
-                    bezier = readCurve(curve, timeline, bezier, frame, 1, time3, time22, color.g, newColor.g, 1);
-                    bezier = readCurve(curve, timeline, bezier, frame, 2, time3, time22, color.b, newColor.b, 1);
-                    bezier = readCurve(curve, timeline, bezier, frame, 3, time3, time22, color.a, newColor.a, 1);
-                    bezier = readCurve(curve, timeline, bezier, frame, 4, time3, time22, color2.r, newColor2.r, 1);
-                    bezier = readCurve(curve, timeline, bezier, frame, 5, time3, time22, color2.g, newColor2.g, 1);
-                    bezier = readCurve(curve, timeline, bezier, frame, 6, time3, time22, color2.b, newColor2.b, 1);
+                    bezier2 = readCurve(curve, timeline, bezier2, frame, 0, time3, time22, color.r, newColor.r, 1);
+                    bezier2 = readCurve(curve, timeline, bezier2, frame, 1, time3, time22, color.g, newColor.g, 1);
+                    bezier2 = readCurve(curve, timeline, bezier2, frame, 2, time3, time22, color.b, newColor.b, 1);
+                    bezier2 = readCurve(curve, timeline, bezier2, frame, 3, time3, time22, color.a, newColor.a, 1);
+                    bezier2 = readCurve(curve, timeline, bezier2, frame, 4, time3, time22, color2.r, newColor2.r, 1);
+                    bezier2 = readCurve(curve, timeline, bezier2, frame, 5, time3, time22, color2.g, newColor2.g, 1);
+                    bezier2 = readCurve(curve, timeline, bezier2, frame, 6, time3, time22, color2.b, newColor2.b, 1);
                   }
                   time3 = time22;
                   color = newColor;
@@ -17735,11 +17735,11 @@ var init_SkeletonJson = __esm({
                 let time3 = getValue(keyMap, "time", 0);
                 let color = Color.fromString(keyMap.light);
                 let color2 = Color.fromString(keyMap.dark);
-                for (let frame = 0, bezier = 0; ; frame++) {
+                for (let frame = 0, bezier2 = 0; ; frame++) {
                   timeline.setFrame(frame, time3, color.r, color.g, color.b, color2.r, color2.g, color2.b);
                   let nextMap = timelineMap[frame + 1];
                   if (!nextMap) {
-                    timeline.shrink(bezier);
+                    timeline.shrink(bezier2);
                     break;
                   }
                   let time22 = getValue(nextMap, "time", 0);
@@ -17747,12 +17747,12 @@ var init_SkeletonJson = __esm({
                   let newColor2 = Color.fromString(nextMap.dark);
                   let curve = keyMap.curve;
                   if (curve) {
-                    bezier = readCurve(curve, timeline, bezier, frame, 0, time3, time22, color.r, newColor.r, 1);
-                    bezier = readCurve(curve, timeline, bezier, frame, 1, time3, time22, color.g, newColor.g, 1);
-                    bezier = readCurve(curve, timeline, bezier, frame, 2, time3, time22, color.b, newColor.b, 1);
-                    bezier = readCurve(curve, timeline, bezier, frame, 3, time3, time22, color2.r, newColor2.r, 1);
-                    bezier = readCurve(curve, timeline, bezier, frame, 4, time3, time22, color2.g, newColor2.g, 1);
-                    bezier = readCurve(curve, timeline, bezier, frame, 5, time3, time22, color2.b, newColor2.b, 1);
+                    bezier2 = readCurve(curve, timeline, bezier2, frame, 0, time3, time22, color.r, newColor.r, 1);
+                    bezier2 = readCurve(curve, timeline, bezier2, frame, 1, time3, time22, color.g, newColor.g, 1);
+                    bezier2 = readCurve(curve, timeline, bezier2, frame, 2, time3, time22, color.b, newColor.b, 1);
+                    bezier2 = readCurve(curve, timeline, bezier2, frame, 3, time3, time22, color2.r, newColor2.r, 1);
+                    bezier2 = readCurve(curve, timeline, bezier2, frame, 4, time3, time22, color2.g, newColor2.g, 1);
+                    bezier2 = readCurve(curve, timeline, bezier2, frame, 5, time3, time22, color2.b, newColor2.b, 1);
                   }
                   time3 = time22;
                   color = newColor;
@@ -17823,11 +17823,11 @@ var init_SkeletonJson = __esm({
             let time3 = getValue(keyMap, "time", 0);
             let mix = getValue(keyMap, "mix", 1);
             let softness = getValue(keyMap, "softness", 0) * scale;
-            for (let frame = 0, bezier = 0; ; frame++) {
+            for (let frame = 0, bezier2 = 0; ; frame++) {
               timeline.setFrame(frame, time3, mix, softness, getValue(keyMap, "bendPositive", true) ? 1 : -1, getValue(keyMap, "compress", false), getValue(keyMap, "stretch", false));
               let nextMap = constraintMap[frame + 1];
               if (!nextMap) {
-                timeline.shrink(bezier);
+                timeline.shrink(bezier2);
                 break;
               }
               let time22 = getValue(nextMap, "time", 0);
@@ -17835,8 +17835,8 @@ var init_SkeletonJson = __esm({
               let softness2 = getValue(nextMap, "softness", 0) * scale;
               let curve = keyMap.curve;
               if (curve) {
-                bezier = readCurve(curve, timeline, bezier, frame, 0, time3, time22, mix, mix2, 1);
-                bezier = readCurve(curve, timeline, bezier, frame, 1, time3, time22, softness, softness2, scale);
+                bezier2 = readCurve(curve, timeline, bezier2, frame, 0, time3, time22, mix, mix2, 1);
+                bezier2 = readCurve(curve, timeline, bezier2, frame, 1, time3, time22, softness, softness2, scale);
               }
               time3 = time22;
               mix = mix2;
@@ -17864,11 +17864,11 @@ var init_SkeletonJson = __esm({
             let mixScaleX = getValue(keyMap, "mixScaleX", 1);
             let mixScaleY = getValue(keyMap, "mixScaleY", mixScaleX);
             let mixShearY = getValue(keyMap, "mixShearY", 1);
-            for (let frame = 0, bezier = 0; ; frame++) {
+            for (let frame = 0, bezier2 = 0; ; frame++) {
               timeline.setFrame(frame, time3, mixRotate, mixX, mixY, mixScaleX, mixScaleY, mixShearY);
               let nextMap = timelineMap[frame + 1];
               if (!nextMap) {
-                timeline.shrink(bezier);
+                timeline.shrink(bezier2);
                 break;
               }
               let time22 = getValue(nextMap, "time", 0);
@@ -17880,12 +17880,12 @@ var init_SkeletonJson = __esm({
               let mixShearY2 = getValue(nextMap, "mixShearY", 1);
               let curve = keyMap.curve;
               if (curve) {
-                bezier = readCurve(curve, timeline, bezier, frame, 0, time3, time22, mixRotate, mixRotate2, 1);
-                bezier = readCurve(curve, timeline, bezier, frame, 1, time3, time22, mixX, mixX2, 1);
-                bezier = readCurve(curve, timeline, bezier, frame, 2, time3, time22, mixY, mixY2, 1);
-                bezier = readCurve(curve, timeline, bezier, frame, 3, time3, time22, mixScaleX, mixScaleX2, 1);
-                bezier = readCurve(curve, timeline, bezier, frame, 4, time3, time22, mixScaleY, mixScaleY2, 1);
-                bezier = readCurve(curve, timeline, bezier, frame, 5, time3, time22, mixShearY, mixShearY2, 1);
+                bezier2 = readCurve(curve, timeline, bezier2, frame, 0, time3, time22, mixRotate, mixRotate2, 1);
+                bezier2 = readCurve(curve, timeline, bezier2, frame, 1, time3, time22, mixX, mixX2, 1);
+                bezier2 = readCurve(curve, timeline, bezier2, frame, 2, time3, time22, mixY, mixY2, 1);
+                bezier2 = readCurve(curve, timeline, bezier2, frame, 3, time3, time22, mixScaleX, mixScaleX2, 1);
+                bezier2 = readCurve(curve, timeline, bezier2, frame, 4, time3, time22, mixScaleY, mixScaleY2, 1);
+                bezier2 = readCurve(curve, timeline, bezier2, frame, 5, time3, time22, mixShearY, mixShearY2, 1);
               }
               time3 = time22;
               mixRotate = mixRotate2;
@@ -17924,11 +17924,11 @@ var init_SkeletonJson = __esm({
                 let mixRotate = getValue(keyMap, "mixRotate", 1);
                 let mixX = getValue(keyMap, "mixX", 1);
                 let mixY = getValue(keyMap, "mixY", mixX);
-                for (let frame = 0, bezier = 0; ; frame++) {
+                for (let frame = 0, bezier2 = 0; ; frame++) {
                   timeline.setFrame(frame, time3, mixRotate, mixX, mixY);
                   let nextMap = timelineMap[frame + 1];
                   if (!nextMap) {
-                    timeline.shrink(bezier);
+                    timeline.shrink(bezier2);
                     break;
                   }
                   let time22 = getValue(nextMap, "time", 0);
@@ -17937,9 +17937,9 @@ var init_SkeletonJson = __esm({
                   let mixY2 = getValue(nextMap, "mixY", mixX2);
                   let curve = keyMap.curve;
                   if (curve) {
-                    bezier = readCurve(curve, timeline, bezier, frame, 0, time3, time22, mixRotate, mixRotate2, 1);
-                    bezier = readCurve(curve, timeline, bezier, frame, 1, time3, time22, mixX, mixX2, 1);
-                    bezier = readCurve(curve, timeline, bezier, frame, 2, time3, time22, mixY, mixY2, 1);
+                    bezier2 = readCurve(curve, timeline, bezier2, frame, 0, time3, time22, mixRotate, mixRotate2, 1);
+                    bezier2 = readCurve(curve, timeline, bezier2, frame, 1, time3, time22, mixX, mixX2, 1);
+                    bezier2 = readCurve(curve, timeline, bezier2, frame, 2, time3, time22, mixY, mixY2, 1);
                   }
                   time3 = time22;
                   mixRotate = mixRotate2;
@@ -17978,7 +17978,7 @@ var init_SkeletonJson = __esm({
                     let deformLength = weighted ? vertices.length / 3 * 2 : vertices.length;
                     let timeline = new DeformTimeline(timelineMap.length, timelineMap.length, slotIndex, attachment);
                     let time3 = getValue(keyMap, "time", 0);
-                    for (let frame = 0, bezier = 0; ; frame++) {
+                    for (let frame = 0, bezier2 = 0; ; frame++) {
                       let deform;
                       let verticesValue = getValue(keyMap, "vertices", null);
                       if (!verticesValue)
@@ -17999,13 +17999,13 @@ var init_SkeletonJson = __esm({
                       timeline.setFrame(frame, time3, deform);
                       let nextMap = timelineMap[frame + 1];
                       if (!nextMap) {
-                        timeline.shrink(bezier);
+                        timeline.shrink(bezier2);
                         break;
                       }
                       let time22 = getValue(nextMap, "time", 0);
                       let curve = keyMap.curve;
                       if (curve)
-                        bezier = readCurve(curve, timeline, bezier, frame, 0, time3, time22, 0, 1, 1);
+                        bezier2 = readCurve(curve, timeline, bezier2, frame, 0, time3, time22, 0, 1, 1);
                       time3 = time22;
                       keyMap = nextMap;
                     }
@@ -18143,7 +18143,7 @@ __export(dist_exports, {
   AtlasAttachmentLoader: () => AtlasAttachmentLoader,
   Attachment: () => Attachment2,
   AttachmentTimeline: () => AttachmentTimeline,
-  BinaryInput: () => BinaryInput,
+  BinaryInput: () => BinaryInput2,
   BlendMode: () => BlendMode,
   Bone: () => Bone,
   BoneData: () => BoneData,
@@ -19037,9 +19037,9 @@ var init_Animation2 = __esm({
        * @param cy2 The value for the second Bezier handle.
        * @param time2 The time for the second key.
        * @param value2 The value for the second key. */
-      setBezier(bezier, frame, value, time1, value1, cx1, cy1, cx2, cy2, time22, value2) {
+      setBezier(bezier2, frame, value, time1, value1, cx1, cy1, cx2, cy2, time22, value2) {
         let curves = this.curves;
-        let i2 = this.getFrameCount() + bezier * 18;
+        let i2 = this.getFrameCount() + bezier2 * 18;
         if (value == 0)
           curves[frame] = 2 + i2;
         let tmpx = (time1 - cx1 * 2 + cx2) * 0.03, tmpy = (value1 - cy1 * 2 + cy2) * 0.03;
@@ -20588,9 +20588,9 @@ var init_Animation2 = __esm({
       }
       /** @param value1 Ignored (0 is used for a deform timeline).
        * @param value2 Ignored (1 is used for a deform timeline). */
-      setBezier(bezier, frame, value, time1, value1, cx1, cy1, cx2, cy2, time22, value2) {
+      setBezier(bezier2, frame, value, time1, value1, cx1, cy1, cx2, cy2, time22, value2) {
         let curves = this.curves;
-        let i2 = this.getFrameCount() + bezier * 18;
+        let i2 = this.getFrameCount() + bezier2 * 18;
         if (value == 0)
           curves[frame] = 2 + i2;
         let tmpx = (time1 - cx1 * 2 + cx2) * 0.03, tmpy = cy2 * 0.03 - cy1 * 0.06;
@@ -27133,17 +27133,17 @@ var init_TransformConstraintData2 = __esm({
 // node_modules/spine-core-42/dist/SkeletonBinary.js
 function readTimeline13(input2, timeline, scale) {
   let time3 = input2.readFloat(), value = input2.readFloat() * scale;
-  for (let frame = 0, bezier = 0, frameLast = timeline.getFrameCount() - 1; ; frame++) {
+  for (let frame = 0, bezier2 = 0, frameLast = timeline.getFrameCount() - 1; ; frame++) {
     timeline.setFrame(frame, time3, value);
     if (frame == frameLast)
       break;
     let time22 = input2.readFloat(), value2 = input2.readFloat() * scale;
     switch (input2.readByte()) {
-      case CURVE_STEPPED2:
+      case CURVE_STEPPED3:
         timeline.setStepped(frame);
         break;
-      case CURVE_BEZIER2:
-        setBezier2(input2, timeline, bezier++, frame, 0, time3, time22, value, value2, scale);
+      case CURVE_BEZIER3:
+        setBezier2(input2, timeline, bezier2++, frame, 0, time3, time22, value, value2, scale);
     }
     time3 = time22;
     value = value2;
@@ -27152,18 +27152,18 @@ function readTimeline13(input2, timeline, scale) {
 }
 function readTimeline23(input2, timeline, scale) {
   let time3 = input2.readFloat(), value1 = input2.readFloat() * scale, value2 = input2.readFloat() * scale;
-  for (let frame = 0, bezier = 0, frameLast = timeline.getFrameCount() - 1; ; frame++) {
+  for (let frame = 0, bezier2 = 0, frameLast = timeline.getFrameCount() - 1; ; frame++) {
     timeline.setFrame(frame, time3, value1, value2);
     if (frame == frameLast)
       break;
     let time22 = input2.readFloat(), nvalue1 = input2.readFloat() * scale, nvalue2 = input2.readFloat() * scale;
     switch (input2.readByte()) {
-      case CURVE_STEPPED2:
+      case CURVE_STEPPED3:
         timeline.setStepped(frame);
         break;
-      case CURVE_BEZIER2:
-        setBezier2(input2, timeline, bezier++, frame, 0, time3, time22, value1, nvalue1, scale);
-        setBezier2(input2, timeline, bezier++, frame, 1, time3, time22, value2, nvalue2, scale);
+      case CURVE_BEZIER3:
+        setBezier2(input2, timeline, bezier2++, frame, 0, time3, time22, value1, nvalue1, scale);
+        setBezier2(input2, timeline, bezier2++, frame, 1, time3, time22, value2, nvalue2, scale);
     }
     time3 = time22;
     value1 = nvalue1;
@@ -27171,10 +27171,10 @@ function readTimeline23(input2, timeline, scale) {
   }
   return timeline;
 }
-function setBezier2(input2, timeline, bezier, frame, value, time1, time22, value1, value2, scale) {
-  timeline.setBezier(bezier, frame, value, time1, value1, input2.readFloat(), input2.readFloat() * scale, input2.readFloat(), input2.readFloat() * scale, time22, value2);
+function setBezier2(input2, timeline, bezier2, frame, value, time1, time22, value1, value2, scale) {
+  timeline.setBezier(bezier2, frame, value, time1, value1, input2.readFloat(), input2.readFloat() * scale, input2.readFloat(), input2.readFloat() * scale, time22, value2);
 }
-var SkeletonBinary2, BinaryInput2, LinkedMesh3, Vertices2, AttachmentType2, BONE_ROTATE2, BONE_TRANSLATE2, BONE_TRANSLATEX2, BONE_TRANSLATEY2, BONE_SCALE2, BONE_SCALEX2, BONE_SCALEY2, BONE_SHEAR2, BONE_SHEARX2, BONE_SHEARY2, BONE_INHERIT, SLOT_ATTACHMENT2, SLOT_RGBA3, SLOT_RGB3, SLOT_RGBA22, SLOT_RGB22, SLOT_ALPHA2, ATTACHMENT_DEFORM2, ATTACHMENT_SEQUENCE2, PATH_POSITION2, PATH_SPACING2, PATH_MIX2, PHYSICS_INERTIA, PHYSICS_STRENGTH, PHYSICS_DAMPING, PHYSICS_MASS, PHYSICS_WIND, PHYSICS_GRAVITY, PHYSICS_MIX, PHYSICS_RESET, CURVE_STEPPED2, CURVE_BEZIER2;
+var SkeletonBinary2, BinaryInput3, LinkedMesh3, Vertices2, AttachmentType2, BONE_ROTATE2, BONE_TRANSLATE2, BONE_TRANSLATEX2, BONE_TRANSLATEY2, BONE_SCALE2, BONE_SCALEX2, BONE_SCALEY2, BONE_SHEAR2, BONE_SHEARX2, BONE_SHEARY2, BONE_INHERIT, SLOT_ATTACHMENT2, SLOT_RGBA3, SLOT_RGB3, SLOT_RGBA22, SLOT_RGB22, SLOT_ALPHA2, ATTACHMENT_DEFORM2, ATTACHMENT_SEQUENCE2, PATH_POSITION2, PATH_SPACING2, PATH_MIX2, PHYSICS_INERTIA, PHYSICS_STRENGTH, PHYSICS_DAMPING, PHYSICS_MASS, PHYSICS_WIND, PHYSICS_GRAVITY, PHYSICS_MIX, PHYSICS_RESET, CURVE_STEPPED3, CURVE_BEZIER3;
 var init_SkeletonBinary2 = __esm({
   "node_modules/spine-core-42/dist/SkeletonBinary.js"() {
     init_Animation2();
@@ -27205,7 +27205,7 @@ var init_SkeletonBinary2 = __esm({
         let scale = this.scale;
         let skeletonData = new SkeletonData2();
         skeletonData.name = "";
-        let input2 = new BinaryInput2(binary);
+        let input2 = new BinaryInput3(binary);
         let lowHash = input2.readInt32();
         let highHash = input2.readInt32();
         skeletonData.hash = highHash == 0 && lowHash == 0 ? null : highHash.toString(16) + lowHash.toString(16);
@@ -27751,7 +27751,7 @@ var init_SkeletonBinary2 = __esm({
                 let g = input2.readUnsignedByte() / 255;
                 let b = input2.readUnsignedByte() / 255;
                 let a = input2.readUnsignedByte() / 255;
-                for (let frame = 0, bezier = 0; ; frame++) {
+                for (let frame = 0, bezier2 = 0; ; frame++) {
                   timeline.setFrame(frame, time3, r, g, b, a);
                   if (frame == frameLast)
                     break;
@@ -27761,14 +27761,14 @@ var init_SkeletonBinary2 = __esm({
                   let b2 = input2.readUnsignedByte() / 255;
                   let a2 = input2.readUnsignedByte() / 255;
                   switch (input2.readByte()) {
-                    case CURVE_STEPPED2:
+                    case CURVE_STEPPED3:
                       timeline.setStepped(frame);
                       break;
-                    case CURVE_BEZIER2:
-                      setBezier2(input2, timeline, bezier++, frame, 0, time3, time22, r, r22, 1);
-                      setBezier2(input2, timeline, bezier++, frame, 1, time3, time22, g, g2, 1);
-                      setBezier2(input2, timeline, bezier++, frame, 2, time3, time22, b, b2, 1);
-                      setBezier2(input2, timeline, bezier++, frame, 3, time3, time22, a, a2, 1);
+                    case CURVE_BEZIER3:
+                      setBezier2(input2, timeline, bezier2++, frame, 0, time3, time22, r, r22, 1);
+                      setBezier2(input2, timeline, bezier2++, frame, 1, time3, time22, g, g2, 1);
+                      setBezier2(input2, timeline, bezier2++, frame, 2, time3, time22, b, b2, 1);
+                      setBezier2(input2, timeline, bezier2++, frame, 3, time3, time22, a, a2, 1);
                   }
                   time3 = time22;
                   r = r22;
@@ -27786,7 +27786,7 @@ var init_SkeletonBinary2 = __esm({
                 let r = input2.readUnsignedByte() / 255;
                 let g = input2.readUnsignedByte() / 255;
                 let b = input2.readUnsignedByte() / 255;
-                for (let frame = 0, bezier = 0; ; frame++) {
+                for (let frame = 0, bezier2 = 0; ; frame++) {
                   timeline.setFrame(frame, time3, r, g, b);
                   if (frame == frameLast)
                     break;
@@ -27795,13 +27795,13 @@ var init_SkeletonBinary2 = __esm({
                   let g2 = input2.readUnsignedByte() / 255;
                   let b2 = input2.readUnsignedByte() / 255;
                   switch (input2.readByte()) {
-                    case CURVE_STEPPED2:
+                    case CURVE_STEPPED3:
                       timeline.setStepped(frame);
                       break;
-                    case CURVE_BEZIER2:
-                      setBezier2(input2, timeline, bezier++, frame, 0, time3, time22, r, r22, 1);
-                      setBezier2(input2, timeline, bezier++, frame, 1, time3, time22, g, g2, 1);
-                      setBezier2(input2, timeline, bezier++, frame, 2, time3, time22, b, b2, 1);
+                    case CURVE_BEZIER3:
+                      setBezier2(input2, timeline, bezier2++, frame, 0, time3, time22, r, r22, 1);
+                      setBezier2(input2, timeline, bezier2++, frame, 1, time3, time22, g, g2, 1);
+                      setBezier2(input2, timeline, bezier2++, frame, 2, time3, time22, b, b2, 1);
                   }
                   time3 = time22;
                   r = r22;
@@ -27822,7 +27822,7 @@ var init_SkeletonBinary2 = __esm({
                 let r22 = input2.readUnsignedByte() / 255;
                 let g2 = input2.readUnsignedByte() / 255;
                 let b2 = input2.readUnsignedByte() / 255;
-                for (let frame = 0, bezier = 0; ; frame++) {
+                for (let frame = 0, bezier2 = 0; ; frame++) {
                   timeline.setFrame(frame, time3, r, g, b, a, r22, g2, b2);
                   if (frame == frameLast)
                     break;
@@ -27835,17 +27835,17 @@ var init_SkeletonBinary2 = __esm({
                   let ng2 = input2.readUnsignedByte() / 255;
                   let nb2 = input2.readUnsignedByte() / 255;
                   switch (input2.readByte()) {
-                    case CURVE_STEPPED2:
+                    case CURVE_STEPPED3:
                       timeline.setStepped(frame);
                       break;
-                    case CURVE_BEZIER2:
-                      setBezier2(input2, timeline, bezier++, frame, 0, time3, time22, r, nr, 1);
-                      setBezier2(input2, timeline, bezier++, frame, 1, time3, time22, g, ng, 1);
-                      setBezier2(input2, timeline, bezier++, frame, 2, time3, time22, b, nb, 1);
-                      setBezier2(input2, timeline, bezier++, frame, 3, time3, time22, a, na, 1);
-                      setBezier2(input2, timeline, bezier++, frame, 4, time3, time22, r22, nr2, 1);
-                      setBezier2(input2, timeline, bezier++, frame, 5, time3, time22, g2, ng2, 1);
-                      setBezier2(input2, timeline, bezier++, frame, 6, time3, time22, b2, nb2, 1);
+                    case CURVE_BEZIER3:
+                      setBezier2(input2, timeline, bezier2++, frame, 0, time3, time22, r, nr, 1);
+                      setBezier2(input2, timeline, bezier2++, frame, 1, time3, time22, g, ng, 1);
+                      setBezier2(input2, timeline, bezier2++, frame, 2, time3, time22, b, nb, 1);
+                      setBezier2(input2, timeline, bezier2++, frame, 3, time3, time22, a, na, 1);
+                      setBezier2(input2, timeline, bezier2++, frame, 4, time3, time22, r22, nr2, 1);
+                      setBezier2(input2, timeline, bezier2++, frame, 5, time3, time22, g2, ng2, 1);
+                      setBezier2(input2, timeline, bezier2++, frame, 6, time3, time22, b2, nb2, 1);
                   }
                   time3 = time22;
                   r = nr;
@@ -27869,7 +27869,7 @@ var init_SkeletonBinary2 = __esm({
                 let r22 = input2.readUnsignedByte() / 255;
                 let g2 = input2.readUnsignedByte() / 255;
                 let b2 = input2.readUnsignedByte() / 255;
-                for (let frame = 0, bezier = 0; ; frame++) {
+                for (let frame = 0, bezier2 = 0; ; frame++) {
                   timeline.setFrame(frame, time3, r, g, b, r22, g2, b2);
                   if (frame == frameLast)
                     break;
@@ -27881,16 +27881,16 @@ var init_SkeletonBinary2 = __esm({
                   let ng2 = input2.readUnsignedByte() / 255;
                   let nb2 = input2.readUnsignedByte() / 255;
                   switch (input2.readByte()) {
-                    case CURVE_STEPPED2:
+                    case CURVE_STEPPED3:
                       timeline.setStepped(frame);
                       break;
-                    case CURVE_BEZIER2:
-                      setBezier2(input2, timeline, bezier++, frame, 0, time3, time22, r, nr, 1);
-                      setBezier2(input2, timeline, bezier++, frame, 1, time3, time22, g, ng, 1);
-                      setBezier2(input2, timeline, bezier++, frame, 2, time3, time22, b, nb, 1);
-                      setBezier2(input2, timeline, bezier++, frame, 3, time3, time22, r22, nr2, 1);
-                      setBezier2(input2, timeline, bezier++, frame, 4, time3, time22, g2, ng2, 1);
-                      setBezier2(input2, timeline, bezier++, frame, 5, time3, time22, b2, nb2, 1);
+                    case CURVE_BEZIER3:
+                      setBezier2(input2, timeline, bezier2++, frame, 0, time3, time22, r, nr, 1);
+                      setBezier2(input2, timeline, bezier2++, frame, 1, time3, time22, g, ng, 1);
+                      setBezier2(input2, timeline, bezier2++, frame, 2, time3, time22, b, nb, 1);
+                      setBezier2(input2, timeline, bezier2++, frame, 3, time3, time22, r22, nr2, 1);
+                      setBezier2(input2, timeline, bezier2++, frame, 4, time3, time22, g2, ng2, 1);
+                      setBezier2(input2, timeline, bezier2++, frame, 5, time3, time22, b2, nb2, 1);
                   }
                   time3 = time22;
                   r = nr;
@@ -27906,18 +27906,18 @@ var init_SkeletonBinary2 = __esm({
               case SLOT_ALPHA2: {
                 let timeline = new AlphaTimeline2(frameCount2, input2.readInt(true), slotIndex);
                 let time3 = input2.readFloat(), a = input2.readUnsignedByte() / 255;
-                for (let frame = 0, bezier = 0; ; frame++) {
+                for (let frame = 0, bezier2 = 0; ; frame++) {
                   timeline.setFrame(frame, time3, a);
                   if (frame == frameLast)
                     break;
                   let time22 = input2.readFloat();
                   let a2 = input2.readUnsignedByte() / 255;
                   switch (input2.readByte()) {
-                    case CURVE_STEPPED2:
+                    case CURVE_STEPPED3:
                       timeline.setStepped(frame);
                       break;
-                    case CURVE_BEZIER2:
-                      setBezier2(input2, timeline, bezier++, frame, 0, time3, time22, a, a2, 1);
+                    case CURVE_BEZIER3:
+                      setBezier2(input2, timeline, bezier2++, frame, 0, time3, time22, a, a2, 1);
                   }
                   time3 = time22;
                   a = a2;
@@ -27979,7 +27979,7 @@ var init_SkeletonBinary2 = __esm({
           let flags = input2.readByte();
           let time3 = input2.readFloat(), mix = (flags & 1) != 0 ? (flags & 2) != 0 ? input2.readFloat() : 1 : 0;
           let softness = (flags & 4) != 0 ? input2.readFloat() * scale : 0;
-          for (let frame = 0, bezier = 0; ; frame++) {
+          for (let frame = 0, bezier2 = 0; ; frame++) {
             timeline.setFrame(frame, time3, mix, softness, (flags & 8) != 0 ? 1 : -1, (flags & 16) != 0, (flags & 32) != 0);
             if (frame == frameLast)
               break;
@@ -27989,8 +27989,8 @@ var init_SkeletonBinary2 = __esm({
             if ((flags & 64) != 0) {
               timeline.setStepped(frame);
             } else if ((flags & 128) != 0) {
-              setBezier2(input2, timeline, bezier++, frame, 0, time3, time22, mix, mix2, 1);
-              setBezier2(input2, timeline, bezier++, frame, 1, time3, time22, softness, softness2, scale);
+              setBezier2(input2, timeline, bezier2++, frame, 0, time3, time22, mix, mix2, 1);
+              setBezier2(input2, timeline, bezier2++, frame, 1, time3, time22, softness, softness2, scale);
             }
             time3 = time22;
             mix = mix2;
@@ -28002,22 +28002,22 @@ var init_SkeletonBinary2 = __esm({
           let index = input2.readInt(true), frameCount2 = input2.readInt(true), frameLast = frameCount2 - 1;
           let timeline = new TransformConstraintTimeline2(frameCount2, input2.readInt(true), index);
           let time3 = input2.readFloat(), mixRotate = input2.readFloat(), mixX = input2.readFloat(), mixY = input2.readFloat(), mixScaleX = input2.readFloat(), mixScaleY = input2.readFloat(), mixShearY = input2.readFloat();
-          for (let frame = 0, bezier = 0; ; frame++) {
+          for (let frame = 0, bezier2 = 0; ; frame++) {
             timeline.setFrame(frame, time3, mixRotate, mixX, mixY, mixScaleX, mixScaleY, mixShearY);
             if (frame == frameLast)
               break;
             let time22 = input2.readFloat(), mixRotate2 = input2.readFloat(), mixX2 = input2.readFloat(), mixY2 = input2.readFloat(), mixScaleX2 = input2.readFloat(), mixScaleY2 = input2.readFloat(), mixShearY2 = input2.readFloat();
             switch (input2.readByte()) {
-              case CURVE_STEPPED2:
+              case CURVE_STEPPED3:
                 timeline.setStepped(frame);
                 break;
-              case CURVE_BEZIER2:
-                setBezier2(input2, timeline, bezier++, frame, 0, time3, time22, mixRotate, mixRotate2, 1);
-                setBezier2(input2, timeline, bezier++, frame, 1, time3, time22, mixX, mixX2, 1);
-                setBezier2(input2, timeline, bezier++, frame, 2, time3, time22, mixY, mixY2, 1);
-                setBezier2(input2, timeline, bezier++, frame, 3, time3, time22, mixScaleX, mixScaleX2, 1);
-                setBezier2(input2, timeline, bezier++, frame, 4, time3, time22, mixScaleY, mixScaleY2, 1);
-                setBezier2(input2, timeline, bezier++, frame, 5, time3, time22, mixShearY, mixShearY2, 1);
+              case CURVE_BEZIER3:
+                setBezier2(input2, timeline, bezier2++, frame, 0, time3, time22, mixRotate, mixRotate2, 1);
+                setBezier2(input2, timeline, bezier2++, frame, 1, time3, time22, mixX, mixX2, 1);
+                setBezier2(input2, timeline, bezier2++, frame, 2, time3, time22, mixY, mixY2, 1);
+                setBezier2(input2, timeline, bezier2++, frame, 3, time3, time22, mixScaleX, mixScaleX2, 1);
+                setBezier2(input2, timeline, bezier2++, frame, 4, time3, time22, mixScaleY, mixScaleY2, 1);
+                setBezier2(input2, timeline, bezier2++, frame, 5, time3, time22, mixShearY, mixShearY2, 1);
             }
             time3 = time22;
             mixRotate = mixRotate2;
@@ -28044,19 +28044,19 @@ var init_SkeletonBinary2 = __esm({
               case PATH_MIX2:
                 let timeline = new PathConstraintMixTimeline2(frameCount2, bezierCount, index);
                 let time3 = input2.readFloat(), mixRotate = input2.readFloat(), mixX = input2.readFloat(), mixY = input2.readFloat();
-                for (let frame = 0, bezier = 0, frameLast = timeline.getFrameCount() - 1; ; frame++) {
+                for (let frame = 0, bezier2 = 0, frameLast = timeline.getFrameCount() - 1; ; frame++) {
                   timeline.setFrame(frame, time3, mixRotate, mixX, mixY);
                   if (frame == frameLast)
                     break;
                   let time22 = input2.readFloat(), mixRotate2 = input2.readFloat(), mixX2 = input2.readFloat(), mixY2 = input2.readFloat();
                   switch (input2.readByte()) {
-                    case CURVE_STEPPED2:
+                    case CURVE_STEPPED3:
                       timeline.setStepped(frame);
                       break;
-                    case CURVE_BEZIER2:
-                      setBezier2(input2, timeline, bezier++, frame, 0, time3, time22, mixRotate, mixRotate2, 1);
-                      setBezier2(input2, timeline, bezier++, frame, 1, time3, time22, mixX, mixX2, 1);
-                      setBezier2(input2, timeline, bezier++, frame, 2, time3, time22, mixY, mixY2, 1);
+                    case CURVE_BEZIER3:
+                      setBezier2(input2, timeline, bezier2++, frame, 0, time3, time22, mixRotate, mixRotate2, 1);
+                      setBezier2(input2, timeline, bezier2++, frame, 1, time3, time22, mixX, mixX2, 1);
+                      setBezier2(input2, timeline, bezier2++, frame, 2, time3, time22, mixY, mixY2, 1);
                   }
                   time3 = time22;
                   mixRotate = mixRotate2;
@@ -28124,7 +28124,7 @@ var init_SkeletonBinary2 = __esm({
                   let bezierCount = input2.readInt(true);
                   let timeline = new DeformTimeline2(frameCount2, bezierCount, slotIndex, vertexAttachment);
                   let time3 = input2.readFloat();
-                  for (let frame = 0, bezier = 0; ; frame++) {
+                  for (let frame = 0, bezier2 = 0; ; frame++) {
                     let deform;
                     let end = input2.readInt(true);
                     if (end == 0)
@@ -28150,11 +28150,11 @@ var init_SkeletonBinary2 = __esm({
                       break;
                     let time22 = input2.readFloat();
                     switch (input2.readByte()) {
-                      case CURVE_STEPPED2:
+                      case CURVE_STEPPED3:
                         timeline.setStepped(frame);
                         break;
-                      case CURVE_BEZIER2:
-                        setBezier2(input2, timeline, bezier++, frame, 0, time3, time22, 0, 1, 1);
+                      case CURVE_BEZIER3:
+                        setBezier2(input2, timeline, bezier2++, frame, 0, time3, time22, 0, 1, 1);
                     }
                     time3 = time22;
                   }
@@ -28228,7 +28228,7 @@ var init_SkeletonBinary2 = __esm({
         return new Animation2(name, timelines, duration3);
       }
     };
-    BinaryInput2 = class {
+    BinaryInput3 = class {
       strings;
       index;
       buffer;
@@ -28380,8 +28380,8 @@ var init_SkeletonBinary2 = __esm({
     PHYSICS_GRAVITY = 6;
     PHYSICS_MIX = 7;
     PHYSICS_RESET = 8;
-    CURVE_STEPPED2 = 1;
-    CURVE_BEZIER2 = 2;
+    CURVE_STEPPED3 = 1;
+    CURVE_BEZIER3 = 2;
   }
 });
 
@@ -29246,18 +29246,18 @@ function readTimeline14(keys, timeline, defaultValue, scale) {
   let keyMap = keys[0];
   let time3 = getValue2(keyMap, "time", 0);
   let value = getValue2(keyMap, "value", defaultValue) * scale;
-  let bezier = 0;
+  let bezier2 = 0;
   for (let frame = 0; ; frame++) {
     timeline.setFrame(frame, time3, value);
     let nextMap = keys[frame + 1];
     if (!nextMap) {
-      timeline.shrink(bezier);
+      timeline.shrink(bezier2);
       return timeline;
     }
     let time22 = getValue2(nextMap, "time", 0);
     let value2 = getValue2(nextMap, "value", defaultValue) * scale;
     if (keyMap.curve)
-      bezier = readCurve2(keyMap.curve, timeline, bezier, frame, 0, time3, time22, value, value2, scale);
+      bezier2 = readCurve2(keyMap.curve, timeline, bezier2, frame, 0, time3, time22, value, value2, scale);
     time3 = time22;
     value = value2;
     keyMap = nextMap;
@@ -29268,12 +29268,12 @@ function readTimeline24(keys, timeline, name1, name2, defaultValue, scale) {
   let time3 = getValue2(keyMap, "time", 0);
   let value1 = getValue2(keyMap, name1, defaultValue) * scale;
   let value2 = getValue2(keyMap, name2, defaultValue) * scale;
-  let bezier = 0;
+  let bezier2 = 0;
   for (let frame = 0; ; frame++) {
     timeline.setFrame(frame, time3, value1, value2);
     let nextMap = keys[frame + 1];
     if (!nextMap) {
-      timeline.shrink(bezier);
+      timeline.shrink(bezier2);
       return timeline;
     }
     let time22 = getValue2(nextMap, "time", 0);
@@ -29281,8 +29281,8 @@ function readTimeline24(keys, timeline, name1, name2, defaultValue, scale) {
     let nvalue2 = getValue2(nextMap, name2, defaultValue) * scale;
     let curve = keyMap.curve;
     if (curve) {
-      bezier = readCurve2(curve, timeline, bezier, frame, 0, time3, time22, value1, nvalue1, scale);
-      bezier = readCurve2(curve, timeline, bezier, frame, 1, time3, time22, value2, nvalue2, scale);
+      bezier2 = readCurve2(curve, timeline, bezier2, frame, 0, time3, time22, value1, nvalue1, scale);
+      bezier2 = readCurve2(curve, timeline, bezier2, frame, 1, time3, time22, value2, nvalue2, scale);
     }
     time3 = time22;
     value1 = nvalue1;
@@ -29290,18 +29290,18 @@ function readTimeline24(keys, timeline, name1, name2, defaultValue, scale) {
     keyMap = nextMap;
   }
 }
-function readCurve2(curve, timeline, bezier, frame, value, time1, time22, value1, value2, scale) {
+function readCurve2(curve, timeline, bezier2, frame, value, time1, time22, value1, value2, scale) {
   if (curve == "stepped") {
     timeline.setStepped(frame);
-    return bezier;
+    return bezier2;
   }
   let i2 = value << 2;
   let cx1 = curve[i2];
   let cy1 = curve[i2 + 1] * scale;
   let cx2 = curve[i2 + 2];
   let cy2 = curve[i2 + 3] * scale;
-  timeline.setBezier(bezier, frame, value, time1, value1, cx1, cy1, cx2, cy2, time22, value2);
-  return bezier + 1;
+  timeline.setBezier(bezier2, frame, value, time1, value1, cx1, cy1, cx2, cy2, time22, value2);
+  return bezier2 + 1;
 }
 function getValue2(map2, property, defaultValue) {
   return map2[property] !== void 0 ? map2[property] : defaultValue;
@@ -29802,21 +29802,21 @@ var init_SkeletonJson2 = __esm({
                 let keyMap = timelineMap[0];
                 let time3 = getValue2(keyMap, "time", 0);
                 let color = Color2.fromString(keyMap.color);
-                for (let frame = 0, bezier = 0; ; frame++) {
+                for (let frame = 0, bezier2 = 0; ; frame++) {
                   timeline.setFrame(frame, time3, color.r, color.g, color.b, color.a);
                   let nextMap = timelineMap[frame + 1];
                   if (!nextMap) {
-                    timeline.shrink(bezier);
+                    timeline.shrink(bezier2);
                     break;
                   }
                   let time22 = getValue2(nextMap, "time", 0);
                   let newColor = Color2.fromString(nextMap.color);
                   let curve = keyMap.curve;
                   if (curve) {
-                    bezier = readCurve2(curve, timeline, bezier, frame, 0, time3, time22, color.r, newColor.r, 1);
-                    bezier = readCurve2(curve, timeline, bezier, frame, 1, time3, time22, color.g, newColor.g, 1);
-                    bezier = readCurve2(curve, timeline, bezier, frame, 2, time3, time22, color.b, newColor.b, 1);
-                    bezier = readCurve2(curve, timeline, bezier, frame, 3, time3, time22, color.a, newColor.a, 1);
+                    bezier2 = readCurve2(curve, timeline, bezier2, frame, 0, time3, time22, color.r, newColor.r, 1);
+                    bezier2 = readCurve2(curve, timeline, bezier2, frame, 1, time3, time22, color.g, newColor.g, 1);
+                    bezier2 = readCurve2(curve, timeline, bezier2, frame, 2, time3, time22, color.b, newColor.b, 1);
+                    bezier2 = readCurve2(curve, timeline, bezier2, frame, 3, time3, time22, color.a, newColor.a, 1);
                   }
                   time3 = time22;
                   color = newColor;
@@ -29828,20 +29828,20 @@ var init_SkeletonJson2 = __esm({
                 let keyMap = timelineMap[0];
                 let time3 = getValue2(keyMap, "time", 0);
                 let color = Color2.fromString(keyMap.color);
-                for (let frame = 0, bezier = 0; ; frame++) {
+                for (let frame = 0, bezier2 = 0; ; frame++) {
                   timeline.setFrame(frame, time3, color.r, color.g, color.b);
                   let nextMap = timelineMap[frame + 1];
                   if (!nextMap) {
-                    timeline.shrink(bezier);
+                    timeline.shrink(bezier2);
                     break;
                   }
                   let time22 = getValue2(nextMap, "time", 0);
                   let newColor = Color2.fromString(nextMap.color);
                   let curve = keyMap.curve;
                   if (curve) {
-                    bezier = readCurve2(curve, timeline, bezier, frame, 0, time3, time22, color.r, newColor.r, 1);
-                    bezier = readCurve2(curve, timeline, bezier, frame, 1, time3, time22, color.g, newColor.g, 1);
-                    bezier = readCurve2(curve, timeline, bezier, frame, 2, time3, time22, color.b, newColor.b, 1);
+                    bezier2 = readCurve2(curve, timeline, bezier2, frame, 0, time3, time22, color.r, newColor.r, 1);
+                    bezier2 = readCurve2(curve, timeline, bezier2, frame, 1, time3, time22, color.g, newColor.g, 1);
+                    bezier2 = readCurve2(curve, timeline, bezier2, frame, 2, time3, time22, color.b, newColor.b, 1);
                   }
                   time3 = time22;
                   color = newColor;
@@ -29856,11 +29856,11 @@ var init_SkeletonJson2 = __esm({
                 let time3 = getValue2(keyMap, "time", 0);
                 let color = Color2.fromString(keyMap.light);
                 let color2 = Color2.fromString(keyMap.dark);
-                for (let frame = 0, bezier = 0; ; frame++) {
+                for (let frame = 0, bezier2 = 0; ; frame++) {
                   timeline.setFrame(frame, time3, color.r, color.g, color.b, color.a, color2.r, color2.g, color2.b);
                   let nextMap = timelineMap[frame + 1];
                   if (!nextMap) {
-                    timeline.shrink(bezier);
+                    timeline.shrink(bezier2);
                     break;
                   }
                   let time22 = getValue2(nextMap, "time", 0);
@@ -29868,13 +29868,13 @@ var init_SkeletonJson2 = __esm({
                   let newColor2 = Color2.fromString(nextMap.dark);
                   let curve = keyMap.curve;
                   if (curve) {
-                    bezier = readCurve2(curve, timeline, bezier, frame, 0, time3, time22, color.r, newColor.r, 1);
-                    bezier = readCurve2(curve, timeline, bezier, frame, 1, time3, time22, color.g, newColor.g, 1);
-                    bezier = readCurve2(curve, timeline, bezier, frame, 2, time3, time22, color.b, newColor.b, 1);
-                    bezier = readCurve2(curve, timeline, bezier, frame, 3, time3, time22, color.a, newColor.a, 1);
-                    bezier = readCurve2(curve, timeline, bezier, frame, 4, time3, time22, color2.r, newColor2.r, 1);
-                    bezier = readCurve2(curve, timeline, bezier, frame, 5, time3, time22, color2.g, newColor2.g, 1);
-                    bezier = readCurve2(curve, timeline, bezier, frame, 6, time3, time22, color2.b, newColor2.b, 1);
+                    bezier2 = readCurve2(curve, timeline, bezier2, frame, 0, time3, time22, color.r, newColor.r, 1);
+                    bezier2 = readCurve2(curve, timeline, bezier2, frame, 1, time3, time22, color.g, newColor.g, 1);
+                    bezier2 = readCurve2(curve, timeline, bezier2, frame, 2, time3, time22, color.b, newColor.b, 1);
+                    bezier2 = readCurve2(curve, timeline, bezier2, frame, 3, time3, time22, color.a, newColor.a, 1);
+                    bezier2 = readCurve2(curve, timeline, bezier2, frame, 4, time3, time22, color2.r, newColor2.r, 1);
+                    bezier2 = readCurve2(curve, timeline, bezier2, frame, 5, time3, time22, color2.g, newColor2.g, 1);
+                    bezier2 = readCurve2(curve, timeline, bezier2, frame, 6, time3, time22, color2.b, newColor2.b, 1);
                   }
                   time3 = time22;
                   color = newColor;
@@ -29888,11 +29888,11 @@ var init_SkeletonJson2 = __esm({
                 let time3 = getValue2(keyMap, "time", 0);
                 let color = Color2.fromString(keyMap.light);
                 let color2 = Color2.fromString(keyMap.dark);
-                for (let frame = 0, bezier = 0; ; frame++) {
+                for (let frame = 0, bezier2 = 0; ; frame++) {
                   timeline.setFrame(frame, time3, color.r, color.g, color.b, color2.r, color2.g, color2.b);
                   let nextMap = timelineMap[frame + 1];
                   if (!nextMap) {
-                    timeline.shrink(bezier);
+                    timeline.shrink(bezier2);
                     break;
                   }
                   let time22 = getValue2(nextMap, "time", 0);
@@ -29900,12 +29900,12 @@ var init_SkeletonJson2 = __esm({
                   let newColor2 = Color2.fromString(nextMap.dark);
                   let curve = keyMap.curve;
                   if (curve) {
-                    bezier = readCurve2(curve, timeline, bezier, frame, 0, time3, time22, color.r, newColor.r, 1);
-                    bezier = readCurve2(curve, timeline, bezier, frame, 1, time3, time22, color.g, newColor.g, 1);
-                    bezier = readCurve2(curve, timeline, bezier, frame, 2, time3, time22, color.b, newColor.b, 1);
-                    bezier = readCurve2(curve, timeline, bezier, frame, 3, time3, time22, color2.r, newColor2.r, 1);
-                    bezier = readCurve2(curve, timeline, bezier, frame, 4, time3, time22, color2.g, newColor2.g, 1);
-                    bezier = readCurve2(curve, timeline, bezier, frame, 5, time3, time22, color2.b, newColor2.b, 1);
+                    bezier2 = readCurve2(curve, timeline, bezier2, frame, 0, time3, time22, color.r, newColor.r, 1);
+                    bezier2 = readCurve2(curve, timeline, bezier2, frame, 1, time3, time22, color.g, newColor.g, 1);
+                    bezier2 = readCurve2(curve, timeline, bezier2, frame, 2, time3, time22, color.b, newColor.b, 1);
+                    bezier2 = readCurve2(curve, timeline, bezier2, frame, 3, time3, time22, color2.r, newColor2.r, 1);
+                    bezier2 = readCurve2(curve, timeline, bezier2, frame, 4, time3, time22, color2.g, newColor2.g, 1);
+                    bezier2 = readCurve2(curve, timeline, bezier2, frame, 5, time3, time22, color2.b, newColor2.b, 1);
                   }
                   time3 = time22;
                   color = newColor;
@@ -29983,11 +29983,11 @@ var init_SkeletonJson2 = __esm({
             let time3 = getValue2(keyMap, "time", 0);
             let mix = getValue2(keyMap, "mix", 1);
             let softness = getValue2(keyMap, "softness", 0) * scale;
-            for (let frame = 0, bezier = 0; ; frame++) {
+            for (let frame = 0, bezier2 = 0; ; frame++) {
               timeline.setFrame(frame, time3, mix, softness, getValue2(keyMap, "bendPositive", true) ? 1 : -1, getValue2(keyMap, "compress", false), getValue2(keyMap, "stretch", false));
               let nextMap = constraintMap[frame + 1];
               if (!nextMap) {
-                timeline.shrink(bezier);
+                timeline.shrink(bezier2);
                 break;
               }
               let time22 = getValue2(nextMap, "time", 0);
@@ -29995,8 +29995,8 @@ var init_SkeletonJson2 = __esm({
               let softness2 = getValue2(nextMap, "softness", 0) * scale;
               let curve = keyMap.curve;
               if (curve) {
-                bezier = readCurve2(curve, timeline, bezier, frame, 0, time3, time22, mix, mix2, 1);
-                bezier = readCurve2(curve, timeline, bezier, frame, 1, time3, time22, softness, softness2, scale);
+                bezier2 = readCurve2(curve, timeline, bezier2, frame, 0, time3, time22, mix, mix2, 1);
+                bezier2 = readCurve2(curve, timeline, bezier2, frame, 1, time3, time22, softness, softness2, scale);
               }
               time3 = time22;
               mix = mix2;
@@ -30024,11 +30024,11 @@ var init_SkeletonJson2 = __esm({
             let mixScaleX = getValue2(keyMap, "mixScaleX", 1);
             let mixScaleY = getValue2(keyMap, "mixScaleY", mixScaleX);
             let mixShearY = getValue2(keyMap, "mixShearY", 1);
-            for (let frame = 0, bezier = 0; ; frame++) {
+            for (let frame = 0, bezier2 = 0; ; frame++) {
               timeline.setFrame(frame, time3, mixRotate, mixX, mixY, mixScaleX, mixScaleY, mixShearY);
               let nextMap = timelineMap[frame + 1];
               if (!nextMap) {
-                timeline.shrink(bezier);
+                timeline.shrink(bezier2);
                 break;
               }
               let time22 = getValue2(nextMap, "time", 0);
@@ -30040,12 +30040,12 @@ var init_SkeletonJson2 = __esm({
               let mixShearY2 = getValue2(nextMap, "mixShearY", 1);
               let curve = keyMap.curve;
               if (curve) {
-                bezier = readCurve2(curve, timeline, bezier, frame, 0, time3, time22, mixRotate, mixRotate2, 1);
-                bezier = readCurve2(curve, timeline, bezier, frame, 1, time3, time22, mixX, mixX2, 1);
-                bezier = readCurve2(curve, timeline, bezier, frame, 2, time3, time22, mixY, mixY2, 1);
-                bezier = readCurve2(curve, timeline, bezier, frame, 3, time3, time22, mixScaleX, mixScaleX2, 1);
-                bezier = readCurve2(curve, timeline, bezier, frame, 4, time3, time22, mixScaleY, mixScaleY2, 1);
-                bezier = readCurve2(curve, timeline, bezier, frame, 5, time3, time22, mixShearY, mixShearY2, 1);
+                bezier2 = readCurve2(curve, timeline, bezier2, frame, 0, time3, time22, mixRotate, mixRotate2, 1);
+                bezier2 = readCurve2(curve, timeline, bezier2, frame, 1, time3, time22, mixX, mixX2, 1);
+                bezier2 = readCurve2(curve, timeline, bezier2, frame, 2, time3, time22, mixY, mixY2, 1);
+                bezier2 = readCurve2(curve, timeline, bezier2, frame, 3, time3, time22, mixScaleX, mixScaleX2, 1);
+                bezier2 = readCurve2(curve, timeline, bezier2, frame, 4, time3, time22, mixScaleY, mixScaleY2, 1);
+                bezier2 = readCurve2(curve, timeline, bezier2, frame, 5, time3, time22, mixShearY, mixShearY2, 1);
               }
               time3 = time22;
               mixRotate = mixRotate2;
@@ -30084,11 +30084,11 @@ var init_SkeletonJson2 = __esm({
                 let mixRotate = getValue2(keyMap, "mixRotate", 1);
                 let mixX = getValue2(keyMap, "mixX", 1);
                 let mixY = getValue2(keyMap, "mixY", mixX);
-                for (let frame = 0, bezier = 0; ; frame++) {
+                for (let frame = 0, bezier2 = 0; ; frame++) {
                   timeline.setFrame(frame, time3, mixRotate, mixX, mixY);
                   let nextMap = timelineMap[frame + 1];
                   if (!nextMap) {
-                    timeline.shrink(bezier);
+                    timeline.shrink(bezier2);
                     break;
                   }
                   let time22 = getValue2(nextMap, "time", 0);
@@ -30097,9 +30097,9 @@ var init_SkeletonJson2 = __esm({
                   let mixY2 = getValue2(nextMap, "mixY", mixX2);
                   let curve = keyMap.curve;
                   if (curve) {
-                    bezier = readCurve2(curve, timeline, bezier, frame, 0, time3, time22, mixRotate, mixRotate2, 1);
-                    bezier = readCurve2(curve, timeline, bezier, frame, 1, time3, time22, mixX, mixX2, 1);
-                    bezier = readCurve2(curve, timeline, bezier, frame, 2, time3, time22, mixY, mixY2, 1);
+                    bezier2 = readCurve2(curve, timeline, bezier2, frame, 0, time3, time22, mixRotate, mixRotate2, 1);
+                    bezier2 = readCurve2(curve, timeline, bezier2, frame, 1, time3, time22, mixX, mixX2, 1);
+                    bezier2 = readCurve2(curve, timeline, bezier2, frame, 2, time3, time22, mixY, mixY2, 1);
                   }
                   time3 = time22;
                   mixRotate = mixRotate2;
@@ -30182,7 +30182,7 @@ var init_SkeletonJson2 = __esm({
                     let deformLength = weighted ? vertices.length / 3 * 2 : vertices.length;
                     let timeline = new DeformTimeline2(timelineMap.length, timelineMap.length, slotIndex, attachment);
                     let time3 = getValue2(keyMap, "time", 0);
-                    for (let frame = 0, bezier = 0; ; frame++) {
+                    for (let frame = 0, bezier2 = 0; ; frame++) {
                       let deform;
                       let verticesValue = getValue2(keyMap, "vertices", null);
                       if (!verticesValue)
@@ -30203,13 +30203,13 @@ var init_SkeletonJson2 = __esm({
                       timeline.setFrame(frame, time3, deform);
                       let nextMap = timelineMap[frame + 1];
                       if (!nextMap) {
-                        timeline.shrink(bezier);
+                        timeline.shrink(bezier2);
                         break;
                       }
                       let time22 = getValue2(nextMap, "time", 0);
                       let curve = keyMap.curve;
                       if (curve)
-                        bezier = readCurve2(curve, timeline, bezier, frame, 0, time3, time22, 0, 1, 1);
+                        bezier2 = readCurve2(curve, timeline, bezier2, frame, 0, time3, time22, 0, 1, 1);
                       time3 = time22;
                       keyMap = nextMap;
                     }
@@ -30348,7 +30348,7 @@ __export(dist_exports2, {
   AtlasAttachmentLoader: () => AtlasAttachmentLoader2,
   Attachment: () => Attachment3,
   AttachmentTimeline: () => AttachmentTimeline2,
-  BinaryInput: () => BinaryInput2,
+  BinaryInput: () => BinaryInput3,
   BlendMode: () => BlendMode2,
   Bone: () => Bone2,
   BoneData: () => BoneData2,
@@ -32049,9 +32049,9 @@ var init_Animation3 = __esm({
        * @param cy2 The value for the second Bezier handle.
        * @param time2 The time for the second key.
        * @param value2 The value for the second key. */
-      setBezier(bezier, frame, value, time1, value1, cx1, cy1, cx2, cy2, time22, value2) {
+      setBezier(bezier2, frame, value, time1, value1, cx1, cy1, cx2, cy2, time22, value2) {
         const curves = this.curves;
-        let i2 = this.getFrameCount() + bezier * 18;
+        let i2 = this.getFrameCount() + bezier2 * 18;
         if (value === 0)
           curves[frame] = 2 + i2;
         const tmpx = (time1 - cx1 * 2 + cx2) * 0.03, tmpy = (value1 - cy1 * 2 + cy2) * 0.03;
@@ -33550,9 +33550,9 @@ var init_Animation3 = __esm({
       }
       /** @param value1 Ignored (0 is used for a deform timeline).
        * @param value2 Ignored (1 is used for a deform timeline). */
-      setBezier(bezier, frame, value, time1, value1, cx1, cy1, cx2, cy2, time22, value2) {
+      setBezier(bezier2, frame, value, time1, value1, cx1, cy1, cx2, cy2, time22, value2) {
         const curves = this.curves;
-        let i2 = this.getFrameCount() + bezier * 18;
+        let i2 = this.getFrameCount() + bezier2 * 18;
         if (value === 0)
           curves[frame] = 2 + i2;
         const tmpx = (time1 - cx1 * 2 + cx2) * 0.03, tmpy = cy2 * 0.03 - cy1 * 0.06;
@@ -40223,17 +40223,17 @@ function readTimeline(input2, timelines, timeline, scale) {
 }
 function readTimeline15(input2, timelines, timeline, scale) {
   let time3 = input2.readFloat(), value = input2.readFloat() * scale;
-  for (let frame = 0, bezier = 0, frameLast = timeline.getFrameCount() - 1; ; frame++) {
+  for (let frame = 0, bezier2 = 0, frameLast = timeline.getFrameCount() - 1; ; frame++) {
     timeline.setFrame(frame, time3, value);
     if (frame === frameLast)
       break;
     const time22 = input2.readFloat(), value2 = input2.readFloat() * scale;
     switch (input2.readByte()) {
-      case CURVE_STEPPED3:
+      case CURVE_STEPPED4:
         timeline.setStepped(frame);
         break;
-      case CURVE_BEZIER3:
-        setBezier3(input2, timeline, bezier++, frame, 0, time3, time22, value, value2, scale);
+      case CURVE_BEZIER4:
+        setBezier3(input2, timeline, bezier2++, frame, 0, time3, time22, value, value2, scale);
     }
     time3 = time22;
     value = value2;
@@ -40242,18 +40242,18 @@ function readTimeline15(input2, timelines, timeline, scale) {
 }
 function readTimeline25(input2, timelines, timeline, scale) {
   let time3 = input2.readFloat(), value1 = input2.readFloat() * scale, value2 = input2.readFloat() * scale;
-  for (let frame = 0, bezier = 0, frameLast = timeline.getFrameCount() - 1; ; frame++) {
+  for (let frame = 0, bezier2 = 0, frameLast = timeline.getFrameCount() - 1; ; frame++) {
     timeline.setFrame(frame, time3, value1, value2);
     if (frame === frameLast)
       break;
     const time22 = input2.readFloat(), nvalue1 = input2.readFloat() * scale, nvalue2 = input2.readFloat() * scale;
     switch (input2.readByte()) {
-      case CURVE_STEPPED3:
+      case CURVE_STEPPED4:
         timeline.setStepped(frame);
         break;
-      case CURVE_BEZIER3:
-        setBezier3(input2, timeline, bezier++, frame, 0, time3, time22, value1, nvalue1, scale);
-        setBezier3(input2, timeline, bezier++, frame, 1, time3, time22, value2, nvalue2, scale);
+      case CURVE_BEZIER4:
+        setBezier3(input2, timeline, bezier2++, frame, 0, time3, time22, value1, nvalue1, scale);
+        setBezier3(input2, timeline, bezier2++, frame, 1, time3, time22, value2, nvalue2, scale);
     }
     time3 = time22;
     value1 = nvalue1;
@@ -40261,7 +40261,7 @@ function readTimeline25(input2, timelines, timeline, scale) {
   }
   timelines.push(timeline);
 }
-function readDrawOrder(input2, slotCount) {
+function readDrawOrder2(input2, slotCount) {
   const changeCount = input2.readInt(true);
   if (changeCount === 0)
     return null;
@@ -40281,10 +40281,10 @@ function readDrawOrder(input2, slotCount) {
       drawOrder[i2] = unchanged[--unchangedIndex];
   return drawOrder;
 }
-function setBezier3(input2, timeline, bezier, frame, value, time1, time22, value1, value2, scale) {
-  timeline.setBezier(bezier, frame, value, time1, value1, input2.readFloat(), input2.readFloat() * scale, input2.readFloat(), input2.readFloat() * scale, time22, value2);
+function setBezier3(input2, timeline, bezier2, frame, value, time1, time22, value1, value2, scale) {
+  timeline.setBezier(bezier2, frame, value, time1, value1, input2.readFloat(), input2.readFloat() * scale, input2.readFloat(), input2.readFloat() * scale, time22, value2);
 }
-var SkeletonBinary3, BinaryInput3, LinkedMesh5, Vertices3, AttachmentType3, BONE_ROTATE3, BONE_TRANSLATE3, BONE_TRANSLATEX3, BONE_TRANSLATEY3, BONE_SCALE3, BONE_SCALEX3, BONE_SCALEY3, BONE_SHEAR3, BONE_SHEARX3, BONE_SHEARY3, BONE_INHERIT2, SLOT_ATTACHMENT3, SLOT_RGBA4, SLOT_RGB4, SLOT_RGBA23, SLOT_RGB23, SLOT_ALPHA3, CONSTRAINT_IK, CONSTRAINT_PATH, CONSTRAINT_TRANSFORM, CONSTRAINT_PHYSICS, CONSTRAINT_SLIDER, ATTACHMENT_DEFORM3, ATTACHMENT_SEQUENCE3, PATH_POSITION3, PATH_SPACING3, PATH_MIX3, PHYSICS_INERTIA2, PHYSICS_STRENGTH2, PHYSICS_DAMPING2, PHYSICS_MASS2, PHYSICS_WIND2, PHYSICS_GRAVITY2, PHYSICS_MIX2, PHYSICS_RESET2, SLIDER_TIME, SLIDER_MIX, CURVE_STEPPED3, CURVE_BEZIER3;
+var SkeletonBinary3, BinaryInput4, LinkedMesh5, Vertices3, AttachmentType3, BONE_ROTATE3, BONE_TRANSLATE3, BONE_TRANSLATEX3, BONE_TRANSLATEY3, BONE_SCALE3, BONE_SCALEX3, BONE_SCALEY3, BONE_SHEAR3, BONE_SHEARX3, BONE_SHEARY3, BONE_INHERIT2, SLOT_ATTACHMENT3, SLOT_RGBA4, SLOT_RGB4, SLOT_RGBA23, SLOT_RGB23, SLOT_ALPHA3, CONSTRAINT_IK, CONSTRAINT_PATH, CONSTRAINT_TRANSFORM, CONSTRAINT_PHYSICS, CONSTRAINT_SLIDER, ATTACHMENT_DEFORM3, ATTACHMENT_SEQUENCE3, PATH_POSITION3, PATH_SPACING3, PATH_MIX3, PHYSICS_INERTIA2, PHYSICS_STRENGTH2, PHYSICS_DAMPING2, PHYSICS_MASS2, PHYSICS_WIND2, PHYSICS_GRAVITY2, PHYSICS_MIX2, PHYSICS_RESET2, SLIDER_TIME, SLIDER_MIX, CURVE_STEPPED4, CURVE_BEZIER4;
 var init_SkeletonBinary3 = __esm({
   "node_modules/spine-core-43/dist/SkeletonBinary.js"() {
     init_Animation3();
@@ -40317,7 +40317,7 @@ var init_SkeletonBinary3 = __esm({
         const scale = this.scale;
         const skeletonData = new SkeletonData3();
         skeletonData.name = "";
-        const input2 = new BinaryInput3(binary);
+        const input2 = new BinaryInput4(binary);
         const lowHash = input2.readInt32();
         const highHash = input2.readInt32();
         skeletonData.hash = highHash === 0 && lowHash === 0 ? null : highHash.toString(16) + lowHash.toString(16);
@@ -41010,7 +41010,7 @@ var init_SkeletonBinary3 = __esm({
                 let g = input2.readUnsignedByte() / 255;
                 let b = input2.readUnsignedByte() / 255;
                 let a = input2.readUnsignedByte() / 255;
-                for (let frame = 0, bezier = 0; ; frame++) {
+                for (let frame = 0, bezier2 = 0; ; frame++) {
                   timeline.setFrame(frame, time3, r, g, b, a);
                   if (frame === frameLast)
                     break;
@@ -41020,14 +41020,14 @@ var init_SkeletonBinary3 = __esm({
                   const b2 = input2.readUnsignedByte() / 255;
                   const a2 = input2.readUnsignedByte() / 255;
                   switch (input2.readByte()) {
-                    case CURVE_STEPPED3:
+                    case CURVE_STEPPED4:
                       timeline.setStepped(frame);
                       break;
-                    case CURVE_BEZIER3:
-                      setBezier3(input2, timeline, bezier++, frame, 0, time3, time22, r, r22, 1);
-                      setBezier3(input2, timeline, bezier++, frame, 1, time3, time22, g, g2, 1);
-                      setBezier3(input2, timeline, bezier++, frame, 2, time3, time22, b, b2, 1);
-                      setBezier3(input2, timeline, bezier++, frame, 3, time3, time22, a, a2, 1);
+                    case CURVE_BEZIER4:
+                      setBezier3(input2, timeline, bezier2++, frame, 0, time3, time22, r, r22, 1);
+                      setBezier3(input2, timeline, bezier2++, frame, 1, time3, time22, g, g2, 1);
+                      setBezier3(input2, timeline, bezier2++, frame, 2, time3, time22, b, b2, 1);
+                      setBezier3(input2, timeline, bezier2++, frame, 3, time3, time22, a, a2, 1);
                   }
                   time3 = time22;
                   r = r22;
@@ -41045,7 +41045,7 @@ var init_SkeletonBinary3 = __esm({
                 let r = input2.readUnsignedByte() / 255;
                 let g = input2.readUnsignedByte() / 255;
                 let b = input2.readUnsignedByte() / 255;
-                for (let frame = 0, bezier = 0; ; frame++) {
+                for (let frame = 0, bezier2 = 0; ; frame++) {
                   timeline.setFrame(frame, time3, r, g, b);
                   if (frame === frameLast)
                     break;
@@ -41054,13 +41054,13 @@ var init_SkeletonBinary3 = __esm({
                   const g2 = input2.readUnsignedByte() / 255;
                   const b2 = input2.readUnsignedByte() / 255;
                   switch (input2.readByte()) {
-                    case CURVE_STEPPED3:
+                    case CURVE_STEPPED4:
                       timeline.setStepped(frame);
                       break;
-                    case CURVE_BEZIER3:
-                      setBezier3(input2, timeline, bezier++, frame, 0, time3, time22, r, r22, 1);
-                      setBezier3(input2, timeline, bezier++, frame, 1, time3, time22, g, g2, 1);
-                      setBezier3(input2, timeline, bezier++, frame, 2, time3, time22, b, b2, 1);
+                    case CURVE_BEZIER4:
+                      setBezier3(input2, timeline, bezier2++, frame, 0, time3, time22, r, r22, 1);
+                      setBezier3(input2, timeline, bezier2++, frame, 1, time3, time22, g, g2, 1);
+                      setBezier3(input2, timeline, bezier2++, frame, 2, time3, time22, b, b2, 1);
                   }
                   time3 = time22;
                   r = r22;
@@ -41081,7 +41081,7 @@ var init_SkeletonBinary3 = __esm({
                 let r22 = input2.readUnsignedByte() / 255;
                 let g2 = input2.readUnsignedByte() / 255;
                 let b2 = input2.readUnsignedByte() / 255;
-                for (let frame = 0, bezier = 0; ; frame++) {
+                for (let frame = 0, bezier2 = 0; ; frame++) {
                   timeline.setFrame(frame, time3, r, g, b, a, r22, g2, b2);
                   if (frame === frameLast)
                     break;
@@ -41094,17 +41094,17 @@ var init_SkeletonBinary3 = __esm({
                   const ng2 = input2.readUnsignedByte() / 255;
                   const nb2 = input2.readUnsignedByte() / 255;
                   switch (input2.readByte()) {
-                    case CURVE_STEPPED3:
+                    case CURVE_STEPPED4:
                       timeline.setStepped(frame);
                       break;
-                    case CURVE_BEZIER3:
-                      setBezier3(input2, timeline, bezier++, frame, 0, time3, time22, r, nr, 1);
-                      setBezier3(input2, timeline, bezier++, frame, 1, time3, time22, g, ng, 1);
-                      setBezier3(input2, timeline, bezier++, frame, 2, time3, time22, b, nb, 1);
-                      setBezier3(input2, timeline, bezier++, frame, 3, time3, time22, a, na, 1);
-                      setBezier3(input2, timeline, bezier++, frame, 4, time3, time22, r22, nr2, 1);
-                      setBezier3(input2, timeline, bezier++, frame, 5, time3, time22, g2, ng2, 1);
-                      setBezier3(input2, timeline, bezier++, frame, 6, time3, time22, b2, nb2, 1);
+                    case CURVE_BEZIER4:
+                      setBezier3(input2, timeline, bezier2++, frame, 0, time3, time22, r, nr, 1);
+                      setBezier3(input2, timeline, bezier2++, frame, 1, time3, time22, g, ng, 1);
+                      setBezier3(input2, timeline, bezier2++, frame, 2, time3, time22, b, nb, 1);
+                      setBezier3(input2, timeline, bezier2++, frame, 3, time3, time22, a, na, 1);
+                      setBezier3(input2, timeline, bezier2++, frame, 4, time3, time22, r22, nr2, 1);
+                      setBezier3(input2, timeline, bezier2++, frame, 5, time3, time22, g2, ng2, 1);
+                      setBezier3(input2, timeline, bezier2++, frame, 6, time3, time22, b2, nb2, 1);
                   }
                   time3 = time22;
                   r = nr;
@@ -41128,7 +41128,7 @@ var init_SkeletonBinary3 = __esm({
                 let r22 = input2.readUnsignedByte() / 255;
                 let g2 = input2.readUnsignedByte() / 255;
                 let b2 = input2.readUnsignedByte() / 255;
-                for (let frame = 0, bezier = 0; ; frame++) {
+                for (let frame = 0, bezier2 = 0; ; frame++) {
                   timeline.setFrame(frame, time3, r, g, b, r22, g2, b2);
                   if (frame === frameLast)
                     break;
@@ -41140,16 +41140,16 @@ var init_SkeletonBinary3 = __esm({
                   const ng2 = input2.readUnsignedByte() / 255;
                   const nb2 = input2.readUnsignedByte() / 255;
                   switch (input2.readByte()) {
-                    case CURVE_STEPPED3:
+                    case CURVE_STEPPED4:
                       timeline.setStepped(frame);
                       break;
-                    case CURVE_BEZIER3:
-                      setBezier3(input2, timeline, bezier++, frame, 0, time3, time22, r, nr, 1);
-                      setBezier3(input2, timeline, bezier++, frame, 1, time3, time22, g, ng, 1);
-                      setBezier3(input2, timeline, bezier++, frame, 2, time3, time22, b, nb, 1);
-                      setBezier3(input2, timeline, bezier++, frame, 3, time3, time22, r22, nr2, 1);
-                      setBezier3(input2, timeline, bezier++, frame, 4, time3, time22, g2, ng2, 1);
-                      setBezier3(input2, timeline, bezier++, frame, 5, time3, time22, b2, nb2, 1);
+                    case CURVE_BEZIER4:
+                      setBezier3(input2, timeline, bezier2++, frame, 0, time3, time22, r, nr, 1);
+                      setBezier3(input2, timeline, bezier2++, frame, 1, time3, time22, g, ng, 1);
+                      setBezier3(input2, timeline, bezier2++, frame, 2, time3, time22, b, nb, 1);
+                      setBezier3(input2, timeline, bezier2++, frame, 3, time3, time22, r22, nr2, 1);
+                      setBezier3(input2, timeline, bezier2++, frame, 4, time3, time22, g2, ng2, 1);
+                      setBezier3(input2, timeline, bezier2++, frame, 5, time3, time22, b2, nb2, 1);
                   }
                   time3 = time22;
                   r = nr;
@@ -41165,18 +41165,18 @@ var init_SkeletonBinary3 = __esm({
               case SLOT_ALPHA3: {
                 const timeline = new AlphaTimeline3(frameCount2, input2.readInt(true), slotIndex);
                 let time3 = input2.readFloat(), a = input2.readUnsignedByte() / 255;
-                for (let frame = 0, bezier = 0; ; frame++) {
+                for (let frame = 0, bezier2 = 0; ; frame++) {
                   timeline.setFrame(frame, time3, a);
                   if (frame === frameLast)
                     break;
                   const time22 = input2.readFloat();
                   const a2 = input2.readUnsignedByte() / 255;
                   switch (input2.readByte()) {
-                    case CURVE_STEPPED3:
+                    case CURVE_STEPPED4:
                       timeline.setStepped(frame);
                       break;
-                    case CURVE_BEZIER3:
-                      setBezier3(input2, timeline, bezier++, frame, 0, time3, time22, a, a2, 1);
+                    case CURVE_BEZIER4:
+                      setBezier3(input2, timeline, bezier2++, frame, 0, time3, time22, a, a2, 1);
                   }
                   time3 = time22;
                   a = a2;
@@ -41239,7 +41239,7 @@ var init_SkeletonBinary3 = __esm({
           let flags = input2.readByte();
           let time3 = input2.readFloat(), mix = (flags & 1) !== 0 ? (flags & 2) !== 0 ? input2.readFloat() : 1 : 0;
           let softness = (flags & 4) !== 0 ? input2.readFloat() * scale : 0;
-          for (let frame = 0, bezier = 0; ; frame++) {
+          for (let frame = 0, bezier2 = 0; ; frame++) {
             timeline.setFrame(frame, time3, mix, softness, (flags & 8) !== 0 ? 1 : -1, (flags & 16) !== 0, (flags & 32) !== 0);
             if (frame === frameLast)
               break;
@@ -41249,8 +41249,8 @@ var init_SkeletonBinary3 = __esm({
             if ((flags & 64) !== 0) {
               timeline.setStepped(frame);
             } else if ((flags & 128) !== 0) {
-              setBezier3(input2, timeline, bezier++, frame, 0, time3, time22, mix, mix2, 1);
-              setBezier3(input2, timeline, bezier++, frame, 1, time3, time22, softness, softness2, scale);
+              setBezier3(input2, timeline, bezier2++, frame, 0, time3, time22, mix, mix2, 1);
+              setBezier3(input2, timeline, bezier2++, frame, 1, time3, time22, softness, softness2, scale);
             }
             time3 = time22;
             mix = mix2;
@@ -41262,22 +41262,22 @@ var init_SkeletonBinary3 = __esm({
           const index = input2.readInt(true), frameCount2 = input2.readInt(true), frameLast = frameCount2 - 1;
           const timeline = new TransformConstraintTimeline3(frameCount2, input2.readInt(true), index);
           let time3 = input2.readFloat(), mixRotate = input2.readFloat(), mixX = input2.readFloat(), mixY = input2.readFloat(), mixScaleX = input2.readFloat(), mixScaleY = input2.readFloat(), mixShearY = input2.readFloat();
-          for (let frame = 0, bezier = 0; ; frame++) {
+          for (let frame = 0, bezier2 = 0; ; frame++) {
             timeline.setFrame(frame, time3, mixRotate, mixX, mixY, mixScaleX, mixScaleY, mixShearY);
             if (frame === frameLast)
               break;
             const time22 = input2.readFloat(), mixRotate2 = input2.readFloat(), mixX2 = input2.readFloat(), mixY2 = input2.readFloat(), mixScaleX2 = input2.readFloat(), mixScaleY2 = input2.readFloat(), mixShearY2 = input2.readFloat();
             switch (input2.readByte()) {
-              case CURVE_STEPPED3:
+              case CURVE_STEPPED4:
                 timeline.setStepped(frame);
                 break;
-              case CURVE_BEZIER3:
-                setBezier3(input2, timeline, bezier++, frame, 0, time3, time22, mixRotate, mixRotate2, 1);
-                setBezier3(input2, timeline, bezier++, frame, 1, time3, time22, mixX, mixX2, 1);
-                setBezier3(input2, timeline, bezier++, frame, 2, time3, time22, mixY, mixY2, 1);
-                setBezier3(input2, timeline, bezier++, frame, 3, time3, time22, mixScaleX, mixScaleX2, 1);
-                setBezier3(input2, timeline, bezier++, frame, 4, time3, time22, mixScaleY, mixScaleY2, 1);
-                setBezier3(input2, timeline, bezier++, frame, 5, time3, time22, mixShearY, mixShearY2, 1);
+              case CURVE_BEZIER4:
+                setBezier3(input2, timeline, bezier2++, frame, 0, time3, time22, mixRotate, mixRotate2, 1);
+                setBezier3(input2, timeline, bezier2++, frame, 1, time3, time22, mixX, mixX2, 1);
+                setBezier3(input2, timeline, bezier2++, frame, 2, time3, time22, mixY, mixY2, 1);
+                setBezier3(input2, timeline, bezier2++, frame, 3, time3, time22, mixScaleX, mixScaleX2, 1);
+                setBezier3(input2, timeline, bezier2++, frame, 4, time3, time22, mixScaleY, mixScaleY2, 1);
+                setBezier3(input2, timeline, bezier2++, frame, 5, time3, time22, mixShearY, mixShearY2, 1);
             }
             time3 = time22;
             mixRotate = mixRotate2;
@@ -41304,19 +41304,19 @@ var init_SkeletonBinary3 = __esm({
               case PATH_MIX3: {
                 const timeline = new PathConstraintMixTimeline3(frameCount2, bezierCount, index);
                 let time3 = input2.readFloat(), mixRotate = input2.readFloat(), mixX = input2.readFloat(), mixY = input2.readFloat();
-                for (let frame = 0, bezier = 0, frameLast = timeline.getFrameCount() - 1; ; frame++) {
+                for (let frame = 0, bezier2 = 0, frameLast = timeline.getFrameCount() - 1; ; frame++) {
                   timeline.setFrame(frame, time3, mixRotate, mixX, mixY);
                   if (frame === frameLast)
                     break;
                   const time22 = input2.readFloat(), mixRotate2 = input2.readFloat(), mixX2 = input2.readFloat(), mixY2 = input2.readFloat();
                   switch (input2.readByte()) {
-                    case CURVE_STEPPED3:
+                    case CURVE_STEPPED4:
                       timeline.setStepped(frame);
                       break;
-                    case CURVE_BEZIER3:
-                      setBezier3(input2, timeline, bezier++, frame, 0, time3, time22, mixRotate, mixRotate2, 1);
-                      setBezier3(input2, timeline, bezier++, frame, 1, time3, time22, mixX, mixX2, 1);
-                      setBezier3(input2, timeline, bezier++, frame, 2, time3, time22, mixY, mixY2, 1);
+                    case CURVE_BEZIER4:
+                      setBezier3(input2, timeline, bezier2++, frame, 0, time3, time22, mixRotate, mixRotate2, 1);
+                      setBezier3(input2, timeline, bezier2++, frame, 1, time3, time22, mixX, mixX2, 1);
+                      setBezier3(input2, timeline, bezier2++, frame, 2, time3, time22, mixY, mixY2, 1);
                   }
                   time3 = time22;
                   mixRotate = mixRotate2;
@@ -41404,7 +41404,7 @@ var init_SkeletonBinary3 = __esm({
                   const bezierCount = input2.readInt(true);
                   const timeline = new DeformTimeline3(frameCount2, bezierCount, slotIndex, vertexAttachment);
                   let time3 = input2.readFloat();
-                  for (let frame = 0, bezier = 0; ; frame++) {
+                  for (let frame = 0, bezier2 = 0; ; frame++) {
                     let deform;
                     let end = input2.readInt(true);
                     if (end === 0)
@@ -41430,11 +41430,11 @@ var init_SkeletonBinary3 = __esm({
                       break;
                     const time22 = input2.readFloat();
                     switch (input2.readByte()) {
-                      case CURVE_STEPPED3:
+                      case CURVE_STEPPED4:
                         timeline.setStepped(frame);
                         break;
-                      case CURVE_BEZIER3:
-                        setBezier3(input2, timeline, bezier++, frame, 0, time3, time22, 0, 1, 1);
+                      case CURVE_BEZIER4:
+                        setBezier3(input2, timeline, bezier2++, frame, 0, time3, time22, 0, 1, 1);
                     }
                     time3 = time22;
                   }
@@ -41460,7 +41460,7 @@ var init_SkeletonBinary3 = __esm({
         if (drawOrderCount > 0) {
           const timeline = new DrawOrderTimeline3(drawOrderCount);
           for (let i2 = 0; i2 < drawOrderCount; i2++)
-            timeline.setFrame(i2, input2.readFloat(), readDrawOrder(input2, slotCount));
+            timeline.setFrame(i2, input2.readFloat(), readDrawOrder2(input2, slotCount));
           timelines.push(timeline);
         }
         const folderCount = input2.readInt(true);
@@ -41472,7 +41472,7 @@ var init_SkeletonBinary3 = __esm({
           const keyCount = input2.readInt(true);
           const timeline = new DrawOrderFolderTimeline(keyCount, folderSlots, slotCount);
           for (let ii = 0; ii < keyCount; ii++)
-            timeline.setFrame(ii, input2.readFloat(), readDrawOrder(input2, folderSlotCount));
+            timeline.setFrame(ii, input2.readFloat(), readDrawOrder2(input2, folderSlotCount));
           timelines.push(timeline);
         }
         const eventCount = input2.readInt(true);
@@ -41504,7 +41504,7 @@ var init_SkeletonBinary3 = __esm({
         return animation;
       }
     };
-    BinaryInput3 = class {
+    BinaryInput4 = class {
       strings;
       index;
       buffer;
@@ -41664,8 +41664,8 @@ var init_SkeletonBinary3 = __esm({
     PHYSICS_RESET2 = 8;
     SLIDER_TIME = 0;
     SLIDER_MIX = 1;
-    CURVE_STEPPED3 = 1;
-    CURVE_BEZIER3 = 2;
+    CURVE_STEPPED4 = 1;
+    CURVE_BEZIER4 = 2;
   }
 });
 
@@ -42842,19 +42842,19 @@ function readTimeline16(timelines, keys, timeline, defaultValue, scale) {
   let keyMap = keys[0];
   let time3 = keyMap.time ?? 0;
   let value = (keyMap.value ?? defaultValue) * scale;
-  let bezier = 0;
+  let bezier2 = 0;
   for (let frame = 0; ; frame++) {
     timeline.setFrame(frame, time3, value);
     const nextMap = keys[frame + 1];
     if (!nextMap) {
-      timeline.shrink(bezier);
+      timeline.shrink(bezier2);
       timelines.push(timeline);
       return;
     }
     const time22 = nextMap.time ?? 0;
     const value2 = (nextMap.value ?? defaultValue) * scale;
     if (keyMap.curve)
-      bezier = readCurve3(keyMap.curve, timeline, bezier, frame, 0, time3, time22, value, value2, scale);
+      bezier2 = readCurve3(keyMap.curve, timeline, bezier2, frame, 0, time3, time22, value, value2, scale);
     time3 = time22;
     value = value2;
     keyMap = nextMap;
@@ -42865,12 +42865,12 @@ function readTimeline26(timelines, keys, timeline, name1, name2, defaultValue, s
   let time3 = keyMap.time ?? 0;
   let value1 = (keyMap[name1] ?? defaultValue) * scale;
   let value2 = (keyMap[name2] ?? defaultValue) * scale;
-  let bezier = 0;
+  let bezier2 = 0;
   for (let frame = 0; ; frame++) {
     timeline.setFrame(frame, time3, value1, value2);
     const nextMap = keys[frame + 1];
     if (!nextMap) {
-      timeline.shrink(bezier);
+      timeline.shrink(bezier2);
       timelines.push(timeline);
       return;
     }
@@ -42879,8 +42879,8 @@ function readTimeline26(timelines, keys, timeline, name1, name2, defaultValue, s
     const nvalue2 = (nextMap[name2] ?? defaultValue) * scale;
     const curve = keyMap.curve;
     if (curve) {
-      bezier = readCurve3(curve, timeline, bezier, frame, 0, time3, time22, value1, nvalue1, scale);
-      bezier = readCurve3(curve, timeline, bezier, frame, 1, time3, time22, value2, nvalue2, scale);
+      bezier2 = readCurve3(curve, timeline, bezier2, frame, 0, time3, time22, value1, nvalue1, scale);
+      bezier2 = readCurve3(curve, timeline, bezier2, frame, 1, time3, time22, value2, nvalue2, scale);
     }
     time3 = time22;
     value1 = nvalue1;
@@ -42888,7 +42888,7 @@ function readTimeline26(timelines, keys, timeline, name1, name2, defaultValue, s
     keyMap = nextMap;
   }
 }
-function readDrawOrder2(skeletonData, keys, slotCount, folderSlots) {
+function readDrawOrder3(skeletonData, keys, slotCount, folderSlots) {
   const changes = keys.offsets;
   if (!changes)
     return null;
@@ -42924,18 +42924,18 @@ function readDrawOrder2(skeletonData, keys, slotCount, folderSlots) {
       drawOrder[i2] = unchanged[--unchangedIndex];
   return drawOrder;
 }
-function readCurve3(curve, timeline, bezier, frame, value, time1, time22, value1, value2, scale) {
+function readCurve3(curve, timeline, bezier2, frame, value, time1, time22, value1, value2, scale) {
   if (curve === "stepped") {
     timeline.setStepped(frame);
-    return bezier;
+    return bezier2;
   }
   const i2 = value << 2;
   const cx1 = curve[i2];
   const cy1 = curve[i2 + 1] * scale;
   const cx2 = curve[i2 + 2];
   const cy2 = curve[i2 + 3] * scale;
-  timeline.setBezier(bezier, frame, value, time1, value1, cx1, cy1, cx2, cy2, time22, value2);
-  return bezier + 1;
+  timeline.setBezier(bezier2, frame, value, time1, value1, cx1, cy1, cx2, cy2, time22, value2);
+  return bezier2 + 1;
 }
 function getValue3(map2, property, defaultValue) {
   return map2[property] !== void 0 ? map2[property] : defaultValue;
@@ -43611,21 +43611,21 @@ var init_SkeletonJson3 = __esm({
                   let keyMap = timelineMap[0];
                   let time3 = getValue3(keyMap, "time", 0);
                   let color2 = Color3.fromString(keyMap.color);
-                  for (let frame = 0, bezier = 0; ; frame++) {
+                  for (let frame = 0, bezier2 = 0; ; frame++) {
                     timeline.setFrame(frame, time3, color2.r, color2.g, color2.b, color2.a);
                     const nextMap = timelineMap[frame + 1];
                     if (!nextMap) {
-                      timeline.shrink(bezier);
+                      timeline.shrink(bezier2);
                       break;
                     }
                     const time22 = getValue3(nextMap, "time", 0);
                     const newColor = Color3.fromString(nextMap.color);
                     const curve = keyMap.curve;
                     if (curve) {
-                      bezier = readCurve3(curve, timeline, bezier, frame, 0, time3, time22, color2.r, newColor.r, 1);
-                      bezier = readCurve3(curve, timeline, bezier, frame, 1, time3, time22, color2.g, newColor.g, 1);
-                      bezier = readCurve3(curve, timeline, bezier, frame, 2, time3, time22, color2.b, newColor.b, 1);
-                      bezier = readCurve3(curve, timeline, bezier, frame, 3, time3, time22, color2.a, newColor.a, 1);
+                      bezier2 = readCurve3(curve, timeline, bezier2, frame, 0, time3, time22, color2.r, newColor.r, 1);
+                      bezier2 = readCurve3(curve, timeline, bezier2, frame, 1, time3, time22, color2.g, newColor.g, 1);
+                      bezier2 = readCurve3(curve, timeline, bezier2, frame, 2, time3, time22, color2.b, newColor.b, 1);
+                      bezier2 = readCurve3(curve, timeline, bezier2, frame, 3, time3, time22, color2.a, newColor.a, 1);
                     }
                     time3 = time22;
                     color2 = newColor;
@@ -43639,20 +43639,20 @@ var init_SkeletonJson3 = __esm({
                   let keyMap = timelineMap[0];
                   let time3 = getValue3(keyMap, "time", 0);
                   let color2 = Color3.fromString(keyMap.color);
-                  for (let frame = 0, bezier = 0; ; frame++) {
+                  for (let frame = 0, bezier2 = 0; ; frame++) {
                     timeline.setFrame(frame, time3, color2.r, color2.g, color2.b);
                     const nextMap = timelineMap[frame + 1];
                     if (!nextMap) {
-                      timeline.shrink(bezier);
+                      timeline.shrink(bezier2);
                       break;
                     }
                     const time22 = getValue3(nextMap, "time", 0);
                     const newColor = Color3.fromString(nextMap.color);
                     const curve = keyMap.curve;
                     if (curve) {
-                      bezier = readCurve3(curve, timeline, bezier, frame, 0, time3, time22, color2.r, newColor.r, 1);
-                      bezier = readCurve3(curve, timeline, bezier, frame, 1, time3, time22, color2.g, newColor.g, 1);
-                      bezier = readCurve3(curve, timeline, bezier, frame, 2, time3, time22, color2.b, newColor.b, 1);
+                      bezier2 = readCurve3(curve, timeline, bezier2, frame, 0, time3, time22, color2.r, newColor.r, 1);
+                      bezier2 = readCurve3(curve, timeline, bezier2, frame, 1, time3, time22, color2.g, newColor.g, 1);
+                      bezier2 = readCurve3(curve, timeline, bezier2, frame, 2, time3, time22, color2.b, newColor.b, 1);
                     }
                     time3 = time22;
                     color2 = newColor;
@@ -43671,11 +43671,11 @@ var init_SkeletonJson3 = __esm({
                   let time3 = getValue3(keyMap, "time", 0);
                   let color2 = Color3.fromString(keyMap.light);
                   let color22 = Color3.fromString(keyMap.dark);
-                  for (let frame = 0, bezier = 0; ; frame++) {
+                  for (let frame = 0, bezier2 = 0; ; frame++) {
                     timeline.setFrame(frame, time3, color2.r, color2.g, color2.b, color2.a, color22.r, color22.g, color22.b);
                     const nextMap = timelineMap[frame + 1];
                     if (!nextMap) {
-                      timeline.shrink(bezier);
+                      timeline.shrink(bezier2);
                       break;
                     }
                     const time22 = getValue3(nextMap, "time", 0);
@@ -43683,13 +43683,13 @@ var init_SkeletonJson3 = __esm({
                     const newColor2 = Color3.fromString(nextMap.dark);
                     const curve = keyMap.curve;
                     if (curve) {
-                      bezier = readCurve3(curve, timeline, bezier, frame, 0, time3, time22, color2.r, newColor.r, 1);
-                      bezier = readCurve3(curve, timeline, bezier, frame, 1, time3, time22, color2.g, newColor.g, 1);
-                      bezier = readCurve3(curve, timeline, bezier, frame, 2, time3, time22, color2.b, newColor.b, 1);
-                      bezier = readCurve3(curve, timeline, bezier, frame, 3, time3, time22, color2.a, newColor.a, 1);
-                      bezier = readCurve3(curve, timeline, bezier, frame, 4, time3, time22, color22.r, newColor2.r, 1);
-                      bezier = readCurve3(curve, timeline, bezier, frame, 5, time3, time22, color22.g, newColor2.g, 1);
-                      bezier = readCurve3(curve, timeline, bezier, frame, 6, time3, time22, color22.b, newColor2.b, 1);
+                      bezier2 = readCurve3(curve, timeline, bezier2, frame, 0, time3, time22, color2.r, newColor.r, 1);
+                      bezier2 = readCurve3(curve, timeline, bezier2, frame, 1, time3, time22, color2.g, newColor.g, 1);
+                      bezier2 = readCurve3(curve, timeline, bezier2, frame, 2, time3, time22, color2.b, newColor.b, 1);
+                      bezier2 = readCurve3(curve, timeline, bezier2, frame, 3, time3, time22, color2.a, newColor.a, 1);
+                      bezier2 = readCurve3(curve, timeline, bezier2, frame, 4, time3, time22, color22.r, newColor2.r, 1);
+                      bezier2 = readCurve3(curve, timeline, bezier2, frame, 5, time3, time22, color22.g, newColor2.g, 1);
+                      bezier2 = readCurve3(curve, timeline, bezier2, frame, 6, time3, time22, color22.b, newColor2.b, 1);
                     }
                     time3 = time22;
                     color2 = newColor;
@@ -43705,11 +43705,11 @@ var init_SkeletonJson3 = __esm({
                   let time3 = getValue3(keyMap, "time", 0);
                   let color2 = Color3.fromString(keyMap.light);
                   let color22 = Color3.fromString(keyMap.dark);
-                  for (let frame = 0, bezier = 0; ; frame++) {
+                  for (let frame = 0, bezier2 = 0; ; frame++) {
                     timeline.setFrame(frame, time3, color2.r, color2.g, color2.b, color22.r, color22.g, color22.b);
                     const nextMap = timelineMap[frame + 1];
                     if (!nextMap) {
-                      timeline.shrink(bezier);
+                      timeline.shrink(bezier2);
                       break;
                     }
                     const time22 = getValue3(nextMap, "time", 0);
@@ -43717,12 +43717,12 @@ var init_SkeletonJson3 = __esm({
                     const newColor2 = Color3.fromString(nextMap.dark);
                     const curve = keyMap.curve;
                     if (curve) {
-                      bezier = readCurve3(curve, timeline, bezier, frame, 0, time3, time22, color2.r, newColor.r, 1);
-                      bezier = readCurve3(curve, timeline, bezier, frame, 1, time3, time22, color2.g, newColor.g, 1);
-                      bezier = readCurve3(curve, timeline, bezier, frame, 2, time3, time22, color2.b, newColor.b, 1);
-                      bezier = readCurve3(curve, timeline, bezier, frame, 3, time3, time22, color22.r, newColor2.r, 1);
-                      bezier = readCurve3(curve, timeline, bezier, frame, 4, time3, time22, color22.g, newColor2.g, 1);
-                      bezier = readCurve3(curve, timeline, bezier, frame, 5, time3, time22, color22.b, newColor2.b, 1);
+                      bezier2 = readCurve3(curve, timeline, bezier2, frame, 0, time3, time22, color2.r, newColor.r, 1);
+                      bezier2 = readCurve3(curve, timeline, bezier2, frame, 1, time3, time22, color2.g, newColor.g, 1);
+                      bezier2 = readCurve3(curve, timeline, bezier2, frame, 2, time3, time22, color2.b, newColor.b, 1);
+                      bezier2 = readCurve3(curve, timeline, bezier2, frame, 3, time3, time22, color22.r, newColor2.r, 1);
+                      bezier2 = readCurve3(curve, timeline, bezier2, frame, 4, time3, time22, color22.g, newColor2.g, 1);
+                      bezier2 = readCurve3(curve, timeline, bezier2, frame, 5, time3, time22, color22.b, newColor2.b, 1);
                     }
                     time3 = time22;
                     color2 = newColor;
@@ -43809,11 +43809,11 @@ var init_SkeletonJson3 = __esm({
             let time3 = getValue3(keyMap, "time", 0);
             let mix = getValue3(keyMap, "mix", 1);
             let softness = getValue3(keyMap, "softness", 0) * scale;
-            for (let frame = 0, bezier = 0; ; frame++) {
+            for (let frame = 0, bezier2 = 0; ; frame++) {
               timeline.setFrame(frame, time3, mix, softness, getValue3(keyMap, "bendPositive", true) ? 1 : -1, getValue3(keyMap, "compress", false), getValue3(keyMap, "stretch", false));
               const nextMap = constraintMap[frame + 1];
               if (!nextMap) {
-                timeline.shrink(bezier);
+                timeline.shrink(bezier2);
                 break;
               }
               const time22 = getValue3(nextMap, "time", 0);
@@ -43821,8 +43821,8 @@ var init_SkeletonJson3 = __esm({
               const softness2 = getValue3(nextMap, "softness", 0) * scale;
               const curve = keyMap.curve;
               if (curve) {
-                bezier = readCurve3(curve, timeline, bezier, frame, 0, time3, time22, mix, mix2, 1);
-                bezier = readCurve3(curve, timeline, bezier, frame, 1, time3, time22, softness, softness2, scale);
+                bezier2 = readCurve3(curve, timeline, bezier2, frame, 0, time3, time22, mix, mix2, 1);
+                bezier2 = readCurve3(curve, timeline, bezier2, frame, 1, time3, time22, softness, softness2, scale);
               }
               time3 = time22;
               mix = mix2;
@@ -43847,11 +43847,11 @@ var init_SkeletonJson3 = __esm({
             let mixX = getValue3(keyMap, "mixX", 1), mixY = getValue3(keyMap, "mixY", mixX);
             let mixScaleX = getValue3(keyMap, "mixScaleX", 1), mixScaleY = getValue3(keyMap, "mixScaleY", 1);
             let mixShearY = getValue3(keyMap, "mixShearY", 1);
-            for (let frame = 0, bezier = 0; ; frame++) {
+            for (let frame = 0, bezier2 = 0; ; frame++) {
               timeline.setFrame(frame, time3, mixRotate, mixX, mixY, mixScaleX, mixScaleY, mixShearY);
               const nextMap = timelineMap[frame + 1];
               if (!nextMap) {
-                timeline.shrink(bezier);
+                timeline.shrink(bezier2);
                 break;
               }
               const time22 = getValue3(nextMap, "time", 0);
@@ -43861,12 +43861,12 @@ var init_SkeletonJson3 = __esm({
               const mixShearY2 = getValue3(nextMap, "mixShearY", 1);
               const curve = keyMap.curve;
               if (curve) {
-                bezier = readCurve3(curve, timeline, bezier, frame, 0, time3, time22, mixRotate, mixRotate2, 1);
-                bezier = readCurve3(curve, timeline, bezier, frame, 1, time3, time22, mixX, mixX2, 1);
-                bezier = readCurve3(curve, timeline, bezier, frame, 2, time3, time22, mixY, mixY2, 1);
-                bezier = readCurve3(curve, timeline, bezier, frame, 3, time3, time22, mixScaleX, mixScaleX2, 1);
-                bezier = readCurve3(curve, timeline, bezier, frame, 4, time3, time22, mixScaleY, mixScaleY2, 1);
-                bezier = readCurve3(curve, timeline, bezier, frame, 5, time3, time22, mixShearY, mixShearY2, 1);
+                bezier2 = readCurve3(curve, timeline, bezier2, frame, 0, time3, time22, mixRotate, mixRotate2, 1);
+                bezier2 = readCurve3(curve, timeline, bezier2, frame, 1, time3, time22, mixX, mixX2, 1);
+                bezier2 = readCurve3(curve, timeline, bezier2, frame, 2, time3, time22, mixY, mixY2, 1);
+                bezier2 = readCurve3(curve, timeline, bezier2, frame, 3, time3, time22, mixScaleX, mixScaleX2, 1);
+                bezier2 = readCurve3(curve, timeline, bezier2, frame, 4, time3, time22, mixScaleY, mixScaleY2, 1);
+                bezier2 = readCurve3(curve, timeline, bezier2, frame, 5, time3, time22, mixShearY, mixShearY2, 1);
               }
               time3 = time22;
               mixRotate = mixRotate2;
@@ -43910,11 +43910,11 @@ var init_SkeletonJson3 = __esm({
                   let mixRotate = getValue3(keyMap, "mixRotate", 1);
                   let mixX = getValue3(keyMap, "mixX", 1);
                   let mixY = getValue3(keyMap, "mixY", mixX);
-                  for (let frame = 0, bezier = 0; ; frame++) {
+                  for (let frame = 0, bezier2 = 0; ; frame++) {
                     timeline.setFrame(frame, time3, mixRotate, mixX, mixY);
                     const nextMap = timelineMap[frame + 1];
                     if (!nextMap) {
-                      timeline.shrink(bezier);
+                      timeline.shrink(bezier2);
                       break;
                     }
                     const time22 = getValue3(nextMap, "time", 0);
@@ -43923,9 +43923,9 @@ var init_SkeletonJson3 = __esm({
                     const mixY2 = getValue3(nextMap, "mixY", mixX2);
                     const curve = keyMap.curve;
                     if (curve) {
-                      bezier = readCurve3(curve, timeline, bezier, frame, 0, time3, time22, mixRotate, mixRotate2, 1);
-                      bezier = readCurve3(curve, timeline, bezier, frame, 1, time3, time22, mixX, mixX2, 1);
-                      bezier = readCurve3(curve, timeline, bezier, frame, 2, time3, time22, mixY, mixY2, 1);
+                      bezier2 = readCurve3(curve, timeline, bezier2, frame, 0, time3, time22, mixRotate, mixRotate2, 1);
+                      bezier2 = readCurve3(curve, timeline, bezier2, frame, 1, time3, time22, mixX, mixX2, 1);
+                      bezier2 = readCurve3(curve, timeline, bezier2, frame, 2, time3, time22, mixY, mixY2, 1);
                     }
                     time3 = time22;
                     mixRotate = mixRotate2;
@@ -44048,7 +44048,7 @@ var init_SkeletonJson3 = __esm({
                     const deformLength = weighted ? vertices.length / 3 * 2 : vertices.length;
                     const timeline = new DeformTimeline3(timelineMap.length, timelineMap.length, slotIndex, attachment);
                     let time3 = getValue3(keyMap, "time", 0);
-                    for (let frame = 0, bezier = 0; ; frame++) {
+                    for (let frame = 0, bezier2 = 0; ; frame++) {
                       let deform;
                       const verticesValue = getValue3(keyMap, "vertices", null);
                       if (!verticesValue)
@@ -44069,13 +44069,13 @@ var init_SkeletonJson3 = __esm({
                       timeline.setFrame(frame, time3, deform);
                       const nextMap = timelineMap[frame + 1];
                       if (!nextMap) {
-                        timeline.shrink(bezier);
+                        timeline.shrink(bezier2);
                         break;
                       }
                       const time22 = getValue3(nextMap, "time", 0);
                       const curve = keyMap.curve;
                       if (curve)
-                        bezier = readCurve3(curve, timeline, bezier, frame, 0, time3, time22, 0, 1, 1);
+                        bezier2 = readCurve3(curve, timeline, bezier2, frame, 0, time3, time22, 0, 1, 1);
                       time3 = time22;
                       keyMap = nextMap;
                     }
@@ -44104,7 +44104,7 @@ var init_SkeletonJson3 = __esm({
           const slotCount = skeletonData.slots.length;
           let frame = 0;
           for (const drawOrderMap of map2.drawOrder) {
-            timeline.setFrame(frame++, getValue3(drawOrderMap, "time", 0), readDrawOrder2(skeletonData, drawOrderMap, slotCount, null));
+            timeline.setFrame(frame++, getValue3(drawOrderMap, "time", 0), readDrawOrder3(skeletonData, drawOrderMap, slotCount, null));
           }
           timelines.push(timeline);
         }
@@ -44123,7 +44123,7 @@ var init_SkeletonJson3 = __esm({
             const timeline = new DrawOrderFolderTimeline(drawOrderFolderEntries.length, folderSlots, skeletonData.slots.length);
             let frame = 0;
             for (const drawOrderFolderMap of drawOrderFolderEntries) {
-              timeline.setFrame(frame++, getValue3(drawOrderFolderMap, "time", 0), readDrawOrder2(skeletonData, drawOrderFolderMap, folderSlots.length, folderSlots));
+              timeline.setFrame(frame++, getValue3(drawOrderFolderMap, "time", 0), readDrawOrder3(skeletonData, drawOrderFolderMap, folderSlots.length, folderSlots));
             }
             timelines.push(timeline);
           }
@@ -44654,7 +44654,7 @@ __export(dist_exports3, {
   AtlasAttachmentLoader: () => AtlasAttachmentLoader3,
   Attachment: () => Attachment4,
   AttachmentTimeline: () => AttachmentTimeline3,
-  BinaryInput: () => BinaryInput3,
+  BinaryInput: () => BinaryInput4,
   BlendMode: () => BlendMode3,
   Bone: () => Bone3,
   BoneData: () => BoneData3,
@@ -74323,6 +74323,18 @@ var Emitter = external_exports.object({
   pivot: Point.default([0.5, 0.5]),
   /** false: ignore colour/gradient tint (keep the texture's own colours). */
   colorize: external_exports.boolean().default(true),
+  /** Several sprites per emitter. Non-empty `frames` replaces `texture`. */
+  sprite: external_exports.object({
+    frames: external_exports.array(external_exports.string()).default([]),
+    /** random: each particle keeps one random frame. flipbook: frames play in order over the particle's life */
+    mode: external_exports.enum(["random", "flipbook"]).default("flipbook"),
+    /** flipbook frames per second; 0 = play the frames once across the particle's lifetime */
+    fps: external_exports.number().min(0).default(12),
+    /** flipbook: wrap around (true) or hold the last frame */
+    loop: external_exports.boolean().default(true),
+    /** flipbook: each particle starts on a random frame */
+    randomStart: external_exports.boolean().default(false)
+  }).prefault({}),
   blend: external_exports.enum(["normal", "additive", "multiply", "screen"]).default("additive"),
   simulationSpace: external_exports.enum(["world", "local"]).default("local"),
   emission: external_exports.object({
@@ -74391,8 +74403,25 @@ var Emitter = external_exports.object({
     color: Gradient.optional(),
     alignToVelocity: external_exports.boolean().default(false)
   }).prefault({}),
-  affectors: external_exports.array(Affector).default([])
+  affectors: external_exports.array(Affector).default([]),
+  /** A smooth textured strip trailing behind the emitter's path (needs motion, or a character trail). */
+  ribbon: external_exports.object({
+    enabled: external_exports.boolean().default(false),
+    /** seconds of path history the strip covers */
+    length: external_exports.number().positive().max(5).default(0.35),
+    /** strip resolution (quads along the length) */
+    segments: external_exports.number().int().min(2).max(64).default(16),
+    /** px at the head */
+    width: external_exports.number().min(0).default(28),
+    /** width multiplier from head (t=0) to tail (t=1) */
+    widthOverLength: Curve.default([[0, 1], [1, 0]]),
+    /** builtin "ribbon" fades along its length; any texture works (u runs head → tail) */
+    texture: external_exports.string().default("ribbon"),
+    color: Hex.default("#ffffff"),
+    alpha: external_exports.number().min(0).max(1).default(1)
+  }).prefault({})
 });
+var emitterSprites = (e) => e.sprite?.frames?.length ? e.sprite.frames : [e.texture];
 var Attachment = external_exports.object({
   /** character skeleton JSON path (relative to SPINEMAGIC_HOME); stored so tools and the editor can re-attach */
   character: external_exports.string().optional(),
@@ -74655,6 +74684,8 @@ function simulateEmitter(effect, e, emitterIndex2, period) {
   const noiseSeed = hash2(effect.seed, emitterIndex2, 999);
   const affectors = e.affectors.filter((a) => a.enabled);
   const stretch = affectors.find((a) => a.type === "velocityStretch");
+  const sp = e.sprite;
+  const nFrames = emitterSprites(e).length;
   return spawnSchedule(e, period, effect.loop).map(({ time: birth, spreadFrac }, i2) => {
     const rand = rng(hash2(effect.seed, emitterIndex2, i2));
     const life = Math.max(1e-3, sample(e.initial.lifetime, rand));
@@ -74680,6 +74711,14 @@ function simulateEmitter(effect, e, emitterIndex2, period) {
     const alpha0 = sample(e.initial.alpha, rand);
     const weight = Math.max(0.01, sample(e.initial.weight, rand));
     const windStrength = affectors.map((a) => a.type === "wind" ? sample(a.strength, rand) : 0);
+    const randomFrame = Math.floor(rng(hash2(effect.seed, emitterIndex2, i2, 77))() * nFrames) % nFrames;
+    const frameAt = (age2, t) => {
+      if (nFrames === 1) return 0;
+      if (sp.mode === "random") return randomFrame;
+      let k = sp.fps > 0 ? Math.floor(age2 * sp.fps + 1e-6) : Math.min(nFrames - 1, Math.floor(t * nFrames));
+      if (sp.randomStart) k += randomFrame;
+      return sp.loop ? k % nFrames : Math.min(nFrames - 1, k);
+    };
     const worldPos = (t) => {
       if (!local) return [x2, y];
       const [cx, cy] = emitterOrigin(e, period, t);
@@ -74716,9 +74755,9 @@ function simulateEmitter(effect, e, emitterIndex2, period) {
                 vx *= Math.exp(-a.amount * a.x * dt);
                 vy *= Math.exp(-a.amount * a.y * dt);
               } else {
-                const sp = Math.hypot(vx, vy) * 0.01 * a.amount * dt;
-                vx /= 1 + sp * a.x;
-                vy /= 1 + sp * a.y;
+                const sp2 = Math.hypot(vx, vy) * 0.01 * a.amount * dt;
+                vx /= 1 + sp2 * a.x;
+                vy /= 1 + sp2 * a.y;
               }
               break;
             }
@@ -74773,14 +74812,14 @@ function simulateEmitter(effect, e, emitterIndex2, period) {
       let w = size0 * evalCurve(e.overLifetime.size, t);
       let h = size0 * evalCurve(e.overLifetime.sizeY ?? e.overLifetime.size, t);
       if (stretch?.type === "velocityStretch") {
-        const sp = Math.hypot(vx, vy) * k;
-        const st = Math.min(stretch.max, 1 + Math.max(0, sp - stretch.minSpeed) * stretch.amount / 100);
+        const sp2 = Math.hypot(vx, vy) * k;
+        const st = Math.min(stretch.max, 1 + Math.max(0, sp2 - stretch.minSpeed) * stretch.amount / 100);
         w *= st;
         h /= Math.pow(st, stretch.volume);
       }
       const [r, g, b] = !e.colorize ? [1, 1, 1] : e.overLifetime.color ? mul(evalGradient(e.overLifetime.color, t), baseColor) : baseColor;
       const [wx, wy] = worldPos(birth + age);
-      samples.push({ x: wx, y: wy, rotation, size: w, sizeY: h, r, g, b, a: clamp01(alpha0 * evalCurve(e.overLifetime.alpha, t)) });
+      samples.push({ x: wx, y: wy, rotation, size: w, sizeY: h, r, g, b, a: clamp01(alpha0 * evalCurve(e.overLifetime.alpha, t)), frame: frameAt(age, t) });
     }
     return { startFrame, samples };
   }).filter((p) => p.samples.length > 0);
@@ -75759,6 +75798,37 @@ var BUILTIN = {
   dash: { w: 64, h: 8, desc: "thin rounded bar \u2014 rain, speed lines (alignToVelocity)", shade: (u, v) => clamp012((1 - Math.hypot(Math.max(0, Math.abs(u) - 0.85) / 0.15, v)) * 4) },
   confetti: { w: 32, h: 16, desc: "2:1 paper strip \u2014 confetti with spin", shade: (u, v) => 0.85 + 0.15 * (1 - Math.abs(v)) }
 };
+BUILTIN.ribbon = {
+  w: 128,
+  h: 32,
+  desc: "ribbon strip: soft edges, fades from head (left) to tail (right) \u2014 for emitter.ribbon",
+  shade: (u, v) => Math.pow(Math.max(0, 1 - Math.abs(v)), 1.4) * Math.pow(clamp012((1 - u) / 2), 0.8)
+};
+var SPIN_WIDTH = [1, 0.7, 0.18, 0.7];
+SPIN_WIDTH.forEach((k, i2) => {
+  BUILTIN[`spin-${i2 + 1}`] = {
+    w: 64,
+    h: 64,
+    desc: `disc turning on its axis, frame ${i2 + 1}/4 \u2014 coins, tokens (flipbook: spin-1 \u2026 spin-4)`,
+    shade: (u, v) => {
+      const r = Math.hypot(u / k, v);
+      return clamp012((1 - r) * 16 * k) * (0.75 + 0.25 * clamp012(1 - r * 0.9));
+    }
+  };
+});
+for (let i2 = 0; i2 < 4; i2++) {
+  BUILTIN[`flicker-${i2 + 1}`] = {
+    w: 64,
+    h: 64,
+    desc: `licking flame tongue, frame ${i2 + 1}/4 \u2014 fire, torches (flipbook: flicker-1 \u2026 flicker-4)`,
+    shade: (u, v) => {
+      const w = 0.55 + 0.45 * ((v + 1) / 2);
+      const du = u + 0.18 * noise2(v * 2.2, i2 * 1.7, 11) * (1 - v) / 2;
+      const r = Math.hypot(du / w, v * 0.95);
+      return clamp012(Math.pow(Math.max(0, 1 - r), 1.2) * (0.7 + 0.5 * noise2(u * 3, v * 3 + i2 * 2.1, 3)) * 1.6);
+    }
+  };
+}
 function listBuiltinTextures() {
   return Object.entries(BUILTIN).map(([name, t]) => ({ name, width: t.w, height: t.h, description: t.desc }));
 }
@@ -75831,6 +75901,43 @@ function pow2(n) {
   return p;
 }
 
+// src/core/ribbon.ts
+function ribbonTopology(segments) {
+  const uvs = [], triangles = [];
+  for (let i2 = 0; i2 <= segments; i2++) {
+    const u = i2 / segments;
+    uvs.push(u, 0, u, 1);
+  }
+  for (let i2 = 0; i2 < segments; i2++) {
+    const a = i2 * 2, b = a + 1, c = a + 2, d = a + 3;
+    triangles.push(a, b, c, b, d, c);
+  }
+  return { uvs, triangles, hull: (segments + 1) * 2 };
+}
+function ribbonVertices(e, period, t, loop) {
+  const r = e.ribbon;
+  const n = r.segments;
+  const pts = [];
+  for (let i2 = 0; i2 <= n; i2++) {
+    let ti = t - i2 / n * r.length;
+    if (!loop) ti = Math.max(0, ti);
+    pts.push(emitterOrigin(e, period, ti));
+  }
+  const out = [];
+  let nx = 0, ny = 1;
+  for (let i2 = 0; i2 <= n; i2++) {
+    const a = pts[Math.max(0, i2 - 1)], b = pts[Math.min(n, i2 + 1)];
+    const dx = a[0] - b[0], dy = a[1] - b[1], len = Math.hypot(dx, dy);
+    if (len > 1e-6) {
+      nx = -dy / len;
+      ny = dx / len;
+    }
+    const w = r.width * Math.max(0, evalCurve(r.widthOverLength, i2 / n)) / 2;
+    out.push(pts[i2][0] + nx * w, pts[i2][1] + ny * w, pts[i2][0] - nx * w, pts[i2][1] - ny * w);
+  }
+  return out;
+}
+
 // src/core/bake.ts
 var VERSION_STRING = { "3.8": "3.8.99", "4.0": "4.0.64", "4.1": "4.1.24", "4.2": "4.2.43", "4.3": "4.3.00" };
 function bake(effect, opts) {
@@ -75852,8 +75959,8 @@ function bakeSimulation(effect, sim, opts) {
     return pre ? { ...t, name: pre + t.name } : t;
   };
   const textures2 = /* @__PURE__ */ new Map();
-  for (const e of effect.emitters) if (e.enabled) {
-    const t = loadTexture(e.texture);
+  for (const e of effect.emitters) if (e.enabled) for (const ref of [...emitterSprites(e), ...e.ribbon.enabled ? [e.ribbon.texture] : []]) {
+    const t = loadTexture(ref);
     textures2.set(t.name, t);
   }
   const atlas = buildAtlas(name, [...textures2.values()]);
@@ -75862,12 +75969,13 @@ function bakeSimulation(effect, sim, opts) {
   const skinAttachments = {};
   const animBones = {};
   const animSlots = {};
+  const animDeform = {};
   const stats = { frames: N, durationSeconds: round(length), particles: 0, lanes: 0, droppedParticles: 0, keys: 0, keysBeforeReduction: 0, perEmitter: [] };
   let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
   for (const track of sim.emitters) {
     const e = track.emitter;
     if (!e.enabled) continue;
-    const tex = loadTexture(e.texture);
+    const texs = emitterSprites(e).map(loadTexture);
     const { lanes, dropped } = assignLanes(track, N, sim.loop);
     stats.particles += track.particles.length - dropped;
     stats.lanes += lanes.length;
@@ -75898,14 +76006,18 @@ function bakeSimulation(effect, sim, opts) {
       const dx = s.x - ox, dy = s.y - oy;
       return { ...s, x: (dx * cos - dy * sin) / tf.scale, y: (dx * sin + dy * cos) / tf.scale, rotation: s.rotation - tf.rotation, size: s.size / tf.scale, sizeY: s.sizeY / tf.scale };
     };
-    const texMax = Math.max(tex.image.width, tex.image.height);
+    const texMax = Math.max(texs[0].image.width, texs[0].image.height);
     const [px, py] = e.pivot;
-    const offset = nz({ x: r2((0.5 - px) * tex.image.width), y: r2((py - 0.5) * tex.image.height) });
+    const regions = Object.fromEntries(texs.map((tex) => {
+      const k = texMax / Math.max(tex.image.width, tex.image.height);
+      const w = tex.image.width * k, h = tex.image.height * k;
+      return [tex.name, { ...nz({ x: r2((0.5 - px) * w), y: r2((py - 0.5) * h) }), width: r2(w), height: r2(h) }];
+    }));
     lanes.forEach((lane, li) => {
       const lname = `${ename}_p${li}`;
       bones.push({ name: lname, parent: local ? ename : "root" });
       slots.push({ name: lname, bone: lname, ...e.blend !== "normal" ? { blend: e.blend } : {} });
-      skinAttachments[lname] = { [tex.name]: { ...offset, width: tex.image.width, height: tex.image.height } };
+      skinAttachments[lname] = regions;
       const ch = bakeLane(lane, sim.loop, N, fps, (s, f) => {
         const b = toBone(s, f);
         return {
@@ -75922,7 +76034,7 @@ function bakeSimulation(effect, sim, opts) {
         scale: ch.s.map(({ time: time3, v, stepped }) => key(time3, stepped, { x: r4(v[0] / 100), y: r4(v[1] / 100) }))
       };
       animSlots[lname] = {
-        attachment: ch.att.map(({ time: time3, on: on2 }) => ({ time: round(time3), name: on2 ? tex.name : null })),
+        attachment: ch.att.map(({ time: time3, frame }) => ({ time: round(time3), name: frame >= 0 ? texs[frame].name : null })),
         [v3 ? "color" : "rgba"]: ch.c.map(({ time: time3, v, stepped }) => key(time3, stepped, { color: hex3(v) }))
       };
       stats.keys += ch.t.length + ch.r.length + ch.s.length + ch.c.length + ch.att.length;
@@ -75933,6 +76045,40 @@ function bakeSimulation(effect, sim, opts) {
       maxX = Math.max(maxX, s.x + h);
       minY = Math.min(minY, s.y - h);
       maxY = Math.max(maxY, s.y + h);
+    }
+    if (e.ribbon.enabled) {
+      const rname = `${ename}_ribbon`;
+      const rtex = loadTexture(e.ribbon.texture);
+      const topo = ribbonTopology(e.ribbon.segments);
+      const last = sim.loop ? N : N - 1;
+      const times = [], frames = [];
+      for (let f = 0; f <= last; f++) {
+        times.push(f / fps);
+        frames.push(ribbonVertices(e, sim.period, f / fps, sim.loop));
+      }
+      const setup = frames[0];
+      const keep = reduce(times, frames, tol);
+      bones.push({ name: rname, parent: "root" });
+      const [cr, cg, cb] = hexToRgb(e.ribbon.color);
+      slots.push({ name: rname, bone: rname, color: hex3([cr * 255, cg * 255, cb * 255, e.ribbon.alpha * 255]), attachment: rtex.name, ...e.blend !== "normal" ? { blend: e.blend } : {} });
+      skinAttachments[rname] = {
+        [rtex.name]: { type: "mesh", uvs: topo.uvs.map(r4), triangles: topo.triangles, vertices: setup.map(r2), hull: topo.hull, width: rtex.image.width, height: rtex.image.height }
+      };
+      animDeform[rname] = {
+        [rtex.name]: keep.map((i2) => {
+          const delta = frames[i2].map((v, k) => r2(v - setup[k]));
+          return delta.every((d) => d === 0) ? { time: round(times[i2]) } : { time: round(times[i2]), offset: 0, vertices: delta };
+        })
+      };
+      stats.lanes += 1;
+      stats.keys += keep.length;
+      stats.keysBeforeReduction += times.length;
+      for (const fv of frames) for (let k = 0; k < fv.length; k += 2) {
+        minX = Math.min(minX, fv[k]);
+        maxX = Math.max(maxX, fv[k]);
+        minY = Math.min(minY, fv[k + 1]);
+        maxY = Math.max(maxY, fv[k + 1]);
+      }
     }
   }
   if (!isFinite(minX)) minX = minY = maxX = maxY = 0;
@@ -75951,7 +76097,14 @@ function bakeSimulation(effect, sim, opts) {
     bones,
     slots,
     skins: [{ name: "default", attachments: skinAttachments }],
-    animations: { [animName]: { slots: animSlots, bones: animBones } }
+    animations: {
+      [animName]: {
+        slots: animSlots,
+        bones: animBones,
+        // deform keys: 3.8/4.0 "deform" { skin: { slot: { attachment: keys } } }, 4.1+ "attachments" { … { attachment: { deform: keys } } }
+        ...Object.keys(animDeform).length ? v3 || opts.version === "4.0" ? { deform: { default: animDeform } } : { attachments: { default: Object.fromEntries(Object.entries(animDeform).map(([s, atts]) => [s, Object.fromEntries(Object.entries(atts).map(([a, k]) => [a, { deform: k }]))])) } } : {}
+      }
+    }
   };
   return { json: json3, atlas, stats };
 }
@@ -75986,13 +76139,15 @@ function bakeLane(lane, loop, N, fps, ex, tol) {
     }
     for (let f = seg.start; f <= seg.end; f++) visible[f] = true;
   }
+  const shown = (f) => visible[f] ? lane.state[f].frame : -1;
   let prev = null;
   for (let f = 0; f < N; f++) {
-    if (visible[f] !== prev) out.att.push({ time: f / fps, on: visible[f] });
-    prev = visible[f];
+    const cur = shown(f);
+    if (cur !== prev) out.att.push({ time: f / fps, frame: cur });
+    prev = cur;
   }
   const end = loop ? N / fps : (N - 1) / fps;
-  if (out.att[out.att.length - 1].time < end - 1e-9) out.att.push({ time: end, on: loop ? visible[0] : false });
+  if (out.att[out.att.length - 1].time < end - 1e-9) out.att.push({ time: end, frame: loop ? shown(0) : -1 });
   if (out.t.length === 0) {
     const zero = { time: 0, v: [0, 0], stepped: false };
     out.t.push(zero);
@@ -76060,6 +76215,15 @@ function renderPreview(effect, sim, opts = {}) {
     return out;
   };
   let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+  for (const e of effect.emitters) if (e.enabled && e.ribbon.enabled) for (const f of frameIndices) {
+    const v = ribbonVertices(e, sim.period, f / sim.fps, sim.loop);
+    for (let k = 0; k < v.length; k += 2) {
+      minX = Math.min(minX, v[k]);
+      maxX = Math.max(maxX, v[k]);
+      minY = Math.min(minY, v[k + 1]);
+      maxY = Math.max(maxY, v[k + 1]);
+    }
+  }
   for (const t of sim.emitters) for (const p of t.particles) for (const s of p.samples) {
     const h = Math.max(s.size, s.sizeY) / 2;
     minX = Math.min(minX, s.x - h);
@@ -76082,7 +76246,8 @@ function renderPreview(effect, sim, opts = {}) {
   const buf = new Float32Array(W * img.height * 3);
   for (let i2 = 0; i2 < W * img.height; i2++) buf.set([10 / 255, 10 / 255, 12 / 255], i2 * 3);
   const load = opts.resolveTexture ?? builtinTexture;
-  const textures2 = effect.emitters.map((e) => e.enabled ? load(e.texture) : null);
+  const textures2 = effect.emitters.map((e) => e.enabled ? emitterSprites(e).map(load) : null);
+  const ribbonTex = effect.emitters.map((e) => e.enabled && e.ribbon.enabled ? load(e.ribbon.texture) : null);
   frameIndices.forEach((f, ci) => {
     const ox = 2 + ci % cols * (cell + 2), oy = 2 + Math.floor(ci / cols) * (cell + 2);
     for (let y = 0; y < cell; y++) for (let x2 = 0; x2 < cell; x2++) buf.set([bg[0] / 255, bg[1] / 255, bg[2] / 255], ((oy + y) * W + ox + x2) * 3);
@@ -76091,10 +76256,22 @@ function renderPreview(effect, sim, opts = {}) {
       plot(buf, W, ox, oy, cell, Math.round(ax + k), Math.round(ay), [0.3, 0.8, 0.4]);
       plot(buf, W, ox, oy, cell, Math.round(ax), Math.round(ay + k), [0.3, 0.8, 0.4]);
     }
+    effect.emitters.forEach((e, ei) => {
+      if (!e.enabled || !e.ribbon.enabled) return;
+      const tex = ribbonTex[ei];
+      const v = ribbonVertices(e, sim.period, f / sim.fps, sim.loop);
+      const { uvs, triangles } = ribbonTopology(e.ribbon.segments);
+      const [cr, cg, cb] = hexToRgb(e.ribbon.color);
+      const sx = (i2) => (v[i2 * 2] - bounds.x) * scale, sy = (i2) => cell - (v[i2 * 2 + 1] - bounds.y) * scale;
+      for (let k = 0; k < triangles.length; k += 3) {
+        const [a, b, c] = [triangles[k], triangles[k + 1], triangles[k + 2]];
+        fillTriangle(buf, W, ox, oy, cell, [sx(a), sy(a), sx(b), sy(b), sx(c), sy(c)], [uvs[a * 2], uvs[a * 2 + 1], uvs[b * 2], uvs[b * 2 + 1], uvs[c * 2], uvs[c * 2 + 1]], tex.image, [cr, cg, cb, e.ribbon.alpha], e.blend);
+      }
+    });
     for (const { s, emitter } of visible(f)) {
-      const tex = textures2[emitter];
-      if (!tex) continue;
-      drawSprite(buf, W, ox, oy, cell, tex.image, s, (s.x - bounds.x) * scale, cell - (s.y - bounds.y) * scale, scale, effect.emitters[emitter].blend, effect.emitters[emitter].pivot);
+      const set2 = textures2[emitter];
+      if (!set2) continue;
+      drawSprite(buf, W, ox, oy, cell, set2[s.frame] ?? set2[0], s, (s.x - bounds.x) * scale, cell - (s.y - bounds.y) * scale, scale, effect.emitters[emitter].blend, effect.emitters[emitter].pivot);
     }
   });
   for (let i2 = 0; i2 < W * img.height; i2++) {
@@ -76109,7 +76286,8 @@ function plot(buf, W, ox, oy, cell, x2, y, c) {
   if (x2 < 0 || y < 0 || x2 >= cell || y >= cell) return;
   buf.set(c, ((oy + y) * W + ox + x2) * 3);
 }
-function drawSprite(buf, W, ox, oy, cell, tex, s, px, py, scale, blend, pivot) {
+function drawSprite(buf, W, ox, oy, cell, texture, s, px, py, scale, blend, pivot) {
+  const tex = texture.image;
   const texMax = Math.max(tex.width, tex.height);
   const kx = s.size / texMax * scale, ky = s.sizeY / texMax * scale;
   if (kx * tex.width < 0.1 || ky * tex.height < 0.1 || s.a <= 0) return;
@@ -76149,6 +76327,33 @@ function drawSprite(buf, W, ox, oy, cell, tex, s, px, py, scale, blend, pivot) {
     buf[o + 2] = d[2];
   }
 }
+function fillTriangle(buf, W, ox, oy, cell, p, uv, tex, tint, blend) {
+  const [x0, y0, x1, y1, x2, y2] = p;
+  const area = (x1 - x0) * (y2 - y0) - (x2 - x0) * (y1 - y0);
+  if (Math.abs(area) < 1e-6) return;
+  const minX = Math.max(0, Math.floor(Math.min(x0, x1, x2))), maxX = Math.min(cell - 1, Math.ceil(Math.max(x0, x1, x2)));
+  const minY = Math.max(0, Math.floor(Math.min(y0, y1, y2))), maxY = Math.min(cell - 1, Math.ceil(Math.max(y0, y1, y2)));
+  for (let y = minY; y <= maxY; y++) for (let x3 = minX; x3 <= maxX; x3++) {
+    const px = x3 + 0.5, py = y + 0.5;
+    const w0 = ((x1 - px) * (y2 - py) - (x2 - px) * (y1 - py)) / area;
+    const w1 = ((x2 - px) * (y0 - py) - (x0 - px) * (y2 - py)) / area;
+    const w2 = 1 - w0 - w1;
+    if (w0 < 0 || w1 < 0 || w2 < 0) continue;
+    const u = w0 * uv[0] + w1 * uv[2] + w2 * uv[4], v = w0 * uv[1] + w1 * uv[3] + w2 * uv[5];
+    const tx = Math.min(tex.width - 1, Math.max(0, Math.floor(u * tex.width))), ty = Math.min(tex.height - 1, Math.max(0, Math.floor(v * tex.height)));
+    const ti = (ty * tex.width + tx) * 4;
+    const a = tex.data[ti + 3] / 255 * tint[3];
+    if (a <= 0) continue;
+    const o = ((oy + y) * W + ox + x3) * 3;
+    for (let c = 0; c < 3; c++) {
+      const s = tex.data[ti + c] / 255 * tint[c];
+      if (blend === "additive") buf[o + c] += s * a;
+      else if (blend === "multiply") buf[o + c] *= 1 - a + s * a;
+      else if (blend === "screen") buf[o + c] = 1 - (1 - buf[o + c]) * (1 - s * a);
+      else buf[o + c] = s * a + buf[o + c] * (1 - a);
+    }
+  }
+}
 var to8 = (v) => Math.max(0, Math.min(255, Math.round(v * 255)));
 
 // src/core/presets.ts
@@ -76169,6 +76374,59 @@ var PRESETS = {
         overLifetime: { size: [[0, 1], [1, 0.3]], alpha: [[0, 1], [0.6, 1], [1, 0]], color: [[0, "#fff6c0"], [0.4, "#ffb030"], [1, "#ff3010"]] },
         affectors: [{ type: "gravity", x: 0, y: -260 }, { type: "drag", amount: 1.4 }]
       }]
+    }
+  },
+  "coin-shower": {
+    description: "Fountain of spinning gold coins (flipbook sprites) arcing up and falling, with a few glints.",
+    effect: {
+      name: "coin_shower",
+      duration: 2,
+      loop: true,
+      emitters: [
+        {
+          name: "coins",
+          texture: "spin-1",
+          blend: "normal",
+          sprite: { frames: ["spin-1", "spin-2", "spin-3", "spin-4"], mode: "flipbook", fps: 14, randomStart: true },
+          emission: { type: "continuous", rate: 14, limit: 40 },
+          direction: { angle: 90, spread: 50 },
+          initial: { lifetime: [1.1, 1.5], speed: [260, 360], size: [32, 42], rotation: [-15, 15], color: "#ffffff" },
+          overLifetime: { alpha: [[0, 0], [0.05, 1], [0.85, 1], [1, 0]], color: [[0, "#fff2a8"], [1, "#ffc22e"]] },
+          affectors: [{ type: "gravity", x: 0, y: -700 }]
+        },
+        {
+          name: "glints",
+          texture: "star",
+          blend: "additive",
+          emission: { type: "continuous", rate: 8, limit: 20 },
+          shape: { type: "circle", radius: 60 },
+          direction: { angle: 90, spread: 60 },
+          transform: { y: 120 },
+          initial: { lifetime: [0.4, 0.7], speed: [10, 40], size: [14, 24], rotation: [0, 90] },
+          overLifetime: { size: [[0, 0.2], [0.4, 1], [1, 0]], alpha: [[0, 0], [0.3, 1], [1, 0]], color: [[0, "#fff8d0"], [1, "#ffc040"]] }
+        }
+      ]
+    }
+  },
+  "light-ribbon": {
+    description: "Glowing ribbon trail sweeping a figure-eight, with sparks shed along it \u2014 sword arcs, dashes, magic streaks.",
+    effect: {
+      name: "light_ribbon",
+      duration: 2,
+      loop: true,
+      emitters: [
+        {
+          name: "streak",
+          texture: "soft-circle",
+          blend: "additive",
+          simulationSpace: "world",
+          motion: { enabled: true, points: [[-140, 0], [-70, 70], [0, 0], [70, -70], [140, 0], [70, 70], [0, 0], [-70, -70]], closed: true, smooth: true },
+          emission: { type: "continuous", rate: 0, rateOverDistance: 3, limit: 50 },
+          initial: { lifetime: [0.3, 0.6], speed: [10, 40], size: [8, 14] },
+          overLifetime: { size: [[0, 1], [1, 0]], alpha: [[0, 1], [1, 0]], color: [[0, "#e8fbff"], [1, "#40b8ff"]] },
+          ribbon: { enabled: true, length: 0.45, segments: 20, width: 34, widthOverLength: [[0, 1], [0.15, 0.85], [1, 0]], color: "#7fd8ff" }
+        }
+      ]
     }
   },
   "magic-sparkles": {
@@ -76391,6 +76649,11 @@ Gradient = [[t, "#rrggbb"], ...].
 | texture | "soft-circle" | builtin name (see list_textures) or path to an 8-bit PNG |
 | pivot | [0.5,0.5] | sprite origin, 0..1 from texture left/top (rotation + scale happen around it) |
 | colorize | true | false = keep the texture's own colours (ignore initial.color / overLifetime.color) |
+| sprite.frames | [] | several sprites (builtins or PNG paths); non-empty replaces texture. Builtin flipbooks: spin-1\u2026spin-4 (coin turning), flicker-1\u2026flicker-4 (flame) |
+| sprite.mode | "flipbook" | random = each particle keeps one random frame (mixed debris, leaves); flipbook = frames play in order |
+| sprite.fps | 12 | flipbook frame rate; 0 = the frames play once across the particle's lifetime |
+| sprite.loop | true | flipbook wraps (false = holds the last frame) |
+| sprite.randomStart | false | flipbook starts on a random frame per particle (de-syncs spinning coins) |
 | blend | "additive" | normal / additive (glow, fire, magic) / multiply / screen |
 | simulationSpace | "local" | local: particles parented to an emitter bone (they travel with a moving emitter). world: left behind = trails |
 | emission.type | "continuous" | continuous / burst |
@@ -76428,6 +76691,13 @@ Gradient = [[t, "#rrggbb"], ...].
 | overLifetime.color | none | gradient |
 | overLifetime.alignToVelocity | false | rotate along motion (use with "spark" / "dash") |
 | affectors | [] | see below; each has enabled:true and runs in list order |
+| ribbon.enabled | false | smooth textured strip trailing the emitter's path (one Spine mesh + deform keys; costs 1 bone). Needs motion.enabled or attach_effect mode "trail"; a still emitter has no trail |
+| ribbon.length | 0.35 | seconds of path history the strip covers |
+| ribbon.width | 28 | px at the head |
+| ribbon.widthOverLength | [[0,1],[1,0]] | width multiplier head (t=0) \u2192 tail (t=1) |
+| ribbon.segments | 16 | quads along the length (2 vertices each); more = smoother curves, more deform data |
+| ribbon.texture | "ribbon" | builtin "ribbon" fades head \u2192 tail; any texture works (u runs along the length) |
+| ribbon.color / ribbon.alpha | "#ffffff" / 1 | tint; blend follows the emitter's blend |
 
 ## Affectors
 - {type:"gravity", x:0, y:-300, useWeight:false} \u2014 acceleration px/s\xB2. Presets: Earth y:-981, Floaty -150, Heavy -2000, Rise +300
@@ -76453,6 +76723,9 @@ lower fps, or raise export tolerance.
 - Smoke: blend normal, texture "smoke", grey colour, size grows (overLifetime.size up to ~2), slow speed, long lifetime.
 - Explosion: burst, spread 360, drag 1-2 (quadratic for a sharp stop), size shrinking, colour white \u2192 orange \u2192 red.
 - Perfect ring: burst, spread 360, distribution "uniform".
+- Sword arc / dash streak / comet tail: ribbon.enabled true on an emitter with motion (or attach_effect mode "trail"), simulationSpace "world", length 0.3\u20130.5 s, width 20\u201340, blend additive; emission.rate 0 for a ribbon only, or rateOverDistance for sparks shed along it.
+- Spinning coins: sprite.frames spin-1\u2026spin-4 (or the user's coin frames), mode flipbook, fps ~12, randomStart true, blend normal, colour #ffcc33 (colorize:false for full-colour art).
+- Mixed debris / leaves: sprite.frames with several PNGs, mode random.
 - Shockwave: burst count 1, texture "ring", speed 0, size curve 0.2 \u2192 5, alpha 1 \u2192 0.
 - Pulsing emission: rateOverTime [[0,1],[0.5,0.1],[1,1]].
 - Seamless loops: loop:true. Burst effects loop each duration; motion.loops whole numbers.
@@ -76489,7 +76762,7 @@ function detectVersion2(json3) {
   const s = json3?.skeleton?.spine ?? "";
   const mm = s.split(".").slice(0, 2).join(".");
   if (SPINE_VERSIONS.includes(mm)) return mm;
-  throw new Error(`unsupported Spine version "${s || "unknown"}" \u2014 SpineMagic merges into ${SPINE_VERSIONS.join(", ")} skeletons (export JSON from Spine; binary .skel is not supported)`);
+  throw new Error(`unsupported Spine version "${s || "unknown"}" \u2014 SpineMagic merges into ${SPINE_VERSIONS.join(", ")} skeletons (JSON from 3.8\u20134.3, or binary .skel from 3.8 / 4.2)`);
 }
 function animationDuration(anim) {
   let max2 = 0;
@@ -76606,6 +76879,15 @@ function mergeEffect(input2) {
   anim.slots = anim.slots ?? {};
   for (const [b, tls] of Object.entries(fxAnim.bones ?? {})) anim.bones[b] = shift(tls);
   for (const [s, tls] of Object.entries(fxAnim.slots ?? {})) anim.slots[s] = shift(tls);
+  const shiftKeys = (keys) => keys.map((key2) => ({ ...key2, time: round2((key2.time ?? 0) + offset) }));
+  if (fxAnim.deform) {
+    const dst = (anim.deform ??= {}).default ??= {};
+    for (const [s, atts] of Object.entries(fxAnim.deform.default)) dst[s] = Object.fromEntries(Object.entries(atts).map(([a, k]) => [a, shiftKeys(k)]));
+  }
+  if (fxAnim.attachments) {
+    const dst = (anim.attachments ??= {}).default ??= {};
+    for (const [s, atts] of Object.entries(fxAnim.attachments.default)) dst[s] = Object.fromEntries(Object.entries(atts).map(([a, tl]) => [a, { deform: shiftKeys(tl.deform) }]));
+  }
   const end = offset + baked.stats.durationSeconds;
   if (end > animDur + 1e-6) warnings.push(`the effect runs to ${round2(end)} s, past the animation's ${round2(animDur)} s, which lengthens "${attach.animation}"`);
   if (effect.loop && !attach.matchLoop && Math.abs(baked.stats.durationSeconds - animDur) > 1e-3) warnings.push("the effect loop length differs from the animation; the loops will drift (set matchLoop)");
@@ -76645,6 +76927,7 @@ function removeEffectFromJson(json3, prefix) {
   for (const a of Object.values(json3.animations ?? {})) {
     for (const k of Object.keys(a.bones ?? {})) if (ours(k)) delete a.bones[k];
     for (const k of Object.keys(a.slots ?? {})) if (ours(k)) delete a.slots[k];
+    for (const group of [a.deform, a.attachments]) for (const skin of Object.values(group ?? {})) for (const k of Object.keys(skin ?? {})) if (ours(k)) delete skin[k];
   }
   return before - json3.bones.length;
 }
@@ -76673,6 +76956,1076 @@ function invApply(w, x2, y) {
   return [(w.d * dx - w.b * dy) / det, (-w.c * dx + w.a * dy) / det];
 }
 var round2 = (t) => Math.round(t * 1e4) / 1e4;
+
+// src/core/skel.ts
+var BinaryInput = class {
+  strings = [];
+  index = 0;
+  view;
+  constructor(data) {
+    this.view = new DataView(data.buffer, data.byteOffset, data.byteLength);
+  }
+  get remaining() {
+    return this.view.byteLength - this.index;
+  }
+  readByte() {
+    return this.view.getInt8(this.index++);
+  }
+  readUnsignedByte() {
+    return this.view.getUint8(this.index++);
+  }
+  readInt32() {
+    const v = this.view.getInt32(this.index);
+    this.index += 4;
+    return v;
+  }
+  readFloat() {
+    const v = this.view.getFloat32(this.index);
+    this.index += 4;
+    return v;
+  }
+  readBoolean() {
+    return this.readByte() !== 0;
+  }
+  readInt(optimizePositive) {
+    let b = this.readByte();
+    let result = b & 127;
+    if (b & 128) {
+      b = this.readByte();
+      result |= (b & 127) << 7;
+      if (b & 128) {
+        b = this.readByte();
+        result |= (b & 127) << 14;
+        if (b & 128) {
+          b = this.readByte();
+          result |= (b & 127) << 21;
+          if (b & 128) {
+            b = this.readByte();
+            result |= (b & 127) << 28;
+          }
+        }
+      }
+    }
+    return optimizePositive ? result : result >>> 1 ^ -(result & 1);
+  }
+  readStringRef() {
+    const i2 = this.readInt(true);
+    return i2 === 0 ? null : this.strings[i2 - 1];
+  }
+  readString() {
+    let byteCount = this.readInt(true);
+    if (byteCount === 0) return null;
+    if (byteCount === 1) return "";
+    byteCount--;
+    let chars = "";
+    for (let i2 = 0; i2 < byteCount; ) {
+      const b = this.readUnsignedByte();
+      switch (b >> 4) {
+        case 12:
+        case 13:
+          chars += String.fromCharCode((b & 31) << 6 | this.readByte() & 63);
+          i2 += 2;
+          break;
+        case 14:
+          chars += String.fromCharCode((b & 15) << 12 | (this.readByte() & 63) << 6 | this.readByte() & 63);
+          i2 += 3;
+          break;
+        default:
+          chars += String.fromCharCode(b);
+          i2++;
+      }
+    }
+    return chars;
+  }
+};
+function skelVersion(bytes) {
+  const looks = (s) => !!s && /^\d+\.\d+(\.\d+)?/.test(s);
+  try {
+    const a = new BinaryInput(bytes);
+    a.readInt32();
+    a.readInt32();
+    const v = a.readString();
+    if (looks(v)) return v;
+  } catch {
+  }
+  try {
+    const b = new BinaryInput(bytes);
+    b.readString();
+    const v = b.readString();
+    if (looks(v)) return v;
+  } catch {
+  }
+  throw new Error("not a Spine binary skeleton (.skel): no version string found");
+}
+function skelToJson(bytes) {
+  const version2 = skelVersion(bytes);
+  const mm = version2.split(".").slice(0, 2).join(".");
+  if (mm === "4.2") return read42(bytes);
+  if (mm === "3.8") return read38(bytes);
+  throw new Error(`binary .skel ${version2} is not supported yet (3.8 and 4.2 are) \u2014 export JSON from Spine instead`);
+}
+var hex8 = (rgba8888) => (rgba8888 >>> 0).toString(16).padStart(8, "0");
+var hex6 = (rgb888) => (rgb888 >>> 0 & 16777215).toString(16).padStart(6, "0");
+var byteHex = (...v) => v.map((b) => b.toString(16).padStart(2, "0")).join("");
+var BLEND = ["normal", "additive", "multiply", "screen"];
+var INHERIT = ["normal", "onlyTranslation", "noRotationOrReflection", "noScale", "noScaleOrReflection"];
+var POSITION = ["fixed", "percent"];
+var SPACING = ["length", "fixed", "percent", "proportional"];
+var ROTATE = ["tangent", "chain", "chainScale"];
+var SEQUENCE_MODE = ["hold", "once", "loop", "pingpong", "onceReverse", "loopReverse", "pingpongReverse"];
+function floats(input2, n) {
+  const a = new Array(n);
+  for (let i2 = 0; i2 < n; i2++) a[i2] = input2.readFloat();
+  return a;
+}
+function shorts(input2, n) {
+  const a = new Array(n);
+  for (let i2 = 0; i2 < n; i2++) a[i2] = input2.readInt(true);
+  return a;
+}
+function readVertices(input2, vertexCount, weighted) {
+  if (!weighted) return { vertices: floats(input2, vertexCount << 1), weighted: false };
+  const out = [];
+  for (let i2 = 0; i2 < vertexCount; i2++) {
+    const boneCount = input2.readInt(true);
+    out.push(boneCount);
+    for (let k = 0; k < boneCount; k++) out.push(input2.readInt(true), input2.readFloat(), input2.readFloat(), input2.readFloat());
+  }
+  return { vertices: out, weighted: true };
+}
+function bezier(input2, key2) {
+  (key2.curve ??= []).push(input2.readFloat(), input2.readFloat(), input2.readFloat(), input2.readFloat());
+}
+function read42(bytes) {
+  const input2 = new BinaryInput(bytes);
+  const low = input2.readInt32(), high = input2.readInt32();
+  const skeleton = {};
+  if (low !== 0 || high !== 0) skeleton.hash = (high >>> 0).toString(16) + (low >>> 0).toString(16);
+  skeleton.spine = input2.readString();
+  skeleton.x = input2.readFloat();
+  skeleton.y = input2.readFloat();
+  skeleton.width = input2.readFloat();
+  skeleton.height = input2.readFloat();
+  skeleton.referenceScale = input2.readFloat();
+  const nonessential = input2.readBoolean();
+  if (nonessential) {
+    skeleton.fps = input2.readFloat();
+    skeleton.images = input2.readString() ?? "";
+    skeleton.audio = input2.readString() ?? "";
+  }
+  for (let i2 = 0, n = input2.readInt(true); i2 < n; i2++) input2.strings.push(input2.readString());
+  const bones = [];
+  for (let i2 = 0, n = input2.readInt(true); i2 < n; i2++) {
+    const b = { name: input2.readString() };
+    if (i2 > 0) b.parent = bones[input2.readInt(true)].name;
+    b.rotation = input2.readFloat();
+    b.x = input2.readFloat();
+    b.y = input2.readFloat();
+    b.scaleX = input2.readFloat();
+    b.scaleY = input2.readFloat();
+    b.shearX = input2.readFloat();
+    b.shearY = input2.readFloat();
+    b.length = input2.readFloat();
+    b.inherit = INHERIT[input2.readByte()];
+    b.skin = input2.readBoolean();
+    if (nonessential) {
+      b.color = hex8(input2.readInt32());
+      const icon = input2.readString();
+      if (icon) b.icon = icon;
+      b.visible = input2.readBoolean();
+    }
+    bones.push(b);
+  }
+  const slots = [];
+  for (let i2 = 0, n = input2.readInt(true); i2 < n; i2++) {
+    const s = { name: input2.readString(), bone: bones[input2.readInt(true)].name, color: hex8(input2.readInt32()) };
+    const dark = input2.readInt32();
+    if (dark !== -1) s.dark = hex6(dark);
+    const att = input2.readStringRef();
+    if (att) s.attachment = att;
+    s.blend = BLEND[input2.readInt(true)];
+    if (nonessential) s.visible = input2.readBoolean();
+    slots.push(s);
+  }
+  const ik = [];
+  for (let i2 = 0, n = input2.readInt(true); i2 < n; i2++) {
+    const c = { name: input2.readString(), order: input2.readInt(true) };
+    c.bones = shorts(input2, input2.readInt(true)).map((k) => bones[k].name);
+    c.target = bones[input2.readInt(true)].name;
+    const f = input2.readByte();
+    c.skin = (f & 1) !== 0;
+    c.bendPositive = (f & 2) !== 0;
+    c.compress = (f & 4) !== 0;
+    c.stretch = (f & 8) !== 0;
+    c.uniform = (f & 16) !== 0;
+    c.mix = (f & 32) !== 0 ? (f & 64) !== 0 ? input2.readFloat() : 1 : 0;
+    if (f & 128) c.softness = input2.readFloat();
+    ik.push(c);
+  }
+  const transform2 = [];
+  for (let i2 = 0, n = input2.readInt(true); i2 < n; i2++) {
+    const c = { name: input2.readString(), order: input2.readInt(true) };
+    c.bones = shorts(input2, input2.readInt(true)).map((k) => bones[k].name);
+    c.target = bones[input2.readInt(true)].name;
+    let f = input2.readByte();
+    c.skin = (f & 1) !== 0;
+    c.local = (f & 2) !== 0;
+    c.relative = (f & 4) !== 0;
+    c.rotation = f & 8 ? input2.readFloat() : 0;
+    c.x = f & 16 ? input2.readFloat() : 0;
+    c.y = f & 32 ? input2.readFloat() : 0;
+    c.scaleX = f & 64 ? input2.readFloat() : 0;
+    c.scaleY = f & 128 ? input2.readFloat() : 0;
+    f = input2.readByte();
+    c.shearY = f & 1 ? input2.readFloat() : 0;
+    c.mixRotate = f & 2 ? input2.readFloat() : 0;
+    c.mixX = f & 4 ? input2.readFloat() : 0;
+    c.mixY = f & 8 ? input2.readFloat() : 0;
+    c.mixScaleX = f & 16 ? input2.readFloat() : 0;
+    c.mixScaleY = f & 32 ? input2.readFloat() : 0;
+    c.mixShearY = f & 64 ? input2.readFloat() : 0;
+    transform2.push(c);
+  }
+  const path = [];
+  for (let i2 = 0, n = input2.readInt(true); i2 < n; i2++) {
+    const c = { name: input2.readString(), order: input2.readInt(true), skin: input2.readBoolean() };
+    c.bones = shorts(input2, input2.readInt(true)).map((k) => bones[k].name);
+    c.target = slots[input2.readInt(true)].name;
+    const f = input2.readByte();
+    c.positionMode = POSITION[f & 1];
+    c.spacingMode = SPACING[f >> 1 & 3];
+    c.rotateMode = ROTATE[f >> 3 & 3];
+    c.rotation = f & 128 ? input2.readFloat() : 0;
+    c.position = input2.readFloat();
+    c.spacing = input2.readFloat();
+    c.mixRotate = input2.readFloat();
+    c.mixX = input2.readFloat();
+    c.mixY = input2.readFloat();
+    path.push(c);
+  }
+  const physics = [];
+  for (let i2 = 0, n = input2.readInt(true); i2 < n; i2++) {
+    const c = { name: input2.readString(), order: input2.readInt(true), bone: bones[input2.readInt(true)].name };
+    let f = input2.readByte();
+    c.skin = (f & 1) !== 0;
+    c.x = f & 2 ? input2.readFloat() : 0;
+    c.y = f & 4 ? input2.readFloat() : 0;
+    c.rotate = f & 8 ? input2.readFloat() : 0;
+    c.scaleX = f & 16 ? input2.readFloat() : 0;
+    c.shearX = f & 32 ? input2.readFloat() : 0;
+    c.limit = f & 64 ? input2.readFloat() : 5e3;
+    c.fps = input2.readUnsignedByte();
+    c.inertia = input2.readFloat();
+    c.strength = input2.readFloat();
+    c.damping = input2.readFloat();
+    c.mass = 1 / (f & 128 ? input2.readFloat() : 1);
+    c.wind = input2.readFloat();
+    c.gravity = input2.readFloat();
+    f = input2.readByte();
+    c.inertiaGlobal = (f & 1) !== 0;
+    c.strengthGlobal = (f & 2) !== 0;
+    c.dampingGlobal = (f & 4) !== 0;
+    c.massGlobal = (f & 8) !== 0;
+    c.windGlobal = (f & 16) !== 0;
+    c.gravityGlobal = (f & 32) !== 0;
+    c.mixGlobal = (f & 64) !== 0;
+    c.mix = f & 128 ? input2.readFloat() : 1;
+    physics.push(c);
+  }
+  const skins = [];
+  const vertexInfo = /* @__PURE__ */ new Map();
+  const readSkin42 = (isDefault) => {
+    let slotCount;
+    const skin = {};
+    if (isDefault) {
+      slotCount = input2.readInt(true);
+      if (slotCount === 0) return null;
+      skin.name = "default";
+    } else {
+      skin.name = input2.readString();
+      if (nonessential) skin.color = hex8(input2.readInt32());
+      const sb = shorts(input2, input2.readInt(true)).map((k) => bones[k].name);
+      if (sb.length) skin.bones = sb;
+      const si = shorts(input2, input2.readInt(true)).map((k) => ik[k].name);
+      if (si.length) skin.ik = si;
+      const st = shorts(input2, input2.readInt(true)).map((k) => transform2[k].name);
+      if (st.length) skin.transform = st;
+      const sp = shorts(input2, input2.readInt(true)).map((k) => path[k].name);
+      if (sp.length) skin.path = sp;
+      const sh = shorts(input2, input2.readInt(true)).map((k) => physics[k].name);
+      if (sh.length) skin.physics = sh;
+      slotCount = input2.readInt(true);
+    }
+    const attachments = {};
+    const skinIndex = skins.length;
+    for (let i2 = 0; i2 < slotCount; i2++) {
+      const slotIndex = input2.readInt(true);
+      const slotName = slots[slotIndex].name;
+      const map2 = attachments[slotName] ??= {};
+      for (let ii = 0, nn = input2.readInt(true); ii < nn; ii++) {
+        const key2 = input2.readStringRef();
+        const a = readAttachment42(input2, key2, nonessential, slots);
+        map2[key2] = a.json;
+        if (a.vertices) vertexInfo.set(`${skinIndex}/${slotIndex}/${key2}`, a.vertices);
+      }
+    }
+    skin.attachments = attachments;
+    return skin;
+  };
+  const def = readSkin42(true);
+  if (def) skins.push(def);
+  for (let i2 = 0, n = input2.readInt(true); i2 < n; i2++) skins.push(readSkin42(false));
+  for (const s of skins) for (const slot of Object.values(s.attachments)) for (const a of Object.values(slot)) {
+    if (a.type === "linkedmesh" && typeof a.skin === "number") a.skin = skins[a.skin].name;
+  }
+  for (const [si, s] of skins.entries()) for (const [slotName, slot] of Object.entries(s.attachments)) for (const [key2, a] of Object.entries(slot)) {
+    if (a.type !== "linkedmesh") continue;
+    const slotIndex = slots.findIndex((x2) => x2.name === slotName);
+    const parentSkin = skins.findIndex((x2) => x2.name === (a.skin ?? "default"));
+    const v = vertexInfo.get(`${parentSkin}/${slotIndex}/${a.parent}`);
+    if (v) vertexInfo.set(`${si}/${slotIndex}/${key2}`, v);
+  }
+  const events = {};
+  const eventList = [];
+  for (let i2 = 0, n = input2.readInt(true); i2 < n; i2++) {
+    const name = input2.readString();
+    const e = { int: input2.readInt(false), float: input2.readFloat(), string: input2.readString() ?? "" };
+    const audio = input2.readString();
+    if (audio) {
+      e.audio = audio;
+      e.volume = input2.readFloat();
+      e.balance = input2.readFloat();
+    }
+    events[name] = e;
+    eventList.push({ name, audio });
+  }
+  const animations = {};
+  for (let i2 = 0, n = input2.readInt(true); i2 < n; i2++) {
+    const name = input2.readString();
+    animations[name] = readAnimation42(input2, { bones, slots, ik, transform: transform2, path, physics, skins, vertexInfo, eventList });
+  }
+  const json3 = { skeleton, bones, slots };
+  if (ik.length) json3.ik = ik;
+  if (transform2.length) json3.transform = transform2;
+  if (path.length) json3.path = path;
+  if (physics.length) json3.physics = physics;
+  json3.skins = skins;
+  if (eventList.length) json3.events = events;
+  json3.animations = animations;
+  return json3;
+}
+function readSequence(input2) {
+  return { count: input2.readInt(true), start: input2.readInt(true), digits: input2.readInt(true), setup: input2.readInt(true) };
+}
+function readAttachment42(input2, key2, nonessential, slots) {
+  const f = input2.readByte();
+  const name = f & 8 ? input2.readStringRef() : key2;
+  const a = {};
+  if (name !== key2) a.name = name;
+  switch (f & 7) {
+    case 0: {
+      a.type = "region";
+      if (f & 16) a.path = input2.readStringRef();
+      if (f & 32) a.color = hex8(input2.readInt32());
+      if (f & 64) a.sequence = readSequence(input2);
+      a.rotation = f & 128 ? input2.readFloat() : 0;
+      a.x = input2.readFloat();
+      a.y = input2.readFloat();
+      a.scaleX = input2.readFloat();
+      a.scaleY = input2.readFloat();
+      a.width = input2.readFloat();
+      a.height = input2.readFloat();
+      return { json: a };
+    }
+    case 1: {
+      a.type = "boundingbox";
+      const count = input2.readInt(true);
+      const v = readVertices(input2, count, (f & 16) !== 0);
+      a.vertexCount = count;
+      a.vertices = v.vertices;
+      if (nonessential) a.color = hex8(input2.readInt32());
+      return { json: a, vertices: v };
+    }
+    case 2: {
+      a.type = "mesh";
+      if (f & 16) a.path = input2.readStringRef();
+      if (f & 32) a.color = hex8(input2.readInt32());
+      if (f & 64) a.sequence = readSequence(input2);
+      a.hull = input2.readInt(true);
+      const count = input2.readInt(true);
+      const v = readVertices(input2, count, (f & 128) !== 0);
+      a.vertices = v.vertices;
+      a.uvs = floats(input2, count << 1);
+      a.triangles = shorts(input2, ((count << 1) - a.hull - 2) * 3);
+      if (nonessential) {
+        a.edges = shorts(input2, input2.readInt(true));
+        a.width = input2.readFloat();
+        a.height = input2.readFloat();
+      }
+      return { json: a, vertices: v };
+    }
+    case 3: {
+      a.type = "linkedmesh";
+      if (f & 16) a.path = input2.readStringRef();
+      if (f & 32) a.color = hex8(input2.readInt32());
+      if (f & 64) a.sequence = readSequence(input2);
+      a.timelines = (f & 128) !== 0;
+      a.skin = input2.readInt(true);
+      a.parent = input2.readStringRef();
+      if (nonessential) {
+        a.width = input2.readFloat();
+        a.height = input2.readFloat();
+      }
+      return { json: a };
+    }
+    case 4: {
+      a.type = "path";
+      a.closed = (f & 16) !== 0;
+      a.constantSpeed = (f & 32) !== 0;
+      const count = input2.readInt(true);
+      const v = readVertices(input2, count, (f & 64) !== 0);
+      a.vertexCount = count;
+      a.vertices = v.vertices;
+      a.lengths = floats(input2, (count << 1) / 6);
+      if (nonessential) a.color = hex8(input2.readInt32());
+      return { json: a, vertices: v };
+    }
+    case 5: {
+      a.type = "point";
+      a.rotation = input2.readFloat();
+      a.x = input2.readFloat();
+      a.y = input2.readFloat();
+      if (nonessential) a.color = hex8(input2.readInt32());
+      return { json: a };
+    }
+    case 6: {
+      a.type = "clipping";
+      a.end = slots[input2.readInt(true)].name;
+      const count = input2.readInt(true);
+      const v = readVertices(input2, count, (f & 16) !== 0);
+      a.vertexCount = count;
+      a.vertices = v.vertices;
+      if (nonessential) a.color = hex8(input2.readInt32());
+      return { json: a, vertices: v };
+    }
+  }
+  throw new Error(`unknown attachment type ${f & 7} for "${key2}"`);
+}
+var CURVE_STEPPED = 1;
+var CURVE_BEZIER = 2;
+function readCurveKeys(input2, frameCount2, read, values) {
+  const keys = [];
+  let key2 = read();
+  for (let frame = 0; ; frame++) {
+    keys.push(key2);
+    if (frame === frameCount2 - 1) break;
+    const next = read();
+    const c = input2.readByte();
+    if (c === CURVE_STEPPED) key2.curve = "stepped";
+    else if (c === CURVE_BEZIER) for (let v = 0; v < values; v++) bezier(input2, key2);
+    key2 = next;
+  }
+  return keys;
+}
+function readAnimation42(input2, ctx) {
+  input2.readInt(true);
+  const anim = {};
+  const u = () => input2.readUnsignedByte();
+  const slotsTl = {};
+  for (let i2 = 0, n = input2.readInt(true); i2 < n; i2++) {
+    const slot = ctx.slots[input2.readInt(true)].name;
+    const tl = slotsTl[slot] = {};
+    for (let ii = 0, nn = input2.readInt(true); ii < nn; ii++) {
+      const type = input2.readByte(), frameCount2 = input2.readInt(true);
+      switch (type) {
+        case 0: {
+          const keys = [];
+          for (let f = 0; f < frameCount2; f++) keys.push({ time: input2.readFloat(), name: input2.readStringRef() });
+          tl.attachment = keys;
+          break;
+        }
+        case 1:
+          input2.readInt(true);
+          tl.rgba = readCurveKeys(input2, frameCount2, () => ({ time: input2.readFloat(), color: byteHex(u(), u(), u(), u()) }), 4);
+          break;
+        case 2:
+          input2.readInt(true);
+          tl.rgb = readCurveKeys(input2, frameCount2, () => ({ time: input2.readFloat(), color: byteHex(u(), u(), u()) }), 3);
+          break;
+        case 3:
+          input2.readInt(true);
+          tl.rgba2 = readCurveKeys(input2, frameCount2, () => ({ time: input2.readFloat(), light: byteHex(u(), u(), u(), u()), dark: byteHex(u(), u(), u()) }), 7);
+          break;
+        case 4:
+          input2.readInt(true);
+          tl.rgb2 = readCurveKeys(input2, frameCount2, () => ({ time: input2.readFloat(), light: byteHex(u(), u(), u()), dark: byteHex(u(), u(), u()) }), 6);
+          break;
+        case 5:
+          input2.readInt(true);
+          tl.alpha = readCurveKeys(input2, frameCount2, () => ({ time: input2.readFloat(), value: u() / 255 }), 1);
+          break;
+        default:
+          throw new Error(`unknown slot timeline type ${type}`);
+      }
+    }
+  }
+  if (Object.keys(slotsTl).length) anim.slots = slotsTl;
+  const BONE = ["rotate", "translate", "translatex", "translatey", "scale", "scalex", "scaley", "shear", "shearx", "sheary"];
+  const bonesTl = {};
+  for (let i2 = 0, n = input2.readInt(true); i2 < n; i2++) {
+    const bone = ctx.bones[input2.readInt(true)].name;
+    const tl = bonesTl[bone] = {};
+    for (let ii = 0, nn = input2.readInt(true); ii < nn; ii++) {
+      const type = input2.readByte(), frameCount2 = input2.readInt(true);
+      if (type === 10) {
+        const keys = [];
+        for (let f = 0; f < frameCount2; f++) keys.push({ time: input2.readFloat(), inherit: INHERIT[input2.readByte()] });
+        tl.inherit = keys;
+        continue;
+      }
+      input2.readInt(true);
+      const name = BONE[type];
+      if (!name) throw new Error(`unknown bone timeline type ${type}`);
+      const two = type === 1 || type === 4 || type === 7;
+      tl[name] = two ? readCurveKeys(input2, frameCount2, () => ({ time: input2.readFloat(), x: input2.readFloat(), y: input2.readFloat() }), 2) : readCurveKeys(input2, frameCount2, () => ({ time: input2.readFloat(), value: input2.readFloat() }), 1);
+    }
+  }
+  if (Object.keys(bonesTl).length) anim.bones = bonesTl;
+  const ikTl = {};
+  for (let i2 = 0, n = input2.readInt(true); i2 < n; i2++) {
+    const name = ctx.ik[input2.readInt(true)].name, frameCount2 = input2.readInt(true);
+    input2.readInt(true);
+    const keys = [];
+    let flags = input2.readByte();
+    const read = (fl2) => {
+      const k = { time: input2.readFloat() };
+      k.mix = fl2 & 1 ? fl2 & 2 ? input2.readFloat() : 1 : 0;
+      k.softness = fl2 & 4 ? input2.readFloat() : 0;
+      k.bendPositive = (fl2 & 8) !== 0;
+      k.compress = (fl2 & 16) !== 0;
+      k.stretch = (fl2 & 32) !== 0;
+      return k;
+    };
+    let key2 = read(flags);
+    for (let frame = 0; ; frame++) {
+      keys.push(key2);
+      if (frame === frameCount2 - 1) break;
+      flags = input2.readByte();
+      const next = read(flags);
+      if (flags & 64) key2.curve = "stepped";
+      else if (flags & 128) {
+        bezier(input2, key2);
+        bezier(input2, key2);
+      }
+      key2 = next;
+    }
+    ikTl[name] = keys;
+  }
+  if (Object.keys(ikTl).length) anim.ik = ikTl;
+  const tcTl = {};
+  for (let i2 = 0, n = input2.readInt(true); i2 < n; i2++) {
+    const name = ctx.transform[input2.readInt(true)].name, frameCount2 = input2.readInt(true);
+    input2.readInt(true);
+    tcTl[name] = readCurveKeys(input2, frameCount2, () => ({
+      time: input2.readFloat(),
+      mixRotate: input2.readFloat(),
+      mixX: input2.readFloat(),
+      mixY: input2.readFloat(),
+      mixScaleX: input2.readFloat(),
+      mixScaleY: input2.readFloat(),
+      mixShearY: input2.readFloat()
+    }), 6);
+  }
+  if (Object.keys(tcTl).length) anim.transform = tcTl;
+  const pathTl = {};
+  for (let i2 = 0, n = input2.readInt(true); i2 < n; i2++) {
+    const name = ctx.path[input2.readInt(true)].name;
+    const tl = pathTl[name] = {};
+    for (let ii = 0, nn = input2.readInt(true); ii < nn; ii++) {
+      const type = input2.readByte(), frameCount2 = input2.readInt(true);
+      input2.readInt(true);
+      if (type === 0) tl.position = readCurveKeys(input2, frameCount2, () => ({ time: input2.readFloat(), value: input2.readFloat() }), 1);
+      else if (type === 1) tl.spacing = readCurveKeys(input2, frameCount2, () => ({ time: input2.readFloat(), value: input2.readFloat() }), 1);
+      else if (type === 2) tl.mix = readCurveKeys(input2, frameCount2, () => ({ time: input2.readFloat(), mixRotate: input2.readFloat(), mixX: input2.readFloat(), mixY: input2.readFloat() }), 3);
+      else throw new Error(`unknown path timeline type ${type}`);
+    }
+  }
+  if (Object.keys(pathTl).length) anim.path = pathTl;
+  const PHYS = { 0: "inertia", 1: "strength", 2: "damping", 4: "mass", 5: "wind", 6: "gravity", 7: "mix", 8: "reset" };
+  const physTl = {};
+  for (let i2 = 0, n = input2.readInt(true); i2 < n; i2++) {
+    const index = input2.readInt(true) - 1;
+    const name = index === -1 ? "" : ctx.physics[index].name;
+    const tl = physTl[name] = {};
+    for (let ii = 0, nn = input2.readInt(true); ii < nn; ii++) {
+      const type = input2.readByte(), frameCount2 = input2.readInt(true);
+      const key2 = PHYS[type];
+      if (!key2) throw new Error(`unknown physics timeline type ${type}`);
+      if (type === 8) {
+        const keys = [];
+        for (let f = 0; f < frameCount2; f++) keys.push({ time: input2.readFloat() });
+        tl.reset = keys;
+        continue;
+      }
+      input2.readInt(true);
+      tl[key2] = readCurveKeys(input2, frameCount2, () => ({ time: input2.readFloat(), value: input2.readFloat() }), 1);
+    }
+  }
+  if (Object.keys(physTl).length) anim.physics = physTl;
+  const attTl = {};
+  for (let i2 = 0, n = input2.readInt(true); i2 < n; i2++) {
+    const skinIndex = input2.readInt(true);
+    const skinMap = attTl[ctx.skins[skinIndex].name] ??= {};
+    for (let ii = 0, nn = input2.readInt(true); ii < nn; ii++) {
+      const slotIndex = input2.readInt(true);
+      const slotMap = skinMap[ctx.slots[slotIndex].name] ??= {};
+      for (let iii = 0, nnn = input2.readInt(true); iii < nnn; iii++) {
+        const attName = input2.readStringRef();
+        const tl = slotMap[attName] ??= {};
+        const type = input2.readByte(), frameCount2 = input2.readInt(true);
+        if (type === 0) {
+          const info = ctx.vertexInfo.get(`${skinIndex}/${slotIndex}/${attName}`);
+          if (!info) throw new Error(`deform key for unknown attachment ${attName}`);
+          input2.readInt(true);
+          const keys = [];
+          let time3 = input2.readFloat();
+          for (let frame = 0; ; frame++) {
+            const k = { time: time3 };
+            const end = input2.readInt(true);
+            if (end !== 0) {
+              k.offset = input2.readInt(true);
+              k.vertices = floats(input2, end);
+            }
+            keys.push(k);
+            if (frame === frameCount2 - 1) break;
+            time3 = input2.readFloat();
+            const c = input2.readByte();
+            if (c === CURVE_STEPPED) k.curve = "stepped";
+            else if (c === CURVE_BEZIER) bezier(input2, k);
+          }
+          tl.deform = keys;
+        } else if (type === 1) {
+          const keys = [];
+          for (let f = 0; f < frameCount2; f++) {
+            const time3 = input2.readFloat(), modeAndIndex = input2.readInt32();
+            keys.push({ time: time3, mode: SEQUENCE_MODE[modeAndIndex & 15], index: modeAndIndex >> 4, delay: input2.readFloat() });
+          }
+          tl.sequence = keys;
+        } else throw new Error(`unknown attachment timeline type ${type}`);
+      }
+    }
+  }
+  if (Object.keys(attTl).length) anim.attachments = attTl;
+  const drawOrderCount = input2.readInt(true);
+  if (drawOrderCount > 0) anim.drawOrder = readDrawOrder(input2, drawOrderCount, ctx.slots);
+  const eventCount = input2.readInt(true);
+  if (eventCount > 0) {
+    const keys = [];
+    for (let i2 = 0; i2 < eventCount; i2++) {
+      const time3 = input2.readFloat();
+      const ev = ctx.eventList[input2.readInt(true)];
+      const k = { time: time3, name: ev.name, int: input2.readInt(false), float: input2.readFloat() };
+      const s = input2.readString();
+      if (s !== null) k.string = s;
+      if (ev.audio) {
+        k.volume = input2.readFloat();
+        k.balance = input2.readFloat();
+      }
+      keys.push(k);
+    }
+    anim.events = keys;
+  }
+  return anim;
+}
+function readDrawOrder(input2, count, slots) {
+  const keys = [];
+  for (let i2 = 0; i2 < count; i2++) {
+    const k = { time: input2.readFloat() };
+    const offsets = [];
+    for (let ii = 0, n = input2.readInt(true); ii < n; ii++) offsets.push({ slot: slots[input2.readInt(true)].name, offset: input2.readInt(true) });
+    if (offsets.length) k.offsets = offsets;
+    keys.push(k);
+  }
+  return keys;
+}
+function read38(bytes) {
+  const input2 = new BinaryInput(bytes);
+  const short = () => {
+    const v = input2.readUnsignedByte() << 8 | input2.readUnsignedByte();
+    return v & 32768 ? v - 65536 : v;
+  };
+  const shortArray = () => {
+    const n = input2.readInt(true);
+    const a = new Array(n);
+    for (let i2 = 0; i2 < n; i2++) a[i2] = short();
+    return a;
+  };
+  const vertices38 = (count) => readVertices(input2, count, input2.readBoolean());
+  const skeleton = {};
+  const hash3 = input2.readString();
+  if (hash3) skeleton.hash = hash3;
+  skeleton.spine = input2.readString();
+  skeleton.x = input2.readFloat();
+  skeleton.y = input2.readFloat();
+  skeleton.width = input2.readFloat();
+  skeleton.height = input2.readFloat();
+  const nonessential = input2.readBoolean();
+  if (nonessential) {
+    skeleton.fps = input2.readFloat();
+    skeleton.images = input2.readString() ?? "";
+    skeleton.audio = input2.readString() ?? "";
+  }
+  for (let i2 = 0, n = input2.readInt(true); i2 < n; i2++) input2.strings.push(input2.readString());
+  const bones = [];
+  for (let i2 = 0, n = input2.readInt(true); i2 < n; i2++) {
+    const b = { name: input2.readString() };
+    if (i2 > 0) b.parent = bones[input2.readInt(true)].name;
+    b.rotation = input2.readFloat();
+    b.x = input2.readFloat();
+    b.y = input2.readFloat();
+    b.scaleX = input2.readFloat();
+    b.scaleY = input2.readFloat();
+    b.shearX = input2.readFloat();
+    b.shearY = input2.readFloat();
+    b.length = input2.readFloat();
+    b.transform = INHERIT[input2.readInt(true)];
+    b.skin = input2.readBoolean();
+    if (nonessential) b.color = hex8(input2.readInt32());
+    bones.push(b);
+  }
+  const slots = [];
+  for (let i2 = 0, n = input2.readInt(true); i2 < n; i2++) {
+    const s = { name: input2.readString(), bone: bones[input2.readInt(true)].name, color: hex8(input2.readInt32()) };
+    const dark = input2.readInt32();
+    if (dark !== -1) s.dark = hex6(dark);
+    const att = input2.readStringRef();
+    if (att) s.attachment = att;
+    s.blend = BLEND[input2.readInt(true)];
+    slots.push(s);
+  }
+  const ik = [];
+  for (let i2 = 0, n = input2.readInt(true); i2 < n; i2++) {
+    const c = { name: input2.readString(), order: input2.readInt(true), skin: input2.readBoolean() };
+    c.bones = shorts(input2, input2.readInt(true)).map((k) => bones[k].name);
+    c.target = bones[input2.readInt(true)].name;
+    c.mix = input2.readFloat();
+    c.softness = input2.readFloat();
+    c.bendPositive = input2.readByte() > 0;
+    c.compress = input2.readBoolean();
+    c.stretch = input2.readBoolean();
+    c.uniform = input2.readBoolean();
+    ik.push(c);
+  }
+  const transform2 = [];
+  for (let i2 = 0, n = input2.readInt(true); i2 < n; i2++) {
+    const c = { name: input2.readString(), order: input2.readInt(true), skin: input2.readBoolean() };
+    c.bones = shorts(input2, input2.readInt(true)).map((k) => bones[k].name);
+    c.target = bones[input2.readInt(true)].name;
+    c.local = input2.readBoolean();
+    c.relative = input2.readBoolean();
+    c.rotation = input2.readFloat();
+    c.x = input2.readFloat();
+    c.y = input2.readFloat();
+    c.scaleX = input2.readFloat();
+    c.scaleY = input2.readFloat();
+    c.shearY = input2.readFloat();
+    c.rotateMix = input2.readFloat();
+    c.translateMix = input2.readFloat();
+    c.scaleMix = input2.readFloat();
+    c.shearMix = input2.readFloat();
+    transform2.push(c);
+  }
+  const path = [];
+  for (let i2 = 0, n = input2.readInt(true); i2 < n; i2++) {
+    const c = { name: input2.readString(), order: input2.readInt(true), skin: input2.readBoolean() };
+    c.bones = shorts(input2, input2.readInt(true)).map((k) => bones[k].name);
+    c.target = slots[input2.readInt(true)].name;
+    c.positionMode = POSITION[input2.readInt(true)];
+    c.spacingMode = SPACING[input2.readInt(true)];
+    c.rotateMode = ROTATE[input2.readInt(true)];
+    c.rotation = input2.readFloat();
+    c.position = input2.readFloat();
+    c.spacing = input2.readFloat();
+    c.rotateMix = input2.readFloat();
+    c.translateMix = input2.readFloat();
+    path.push(c);
+  }
+  const skins = [];
+  const vertexInfo = /* @__PURE__ */ new Map();
+  const readSkin = (isDefault) => {
+    const skin = {};
+    let slotCount;
+    if (isDefault) {
+      slotCount = input2.readInt(true);
+      if (slotCount === 0) return null;
+      skin.name = "default";
+    } else {
+      skin.name = input2.readStringRef();
+      const sb = shorts(input2, input2.readInt(true)).map((k) => bones[k].name);
+      if (sb.length) skin.bones = sb;
+      const si = shorts(input2, input2.readInt(true)).map((k) => ik[k].name);
+      if (si.length) skin.ik = si;
+      const st = shorts(input2, input2.readInt(true)).map((k) => transform2[k].name);
+      if (st.length) skin.transform = st;
+      const sp = shorts(input2, input2.readInt(true)).map((k) => path[k].name);
+      if (sp.length) skin.path = sp;
+      slotCount = input2.readInt(true);
+    }
+    const skinIndex = skins.length;
+    const attachments = {};
+    for (let i2 = 0; i2 < slotCount; i2++) {
+      const slotIndex = input2.readInt(true);
+      const map2 = attachments[slots[slotIndex].name] ??= {};
+      for (let ii = 0, nn = input2.readInt(true); ii < nn; ii++) {
+        const key2 = input2.readStringRef();
+        const name = input2.readStringRef();
+        const a = {};
+        if (name && name !== key2) a.name = name;
+        const type = input2.readByte();
+        switch (type) {
+          case 0: {
+            const p = input2.readStringRef();
+            if (p) a.path = p;
+            a.rotation = input2.readFloat();
+            a.x = input2.readFloat();
+            a.y = input2.readFloat();
+            a.scaleX = input2.readFloat();
+            a.scaleY = input2.readFloat();
+            a.width = input2.readFloat();
+            a.height = input2.readFloat();
+            a.color = hex8(input2.readInt32());
+            break;
+          }
+          case 1: {
+            a.type = "boundingbox";
+            a.vertexCount = input2.readInt(true);
+            const v = vertices38(a.vertexCount);
+            a.vertices = v.vertices;
+            vertexInfo.set(`${skinIndex}/${slotIndex}/${key2}`, v);
+            if (nonessential) a.color = hex8(input2.readInt32());
+            break;
+          }
+          case 2: {
+            a.type = "mesh";
+            const p = input2.readStringRef();
+            if (p) a.path = p;
+            a.color = hex8(input2.readInt32());
+            const count = input2.readInt(true);
+            a.uvs = floats(input2, count << 1);
+            a.triangles = shortArray();
+            const v = vertices38(count);
+            a.vertices = v.vertices;
+            vertexInfo.set(`${skinIndex}/${slotIndex}/${key2}`, v);
+            a.hull = input2.readInt(true);
+            if (nonessential) {
+              a.edges = shortArray();
+              a.width = input2.readFloat();
+              a.height = input2.readFloat();
+            }
+            break;
+          }
+          case 3: {
+            a.type = "linkedmesh";
+            const p = input2.readStringRef();
+            if (p) a.path = p;
+            a.color = hex8(input2.readInt32());
+            const sk = input2.readStringRef();
+            if (sk) a.skin = sk;
+            a.parent = input2.readStringRef();
+            a.deform = input2.readBoolean();
+            if (nonessential) {
+              a.width = input2.readFloat();
+              a.height = input2.readFloat();
+            }
+            break;
+          }
+          case 4: {
+            a.type = "path";
+            a.closed = input2.readBoolean();
+            a.constantSpeed = input2.readBoolean();
+            a.vertexCount = input2.readInt(true);
+            const v = vertices38(a.vertexCount);
+            a.vertices = v.vertices;
+            vertexInfo.set(`${skinIndex}/${slotIndex}/${key2}`, v);
+            a.lengths = floats(input2, a.vertexCount / 3);
+            if (nonessential) a.color = hex8(input2.readInt32());
+            break;
+          }
+          case 5: {
+            a.type = "point";
+            a.rotation = input2.readFloat();
+            a.x = input2.readFloat();
+            a.y = input2.readFloat();
+            if (nonessential) a.color = hex8(input2.readInt32());
+            break;
+          }
+          case 6: {
+            a.type = "clipping";
+            a.end = slots[input2.readInt(true)].name;
+            a.vertexCount = input2.readInt(true);
+            const v = vertices38(a.vertexCount);
+            a.vertices = v.vertices;
+            vertexInfo.set(`${skinIndex}/${slotIndex}/${key2}`, v);
+            if (nonessential) a.color = hex8(input2.readInt32());
+            break;
+          }
+          default:
+            throw new Error(`unknown attachment type ${type} for "${key2}"`);
+        }
+        map2[key2] = a;
+      }
+    }
+    skin.attachments = attachments;
+    return skin;
+  };
+  const def = readSkin(true);
+  if (def) skins.push(def);
+  for (let i2 = 0, n = input2.readInt(true); i2 < n; i2++) skins.push(readSkin(false));
+  const events = {};
+  const eventList = [];
+  for (let i2 = 0, n = input2.readInt(true); i2 < n; i2++) {
+    const name = input2.readStringRef();
+    const e = { int: input2.readInt(false), float: input2.readFloat(), string: input2.readString() ?? "" };
+    const audio = input2.readString();
+    if (audio !== null) {
+      e.audio = audio;
+      e.volume = input2.readFloat();
+      e.balance = input2.readFloat();
+    }
+    events[name] = e;
+    eventList.push({ name, audio });
+  }
+  const curve = (k) => {
+    const c = input2.readByte();
+    if (c === CURVE_STEPPED) k.curve = "stepped";
+    else if (c === CURVE_BEZIER) {
+      k.curve = input2.readFloat();
+      k.c2 = input2.readFloat();
+      k.c3 = input2.readFloat();
+      k.c4 = input2.readFloat();
+    }
+  };
+  const keys = (frameCount2, read) => {
+    const out = [];
+    for (let f = 0; f < frameCount2; f++) {
+      const k = read();
+      if (f < frameCount2 - 1) curve(k);
+      out.push(k);
+    }
+    return out;
+  };
+  const animations = {};
+  for (let ai = 0, an = input2.readInt(true); ai < an; ai++) {
+    const animName = input2.readString();
+    const anim = {};
+    const slotsTl = {};
+    for (let i2 = 0, n = input2.readInt(true); i2 < n; i2++) {
+      const tl = slotsTl[slots[input2.readInt(true)].name] = {};
+      for (let ii = 0, nn = input2.readInt(true); ii < nn; ii++) {
+        const type = input2.readByte(), frameCount2 = input2.readInt(true);
+        if (type === 0) {
+          const k = [];
+          for (let f = 0; f < frameCount2; f++) k.push({ time: input2.readFloat(), name: input2.readStringRef() });
+          tl.attachment = k;
+        } else if (type === 1) tl.color = keys(frameCount2, () => ({ time: input2.readFloat(), color: hex8(input2.readInt32()) }));
+        else if (type === 2) tl.twoColor = keys(frameCount2, () => ({ time: input2.readFloat(), light: hex8(input2.readInt32()), dark: hex6(input2.readInt32()) }));
+        else throw new Error(`unknown slot timeline type ${type}`);
+      }
+    }
+    if (Object.keys(slotsTl).length) anim.slots = slotsTl;
+    const bonesTl = {};
+    for (let i2 = 0, n = input2.readInt(true); i2 < n; i2++) {
+      const tl = bonesTl[bones[input2.readInt(true)].name] = {};
+      for (let ii = 0, nn = input2.readInt(true); ii < nn; ii++) {
+        const type = input2.readByte(), frameCount2 = input2.readInt(true);
+        if (type === 0) tl.rotate = keys(frameCount2, () => ({ time: input2.readFloat(), angle: input2.readFloat() }));
+        else if (type <= 3) tl[["", "translate", "scale", "shear"][type]] = keys(frameCount2, () => ({ time: input2.readFloat(), x: input2.readFloat(), y: input2.readFloat() }));
+        else throw new Error(`unknown bone timeline type ${type}`);
+      }
+    }
+    if (Object.keys(bonesTl).length) anim.bones = bonesTl;
+    const ikTl = {};
+    for (let i2 = 0, n = input2.readInt(true); i2 < n; i2++) {
+      const name = ik[input2.readInt(true)].name, frameCount2 = input2.readInt(true);
+      ikTl[name] = keys(frameCount2, () => ({
+        time: input2.readFloat(),
+        mix: input2.readFloat(),
+        softness: input2.readFloat(),
+        bendPositive: input2.readByte() > 0,
+        compress: input2.readBoolean(),
+        stretch: input2.readBoolean()
+      }));
+    }
+    if (Object.keys(ikTl).length) anim.ik = ikTl;
+    const tcTl = {};
+    for (let i2 = 0, n = input2.readInt(true); i2 < n; i2++) {
+      const name = transform2[input2.readInt(true)].name, frameCount2 = input2.readInt(true);
+      tcTl[name] = keys(frameCount2, () => ({ time: input2.readFloat(), rotateMix: input2.readFloat(), translateMix: input2.readFloat(), scaleMix: input2.readFloat(), shearMix: input2.readFloat() }));
+    }
+    if (Object.keys(tcTl).length) anim.transform = tcTl;
+    const pathTl = {};
+    for (let i2 = 0, n = input2.readInt(true); i2 < n; i2++) {
+      const tl = pathTl[path[input2.readInt(true)].name] = {};
+      for (let ii = 0, nn = input2.readInt(true); ii < nn; ii++) {
+        const type = input2.readByte(), frameCount2 = input2.readInt(true);
+        if (type === 0) tl.position = keys(frameCount2, () => ({ time: input2.readFloat(), position: input2.readFloat() }));
+        else if (type === 1) tl.spacing = keys(frameCount2, () => ({ time: input2.readFloat(), spacing: input2.readFloat() }));
+        else if (type === 2) tl.mix = keys(frameCount2, () => ({ time: input2.readFloat(), rotateMix: input2.readFloat(), translateMix: input2.readFloat() }));
+        else throw new Error(`unknown path timeline type ${type}`);
+      }
+    }
+    if (Object.keys(pathTl).length) anim.path = pathTl;
+    const deformTl = {};
+    for (let i2 = 0, n = input2.readInt(true); i2 < n; i2++) {
+      const skinIndex = input2.readInt(true);
+      const skinMap = deformTl[skins[skinIndex].name] ??= {};
+      for (let ii = 0, nn = input2.readInt(true); ii < nn; ii++) {
+        const slotIndex = input2.readInt(true);
+        const slotMap = skinMap[slots[slotIndex].name] ??= {};
+        for (let iii = 0, nnn = input2.readInt(true); iii < nnn; iii++) {
+          const attName = input2.readStringRef();
+          slotMap[attName] = keys(input2.readInt(true), () => {
+            const k = { time: input2.readFloat() };
+            const end = input2.readInt(true);
+            if (end !== 0) {
+              k.offset = input2.readInt(true);
+              k.vertices = floats(input2, end);
+            }
+            return k;
+          });
+        }
+      }
+    }
+    if (Object.keys(deformTl).length) anim.deform = deformTl;
+    const drawOrderCount = input2.readInt(true);
+    if (drawOrderCount > 0) anim.drawOrder = readDrawOrder(input2, drawOrderCount, slots);
+    const eventCount = input2.readInt(true);
+    if (eventCount > 0) {
+      const ev = [];
+      for (let i2 = 0; i2 < eventCount; i2++) {
+        const time3 = input2.readFloat();
+        const e = eventList[input2.readInt(true)];
+        const k = { time: time3, name: e.name, int: input2.readInt(false), float: input2.readFloat() };
+        if (input2.readBoolean()) k.string = input2.readString() ?? "";
+        if (e.audio !== null) {
+          k.volume = input2.readFloat();
+          k.balance = input2.readFloat();
+        }
+        ev.push(k);
+      }
+      anim.events = ev;
+    }
+    animations[animName] = anim;
+  }
+  const json3 = { skeleton, bones, slots };
+  if (ik.length) json3.ik = ik;
+  if (transform2.length) json3.transform = transform2;
+  if (path.length) json3.path = path;
+  json3.skins = skins;
+  if (eventList.length) json3.events = events;
+  json3.animations = animations;
+  return json3;
+}
 
 // src/node/export.ts
 import { mkdirSync, writeFileSync } from "node:fs";
@@ -76887,20 +78240,26 @@ function structuralCheck(json3, atlasText, version2, opts = {}) {
 // src/node/character.ts
 import { existsSync as existsSync3, readFileSync as readFileSync3, writeFileSync as writeFileSync2 } from "node:fs";
 import { basename, dirname, extname, join as join2, resolve as resolve3 } from "node:path";
+var SKEL = /\.skel(\.bytes)?$/i;
+function readSkeletonFile(path) {
+  const p = resolve3(path);
+  if (!existsSync3(p)) throw new Error(`character file ${p} not found`);
+  if (SKEL.test(p)) return skelToJson(new Uint8Array(readFileSync3(p)));
+  return JSON.parse(readFileSync3(p, "utf8"));
+}
 function loadCharacterFiles(jsonPath, atlasPath) {
   const jp = resolve3(jsonPath);
-  if (!existsSync3(jp)) throw new Error(`character file ${jp} not found`);
-  if (extname(jp).toLowerCase() === ".skel") throw new Error("binary .skel is not supported \u2014 export the skeleton as JSON from Spine");
-  const json3 = JSON.parse(readFileSync3(jp, "utf8"));
-  const base = jp.slice(0, -extname(jp).length);
-  const candidates = atlasPath ? [resolve3(atlasPath)] : [`${base}.atlas`, `${base}.atlas.txt`, `${base.replace(/_fx$/, "")}.atlas`];
+  const json3 = readSkeletonFile(jp);
+  const base = SKEL.test(jp) ? jp.replace(SKEL, "") : jp.slice(0, -extname(jp).length);
+  const plain = base.replace(/_fx$/, "").replace(/-(pro|ess)$/, "");
+  const candidates = atlasPath ? [resolve3(atlasPath)] : [.../* @__PURE__ */ new Set([`${base}.atlas`, `${base}.atlas.txt`, `${plain}.atlas`, `${plain}.atlas.txt`])];
   const ap = candidates.find((p) => existsSync3(p));
   if (!ap) throw new Error(`atlas not found (tried ${candidates.join(", ")}); pass atlasPath`);
   return { json: json3, atlasText: readFileSync3(ap, "utf8"), jsonPath: jp, atlasPath: ap, dir: dirname(jp) };
 }
 function inspectCharacterFile(jsonPath) {
   const jp = resolve3(jsonPath);
-  return { ...inspectCharacter(JSON.parse(readFileSync3(jp, "utf8"))), jsonPath: jp };
+  return { ...inspectCharacter(readSkeletonFile(jp)), jsonPath: jp, ...SKEL.test(jp) ? { binary: true } : {} };
 }
 async function runtimeBoneSampler(json3, atlasText, version2 = detectVersion2(json3)) {
   const { core } = await loadRuntime(version2);
@@ -76962,7 +78321,7 @@ async function detachFromCharacter(opts) {
   return { files: { json: files.json, atlas: files.atlas }, removedBones: r.removed, validation };
 }
 function outputPaths(ch, out, pageName) {
-  const name = basename(ch.jsonPath, extname(ch.jsonPath));
+  const name = SKEL.test(ch.jsonPath) ? basename(ch.jsonPath).replace(SKEL, "") : basename(ch.jsonPath, extname(ch.jsonPath));
   const jsonOut = out ? resolve3(ch.dir, out) : join2(ch.dir, name.endsWith("_fx") ? `${name}.json` : `${name}_fx.json`);
   const atlasExt = ch.atlasPath.endsWith(".atlas.txt") ? ".atlas.txt" : ".atlas";
   const atlasOut = jsonOut.replace(/\.json$/i, "") + atlasExt;
@@ -77027,7 +78386,7 @@ var HOME = resolve5(process.env.SPINEMAGIC_HOME ?? process.cwd());
 var store = new EffectStore(join4(HOME, "projects"));
 var OUT = join4(HOME, "out");
 var textures = nodeTextureResolver(HOME);
-var server = new McpServer({ name: "spinemagic", version: "0.1.0" }, {
+var server = new McpServer({ name: "spinemagic", version: "0.3.0" }, {
   instructions: "SpineMagic builds particle effects and bakes them to Spine 3.8\u20134.3 skeletons. Call get_effect_reference once, start from a preset with create_effect, LOOK at preview_effect images while iterating with update_effect/update_emitter, then export_spine. To put an effect on a character, inspect_character then attach_effect (merges it under a bone). Never hand-write Spine JSON."
 });
 var text = (t) => ({ content: [{ type: "text", text: t }] });
@@ -77204,17 +78563,17 @@ server.registerTool("validate_export", {
 }, safe2(async ({ jsonPath, atlasPath, version: version2 }) => json2(await validateExport(resolve5(HOME, jsonPath), resolve5(HOME, atlasPath), version2))));
 server.registerTool("inspect_character", {
   title: "Inspect character skeleton",
-  description: "Read a character's Spine skeleton JSON (3.8\u20134.3): version, bone hierarchy, slots in draw order, skins, animations with durations, and effects already merged. Use before attach_effect to pick the bone, animation and draw-order slot.",
-  inputSchema: { character: external_exports.string().describe("path to the character's skeleton .json (relative to the SpineMagic home)") },
+  description: "Read a character's Spine skeleton \u2014 JSON (3.8\u20134.3) or binary .skel / .skel.bytes (3.8, 4.2): version, bone hierarchy, slots in draw order, skins, animations with durations, and effects already merged. Use before attach_effect to pick the bone, animation and draw-order slot.",
+  inputSchema: { character: external_exports.string().describe("path to the character's skeleton .json or .skel (relative to the SpineMagic home)") },
   annotations: { readOnlyHint: true }
 }, safe2(async ({ character }) => json2(inspectCharacterFile(resolve5(HOME, character)))));
 server.registerTool("attach_effect", {
   title: "Attach effect to a character bone",
-  description: "Bake an effect INTO a character skeleton so it sticks to a bone and plays inside one of the character's animations \u2014 the result opens in the Spine editor with the effect riding on the character. Writes <character>_fx.json/.atlas + fx_<effect>.png next to the character (the original files are untouched), validates in the real Spine runtime for the character's version, and checks the effect anchor follows the bone. mode follow: everything moves rigidly with the bone. mode trail: world-space emitters emit from the bone's animated path and leave trails (sampled from the animation). Re-attaching the same effect replaces the previous copy; attach to the _fx file to stack several effects.",
+  description: "Bake an effect INTO a character skeleton so it sticks to a bone and plays inside one of the character's animations \u2014 the result opens in the Spine editor with the effect riding on the character. Writes <character>_fx.json/.atlas + fx_<effect>.png next to the character (the original files are untouched), validates in the real Spine runtime for the character's version, and checks the effect anchor follows the bone. mode follow: everything moves rigidly with the bone. mode trail: world-space emitters emit from the bone's animated path and leave trails (sampled from the animation). Re-attaching the same effect replaces the previous copy; attach to the _fx file to stack several effects. A binary .skel character (3.8, 4.2) is converted and the result is written as JSON.",
   inputSchema: {
     id: external_exports.string().describe("effect id"),
-    character: external_exports.string().describe("character skeleton .json path (relative to the SpineMagic home)"),
-    atlas: external_exports.string().optional().describe("character .atlas path; default: same name as the json"),
+    character: external_exports.string().describe("character skeleton .json or .skel path (relative to the SpineMagic home)"),
+    atlas: external_exports.string().optional().describe("character .atlas path; default: same name as the skeleton"),
     bone: external_exports.string().describe("character bone the effect sticks to (inspect_character lists them)"),
     animation: external_exports.string().describe("character animation that receives the effect"),
     mode: external_exports.enum(["follow", "trail"]).default("follow"),

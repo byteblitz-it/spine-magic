@@ -1,4 +1,4 @@
-import type { Effect, Emitter } from "./schema.js";
+import { emitterSprites, type Effect, type Emitter } from "./schema.js";
 import { DEG, evalCurve, evalGradient, hash, hexToRgb, noise2, rangeMax, rng, sample } from "./math.js";
 import { emitterOrigin, emitterVelocity } from "./motion.js";
 
@@ -13,6 +13,8 @@ export interface PState {
   g: number;
   b: number;
   a: number;
+  /** index into emitterSprites(emitter) */
+  frame: number;
 }
 
 export interface Particle {
@@ -119,6 +121,8 @@ function simulateEmitter(effect: Effect, e: Emitter, emitterIndex: number, perio
   const noiseSeed = hash(effect.seed, emitterIndex, 999);
   const affectors = e.affectors.filter((a) => a.enabled);
   const stretch = affectors.find((a) => a.type === "velocityStretch");
+  const sp = e.sprite;
+  const nFrames = emitterSprites(e).length;
 
   return spawnSchedule(e, period, effect.loop).map(({ time: birth, spreadFrac }, i) => {
     const rand = rng(hash(effect.seed, emitterIndex, i));
@@ -148,6 +152,15 @@ function simulateEmitter(effect: Effect, e: Emitter, emitterIndex: number, perio
     const alpha0 = sample(e.initial.alpha, rand);
     const weight = Math.max(0.01, sample(e.initial.weight, rand));
     const windStrength = affectors.map((a) => (a.type === "wind" ? sample(a.strength, rand) : 0));
+    // own stream, so adding frames never changes the other randoms of existing effects
+    const randomFrame = Math.floor(rng(hash(effect.seed, emitterIndex, i, 77))() * nFrames) % nFrames;
+    const frameAt = (age: number, t: number): number => {
+      if (nFrames === 1) return 0;
+      if (sp.mode === "random") return randomFrame;
+      let k = sp.fps > 0 ? Math.floor(age * sp.fps + 1e-6) : Math.min(nFrames - 1, Math.floor(t * nFrames));
+      if (sp.randomStart) k += randomFrame;
+      return sp.loop ? k % nFrames : Math.min(nFrames - 1, k);
+    };
 
     const worldPos = (t: number): [number, number] => {
       if (!local) return [x, y];
@@ -232,7 +245,7 @@ function simulateEmitter(effect: Effect, e: Emitter, emitterIndex: number, perio
       }
       const [r, g, b] = !e.colorize ? [1, 1, 1] as const : e.overLifetime.color ? mul(evalGradient(e.overLifetime.color, t), baseColor) : baseColor;
       const [wx, wy] = worldPos(birth + age);
-      samples.push({ x: wx, y: wy, rotation, size: w, sizeY: h, r, g, b, a: clamp01(alpha0 * evalCurve(e.overLifetime.alpha, t)) });
+      samples.push({ x: wx, y: wy, rotation, size: w, sizeY: h, r, g, b, a: clamp01(alpha0 * evalCurve(e.overLifetime.alpha, t)), frame: frameAt(age, t) });
     }
     return { startFrame, samples };
   }).filter((p) => p.samples.length > 0);

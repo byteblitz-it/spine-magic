@@ -93,7 +93,7 @@ export function spineMagicApi(): Plugin {
             if (!name && method === "GET") {
               const list = readdirSync(characterDir).filter((d) => statSync(join(characterDir, d)).isDirectory()).map((d) => ({
                 name: d,
-                skeletons: readdirSync(join(characterDir, d)).filter((f) => f.toLowerCase().endsWith(".json")),
+                skeletons: readdirSync(join(characterDir, d)).filter((f) => /\.(json|skel|skel\.bytes)$/i.test(f)),
               })).filter((c) => c.skeletons.length);
               return send(res, 200, list);
             }
@@ -108,7 +108,7 @@ export function spineMagicApi(): Plugin {
               return res.end(readFileSync(p));
             }
             if (name && file && method === "PUT") {
-              if (!/\.(json|atlas|txt|png)$/i.test(file)) return send(res, 400, { error: "upload the skeleton .json, the .atlas (or .atlas.txt) and its .png pages" });
+              if (!/\.(json|skel|bytes|atlas|txt|png)$/i.test(file)) return send(res, 400, { error: "upload the skeleton .json or .skel, the .atlas (or .atlas.txt) and its .png pages" });
               mkdirSync(charPath(name), { recursive: true });
               writeFileSync(charPath(name, file), await readBody(req));
               return send(res, 200, { ok: true });
@@ -119,8 +119,8 @@ export function spineMagicApi(): Plugin {
             // same code path as the MCP attach_effect tool
             const body = JSON.parse((await readBody(req)).toString("utf8"));
             const { id, character, ...attach } = body;
-            const m = /^characters\/([\w.-]+)\/([\w.-]+\.json)$/.exec(character ?? "");
-            if (!m) return send(res, 400, { error: "character must be characters/<name>/<file>.json" });
+            const m = /^characters\/([\w.-]+)\/([\w.-]+\.(?:json|skel|skel\.bytes))$/.exec(character ?? "");
+            if (!m) return send(res, 400, { error: "character must be characters/<name>/<file>.json or .skel" });
             const { attachToCharacter } = await import("../src/node/character");
             const effect = store.get(id);
             const r = await attachToCharacter({ effect, jsonPath: charPath(m[1], m[2]), attach, textureDir: home });

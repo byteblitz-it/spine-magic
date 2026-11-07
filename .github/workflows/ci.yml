@@ -1,0 +1,51 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    name: Test (Node ${{ matrix.node }}, ${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest]
+        node: [20, 22]
+        include:
+          - os: windows-latest
+            node: 22
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+          cache: npm
+      - run: npm ci
+      # official example skeletons for the binary .skel converter tests (not committed)
+      - run: node scripts/fetch-spine-examples.mjs
+      # unit, character and MCP end-to-end tests, validated in the real Spine 3.8 / 4.x runtimes
+      - run: npm test
+      - name: Type-check and build the web editor
+        run: npm run build:web
+
+  plugin:
+    name: Plugin bundle is up to date
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run build:plugin
+      - name: Fail if plugin/server differs from src/
+        run: git diff --exit-code -- plugin/server || (echo "::error::plugin/server is stale - run 'npm run build:plugin' and commit" && exit 1)
+      - name: Bundled server passes the MCP tests outside the repo
+        run: |
+          mkdir -p "$RUNNER_TEMP/plugin" && cp -r plugin/. "$RUNNER_TEMP/plugin/"
+          npm run build
+          SPINEMAGIC_SERVER="$RUNNER_TEMP/plugin/server/spinemagic-mcp.mjs" npx vitest run test/mcp.test.ts

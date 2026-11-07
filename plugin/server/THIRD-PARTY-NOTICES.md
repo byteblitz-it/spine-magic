@@ -11,6 +11,14 @@ Packages: `@esotericsoftware/spine-core` (4.0, 4.1, 4.2, 4.3, installed under th
 `vendor/spine-3.8/` (`spine-core.js`, `spine-webgl.js`; source commit and hashes in its README, license in
 `vendor/spine-3.8/LICENSE`).
 
+`src/core/skel.ts` (the binary `.skel` → JSON converter) is a derivative work of the Spine Runtimes: its
+reading logic is ported from spine-ts `SkeletonBinary` (3.8 and 4.2). That file is therefore under the Spine
+Runtimes License below, not the MIT License, and so is any build that includes it (the plugin's bundled server
+and the web editor build).
+
+Test fixtures in `test/fixtures/official/` (downloaded by `scripts/fetch-spine-examples.mjs`, not committed) are
+Esoteric Software's example skeletons.
+
 They are used to validate exports and merged characters and to sample bone animation (Node), and for the
 Spine and character previews in the web editor. The repository (vendored 3.8 files) and the web editor build
 (`dist-web/`, which bundles the runtimes) redistribute the Spine Runtimes, which must include their license notice:
