@@ -48,7 +48,7 @@ jobs:
             git diff --stat -- plugin/server
             git diff -- plugin/server | head -80
             echo "::error::plugin/server is stale - run 'npm run build:plugin' and commit. $(git diff --stat -- plugin/server | tr '\n' ' ')"
-            echo "::error::first changes: $(git diff -U0 -- plugin/server | grep -E '^[-+][^-+]' | head -6 | cut -c1-160 | tr '\n' ' ')"
+            echo "::error::first changes: $(git diff --text -U0 -- plugin/server | grep -E '^[-+][^-+]' | head -6 | cut -c1-160 | tr '\n' ' ')"
             exit 1
           fi
       - name: Bundled server passes the MCP tests outside the repo
