@@ -91,6 +91,12 @@
       "y": -36
     },
     {
+      "name": "hand_l",
+      "parent": "forearm_l",
+      "x": 9,
+      "y": -44
+    },
+    {
       "name": "leg_r",
       "parent": "hip",
       "x": -30,
@@ -168,9 +174,14 @@
       "attachment": "head"
     },
     {
-      "name": "hand_l",
+      "name": "fist_l",
+      "bone": "hand_l",
+      "attachment": "fist_l"
+    },
+    {
+      "name": "forearm_l",
       "bone": "forearm_l",
-      "attachment": "hand_l"
+      "attachment": "forearm_l"
     },
     {
       "name": "upper_arm_l",
@@ -274,8 +285,16 @@
             "height": 137
           }
         },
-        "hand_l": {
-          "hand_l": {
+        "fist_l": {
+          "fist_l": {
+            "x": -5,
+            "y": 6,
+            "width": 82,
+            "height": 112
+          }
+        },
+        "forearm_l": {
+          "forearm_l": {
             "x": 4,
             "y": -38,
             "width": 82,
@@ -466,6 +485,30 @@
             {
               "time": 0.6,
               "angle": -3,
+              "curve": 0.42,
+              "c2": 0,
+              "c3": 0.58,
+              "c4": 1
+            },
+            {
+              "time": 1.2,
+              "angle": 0
+            }
+          ]
+        },
+        "hand_l": {
+          "rotate": [
+            {
+              "time": 0,
+              "angle": 0,
+              "curve": 0.42,
+              "c2": 0,
+              "c3": 0.58,
+              "c4": 1
+            },
+            {
+              "time": 0.6,
+              "angle": 4,
               "curve": 0.42,
               "c2": 0,
               "c3": 0.58,
@@ -733,7 +776,7 @@
             },
             {
               "time": 0.28,
-              "angle": 10,
+              "angle": 18,
               "curve": 0.42,
               "c2": 0,
               "c3": 0.58,
@@ -741,7 +784,39 @@
             },
             {
               "time": 0.45,
-              "angle": -15,
+              "angle": -20,
+              "curve": 0.42,
+              "c2": 0,
+              "c3": 0.58,
+              "c4": 1
+            },
+            {
+              "time": 0.8,
+              "angle": 0
+            }
+          ]
+        },
+        "hand_l": {
+          "rotate": [
+            {
+              "time": 0,
+              "angle": 0,
+              "curve": 0.42,
+              "c2": 0,
+              "c3": 0.58,
+              "c4": 1
+            },
+            {
+              "time": 0.28,
+              "angle": 12,
+              "curve": 0.42,
+              "c2": 0,
+              "c3": 0.58,
+              "c4": 1
+            },
+            {
+              "time": 0.45,
+              "angle": -18,
               "curve": 0.42,
               "c2": 0,
               "c3": 0.58,
@@ -1039,6 +1114,54 @@
             {
               "time": 0.8,
               "angle": 10
+            }
+          ]
+        },
+        "forearm_l": {
+          "rotate": [
+            {
+              "time": 0,
+              "angle": 8,
+              "curve": 0.42,
+              "c2": 0,
+              "c3": 0.58,
+              "c4": 1
+            },
+            {
+              "time": 0.4,
+              "angle": -8,
+              "curve": 0.42,
+              "c2": 0,
+              "c3": 0.58,
+              "c4": 1
+            },
+            {
+              "time": 0.8,
+              "angle": 8
+            }
+          ]
+        },
+        "hand_l": {
+          "rotate": [
+            {
+              "time": 0,
+              "angle": 6,
+              "curve": 0.42,
+              "c2": 0,
+              "c3": 0.58,
+              "c4": 1
+            },
+            {
+              "time": 0.4,
+              "angle": -6,
+              "curve": 0.42,
+              "c2": 0,
+              "c3": 0.58,
+              "c4": 1
+            },
+            {
+              "time": 0.8,
+              "angle": 6
             }
           ]
         },

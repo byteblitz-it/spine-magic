@@ -54,58 +54,65 @@ boot_l
   orig: 87, 134
   offset: 0, 0
   index: -1
-hand_l
+fist_l
   rotate: false
   xy: 379, 188
   size: 82, 112
   orig: 82, 112
   offset: 0, 0
   index: -1
-lower_arm_r
+forearm_l
   rotate: false
   xy: 2, 339
+  size: 82, 112
+  orig: 82, 112
+  offset: 0, 0
+  index: -1
+lower_arm_r
+  rotate: false
+  xy: 86, 339
   size: 96, 104
   orig: 96, 104
   offset: 0, 0
   index: -1
 hand_r
   rotate: false
-  xy: 100, 339
+  xy: 184, 339
   size: 86, 92
   orig: 86, 92
   offset: 0, 0
   index: -1
 upper_arm_r
   rotate: false
-  xy: 188, 339
+  xy: 272, 339
   size: 94, 91
   orig: 94, 91
   offset: 0, 0
   index: -1
 sword
   rotate: false
-  xy: 2, 445
+  xy: 2, 453
   size: 327, 89
   orig: 327, 89
   offset: 0, 0
   index: -1
 upper_arm_l
   rotate: false
-  xy: 331, 445
+  xy: 331, 453
   size: 86, 84
   orig: 86, 84
   offset: 0, 0
   index: -1
 crotch
   rotate: false
-  xy: 2, 536
+  xy: 2, 544
   size: 123, 73
   orig: 123, 73
   offset: 0, 0
   index: -1
 tasset
   rotate: false
-  xy: 127, 536
+  xy: 127, 544
   size: 128, 73
   orig: 128, 73
   offset: 0, 0

@@ -33,9 +33,10 @@ const KNIGHT: CharDef = {
     { name: "grip", parent: "sword", x: -100, y: 108, color: ANCHOR },
     { name: "blade_mid", parent: "sword", x: 31, y: 43, color: ANCHOR },
     { name: "sword_tip", parent: "sword", x: 129, y: -5, color: ANCHOR },
-    // left arm chain: shoulder (upper arm L) → elbow (hand L: vambrace + fist)
+    // left arm chain: shoulder (upper arm L) → elbow (vambrace) → wrist (fist); "Hand L" is split at the cuff
     { name: "arm_l", parent: "torso", x: 54, y: 216 },
     { name: "forearm_l", parent: "arm_l", x: 66, y: 180 },
+    { name: "hand_l", parent: "forearm_l", x: 75, y: 136 },
     { name: "leg_r", parent: "hip", x: -30, y: 110 },
     { name: "shin_r", parent: "leg_r", x: -42, y: 60 },
     { name: "leg_l", parent: "hip", x: 30, y: 110 },
@@ -54,7 +55,8 @@ const KNIGHT: CharDef = {
     { part: "tasset", bone: "hip", x: 4, y: 112 },
     { part: "head", bone: "head", x: 6, y: 294 },
     // left arm: the hand/vambrace hangs under its shoulder plate
-    { part: "hand_l", bone: "forearm_l", x: 70, y: 142 },
+    { part: "fist_l", bone: "hand_l", x: 70, y: 142 },
+    { part: "forearm_l", bone: "forearm_l", x: 70, y: 142 },
     { part: "upper_arm_l", bone: "arm_l", x: 62, y: 202 },
     // sword arm: blade under the fist, forearm under the shoulder plate (pieces mirrored to point down-left)
     { part: "sword", bone: "sword", x: -14, y: 65, rotation: -26 },
@@ -70,6 +72,7 @@ const KNIGHT: CharDef = {
       cape: { rotate: [[0, 0], [0.6, 4], [1.2, 0]] },
       arm_r: { rotate: [[0, 0], [0.6, 3], [1.2, 0]] },
       arm_l: { rotate: [[0, 0], [0.6, -3], [1.2, 0]] },
+      hand_l: { rotate: [[0, 0], [0.6, 4], [1.2, 0]] },
     },
     // rising slash: pull the blade back low, then sweep it forward and up in front of the body.
     // Shoulder, elbow and wrist each turn a share (none more than ~120°), so the arm bends instead of spinning.
@@ -81,7 +84,8 @@ const KNIGHT: CharDef = {
       forearm_r: { rotate: [[0, 0], [0.28, -35], [0.38, 0, "linear"], [0.45, 12], [0.8, 0]] },
       hand_r: { rotate: [[0, 0], [0.28, -25], [0.38, 10, "linear"], [0.45, 22], [0.8, 0]] },
       arm_l: { rotate: [[0, 0], [0.28, 15], [0.45, -20], [0.8, 0]] },
-      forearm_l: { rotate: [[0, 0], [0.28, 10], [0.45, -15], [0.8, 0]] },
+      forearm_l: { rotate: [[0, 0], [0.28, 18], [0.45, -20], [0.8, 0]] },
+      hand_l: { rotate: [[0, 0], [0.28, 12], [0.45, -18], [0.8, 0]] },
       cape: { rotate: [[0, 0], [0.28, -4], [0.45, 10], [0.8, 0]] },
       leg_r: { rotate: [[0, 0], [0.45, -8], [0.8, 0]] },
       leg_l: { rotate: [[0, 0], [0.45, 10], [0.8, 0]] },
@@ -94,6 +98,8 @@ const KNIGHT: CharDef = {
       shin_l: { rotate: [[0, 0], [0.4, 0], [0.6, 20], [0.8, 0]] },
       arm_r: { rotate: [[0, -8], [0.4, 8], [0.8, -8]] },
       arm_l: { rotate: [[0, 10], [0.4, -10], [0.8, 10]] },
+      forearm_l: { rotate: [[0, 8], [0.4, -8], [0.8, 8]] },
+      hand_l: { rotate: [[0, 6], [0.4, -6], [0.8, 6]] },
       torso: { rotate: [[0, 1.5], [0.4, -1.5], [0.8, 1.5]] },
       cape: { rotate: [[0, 6], [0.4, 2], [0.8, 6]] },
     },

@@ -22,6 +22,16 @@ export const PARTS: Record<string, Record<string, [number, number, number, numbe
   },
 };
 
+/**
+ * Parts drawn as one piece that need a joint: split along a line (two points in the part's image, padding included).
+ * Each piece keeps the same canvas, so both halves line up at setup. The halves overlap by a few pixels so the
+ * joint never opens a gap when it bends.
+ */
+const SPLITS: Record<string, { line: [[number, number], [number, number]]; pieces: Record<string, (below: number) => boolean> }> = {
+  // "Hand L" is vambrace + fist in one drawing: cut at the lower gold cuff to give the left arm a wrist
+  "knight/hand_l": { line: [[30, 66], [62, 58]], pieces: { forearm_l: (d) => d < 3, fist_l: (d) => d > -3 } },
+};
+
 const src = decodePng(new Uint8Array(readFileSync(join("art", "rig-parts-sheet.png"))));
 const { width: W, height: H, data } = src;
 const white = (i: number) => data[i * 4] > 225 && data[i * 4 + 1] > 225 && data[i * 4 + 2] > 225;
@@ -100,6 +110,17 @@ for (const [character, parts] of Object.entries(PARTS)) {
       out.data.set([r, g, b, a], (y * w + x) * 4);
     }
     writeFileSync(join(dir, `${name}.png`), encodePng(out));
+    const split = SPLITS[`${character}/${name}`];
+    if (split) for (const [piece, keep] of Object.entries(split.pieces)) {
+      const img = createImage(w, h);
+      for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
+        // signed distance below the cut line, in pixels (line through two points, image space)
+        const [[ax, ay], [bx, by]] = split.line;
+        const below = y - (ay + ((by - ay) * (x - ax)) / (bx - ax));
+        if (keep(below)) img.data.set(out.data.subarray((y * w + x) * 4, (y * w + x) * 4 + 4), (y * w + x) * 4);
+      }
+      writeFileSync(join(dir, `${piece}.png`), encodePng(img));
+    }
   }
   console.log(`${dir}: ${Object.keys(parts).length} parts`);
 }
