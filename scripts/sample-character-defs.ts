@@ -106,52 +106,54 @@ const KNIGHT: CharDef = {
 
 const WIZARD: CharDef = {
   name: "wizard",
+  // hand-placed at one body scale (0.65) and one head scale, so proportions stay consistent; the parts sheet is drawn
+  // differently from the reference composite, so fitting each part to it separately gave mismatched sizes
   bones: [
     { name: "root", x: 0, y: 0 },
-    { name: "hip", parent: "root", x: 0, y: 100 },
-    { name: "torso", parent: "hip", x: 0, y: 130 },
-    { name: "head", parent: "torso", x: 0, y: 210 },
-    { name: "hat", parent: "head", x: -6, y: 278 },
-    { name: "hat_gem", parent: "hat", x: 15, y: 316, color: ANCHOR },
-    { name: "robe", parent: "torso", x: 0, y: 200 },
-    { name: "chest_gem", parent: "torso", x: 0, y: 196, color: ANCHOR },
-    // staff arm, raised forward as in the reference: shoulder → elbow → wrist → staff in the glove
-    { name: "arm_r", parent: "torso", x: 52, y: 192 },
-    { name: "forearm_r", parent: "arm_r", x: 80, y: 160 },
-    { name: "hand_r", parent: "forearm_r", x: 88, y: 152 },
-    { name: "staff_hand", parent: "hand_r", x: 100, y: 138, color: ANCHOR },
-    { name: "staff", parent: "hand_r", x: 100, y: 138 },
-    { name: "staff_orb", parent: "staff", x: 164, y: 245, color: ANCHOR },
+    { name: "hip", parent: "root", x: 0, y: 110 },
+    { name: "torso", parent: "hip", x: 0, y: 122 },
+    { name: "head", parent: "torso", x: 0, y: 205 },
+    { name: "hat", parent: "head", x: -2, y: 272 },
+    { name: "hat_gem", parent: "hat", x: 21, y: 321, color: ANCHOR },
+    { name: "robe", parent: "torso", x: 0, y: 195 },
+    { name: "chest_gem", parent: "torso", x: 0, y: 190, color: ANCHOR },
+    // staff arm: shoulder at the coat's corner → elbow → wrist → staff in the glove
+    { name: "arm_r", parent: "torso", x: 37, y: 183 },
+    { name: "forearm_r", parent: "arm_r", x: 52.7, y: 139.8 },
+    { name: "hand_r", parent: "forearm_r", x: 97.3, y: 113.4 },
+    { name: "staff_hand", parent: "hand_r", x: 106, y: 108, color: ANCHOR },
+    { name: "staff", parent: "hand_r", x: 106, y: 108 },
+    { name: "staff_orb", parent: "staff", x: 145, y: 215, color: ANCHOR },
     // free arm hanging at the side: shoulder → elbow → wrist
-    { name: "arm_l", parent: "torso", x: -58, y: 192 },
-    { name: "forearm_l", parent: "arm_l", x: -70, y: 162 },
-    { name: "hand_l", parent: "forearm_l", x: -58, y: 115 },
-    { name: "leg_r", parent: "hip", x: -26, y: 70 },
-    { name: "leg_l", parent: "hip", x: 26, y: 70 },
-    { name: "potion", parent: "hip", x: -38, y: 87, color: ANCHOR },
+    { name: "arm_l", parent: "torso", x: -37, y: 183 },
+    { name: "forearm_l", parent: "arm_l", x: -43.4, y: 137.4 },
+    { name: "hand_l", parent: "forearm_l", x: -47.5, y: 90.5 },
+    // boots hang from the hip under the skirt
+    { name: "leg_r", parent: "hip", x: -28, y: 86 },
+    { name: "leg_l", parent: "hip", x: 28, y: 86 },
+    { name: "potion", parent: "hip", x: -21.6, y: 100, color: ANCHOR },
   ],
   // back to front
   parts: [
-    { part: "robe", bone: "robe", x: -2, y: 120 },
-    { part: "boot_l", bone: "leg_l", x: 26, y: 62 },
-    { part: "boot_r", bone: "leg_r", x: -28, y: 64 },
-    { part: "skirt", bone: "hip", x: 0, y: 72 },
-    { part: "coat_skirt", bone: "hip", x: 0, y: 112 },
-    { part: "coat", bone: "torso", x: 0, y: 172 },
-    // free arm in front of the coat, fist by the potion
-    { part: "glove_l", bone: "hand_l", x: -61, y: 129, rotation: -8, follows: "lower_sleeve_l" },
-    { part: "lower_sleeve_l", bone: "forearm_l", x: -61, y: 129, rotation: -8 },
-    { part: "sleeve_l", bone: "arm_l", x: -62, y: 178, rotation: -6 },
-    // the potion pouch hangs in front of the free hand
-    { part: "pouch", bone: "hip", x: -10, y: 96 },
-    // staff behind the glove's fingers
-    { part: "staff", bone: "staff", x: 109, y: 154, rotation: 59, scale: 0.8 },
-    { part: "glove_r", bone: "hand_r", x: 70, y: 170, rotation: 25, follows: "lower_sleeve_r" },
-    { part: "lower_sleeve_r", bone: "forearm_r", x: 70, y: 170, rotation: 25 },
-    { part: "sleeve_r", bone: "arm_r", x: 66, y: 176, rotation: 42 },
-    // head and hat over the raised staff arm's shoulder
-    { part: "head", bone: "head", x: -2, y: 238 },
-    { part: "hat", bone: "hat", x: -15, y: 306 },
+    { part: "robe", bone: "robe", x: 0, y: 117, scale: 0.65 },
+    { part: "boot_l", bone: "leg_l", x: 28, y: 44, scale: 0.65 },
+    { part: "boot_r", bone: "leg_r", x: -28, y: 45, scale: 0.65 },
+    { part: "skirt", bone: "hip", x: 0, y: 63.5, scale: 0.65 },
+    { part: "coat_skirt", bone: "hip", x: 0, y: 75, scale: 0.65 },
+    // the coat's belt sits on the waist line (y ≈ 120), where the pouch strap hangs
+    { part: "coat", bone: "torso", x: 0, y: 163.5, scale: 0.65 },
+    { part: "glove_l", bone: "hand_l", x: -46.8, y: 99.9, rotation: -5, scale: 0.65, follows: "lower_sleeve_l" },
+    { part: "lower_sleeve_l", bone: "forearm_l", x: -46.8, y: 99.9, rotation: -5, scale: 0.65 },
+    { part: "sleeve_l", bone: "arm_l", x: -40.2, y: 160.2, rotation: -8, scale: 0.65 },
+    { part: "pouch", bone: "hip", x: -5, y: 108, scale: 0.65 },
+    // staff behind the glove's fingers, its foot on the ground
+    { part: "staff", bone: "staff", x: 111.6, y: 123.3, rotation: 70, scale: 0.65 },
+    { part: "glove_r", bone: "hand_r", x: 85.6, y: 120.2, rotation: 60, scale: 0.65, follows: "lower_sleeve_r" },
+    { part: "lower_sleeve_r", bone: "forearm_r", x: 85.6, y: 120.2, rotation: 60, scale: 0.65 },
+    { part: "sleeve_r", bone: "arm_r", x: 44.9, y: 161.4, rotation: 20, scale: 0.65 },
+    // hat behind the head: the hair sits in front of the brim
+    { part: "hat", bone: "hat", x: -6, y: 308.5 },
+    { part: "head", bone: "head", x: 0, y: 264, scale: 0.95 },
   ],
   animations: {
     idle: {
