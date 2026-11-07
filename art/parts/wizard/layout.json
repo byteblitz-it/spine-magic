@@ -1,0 +1,86 @@
+{
+  "robe": {
+    "x": -41,
+    "y": 105.5,
+    "rotation": -5,
+    "scale": 0.81
+  },
+  "boot_l": {
+    "x": 45,
+    "y": 48,
+    "rotation": -5,
+    "scale": 0.64
+  },
+  "boot_r": {
+    "x": -44,
+    "y": 49.5,
+    "rotation": 2,
+    "scale": 0.72
+  },
+  "skirt": {
+    "x": -22.5,
+    "y": 68,
+    "rotation": -1,
+    "scale": 0.9
+  },
+  "coat_skirt": {
+    "x": 2,
+    "y": 77.5,
+    "rotation": 5,
+    "scale": 0.78
+  },
+  "coat": {
+    "x": -21,
+    "y": 155.5,
+    "rotation": -5,
+    "scale": 0.62
+  },
+  "lower_sleeve_l": {
+    "x": -47,
+    "y": 105.5,
+    "rotation": -7,
+    "scale": 0.76
+  },
+  "sleeve_l": {
+    "x": -43,
+    "y": 156,
+    "rotation": -15,
+    "scale": 0.63
+  },
+  "pouch": {
+    "x": 6.5,
+    "y": 92.5,
+    "rotation": -4,
+    "scale": 0.85
+  },
+  "staff": {
+    "x": 94.5,
+    "y": 148.5,
+    "rotation": 60,
+    "scale": 0.83
+  },
+  "lower_sleeve_r": {
+    "x": 62.5,
+    "y": 132,
+    "rotation": 49,
+    "scale": 0.71
+  },
+  "sleeve_r": {
+    "x": 45.5,
+    "y": 133.5,
+    "rotation": 60,
+    "scale": 0.78
+  },
+  "head": {
+    "x": -8.5,
+    "y": 243,
+    "rotation": 0.5,
+    "scale": 1.05
+  },
+  "hat": {
+    "x": -14,
+    "y": 284,
+    "rotation": 0,
+    "scale": 1.12
+  }
+}

@@ -1,0 +1,62 @@
+{
+  "cape": {
+    "x": -100,
+    "y": 111,
+    "rotation": -2.5,
+    "scale": 0.92
+  },
+  "forearm_l": {
+    "x": 78.5,
+    "y": 129.5,
+    "rotation": 0,
+    "scale": 0.77
+  },
+  "crotch": {
+    "x": 7.5,
+    "y": 116,
+    "rotation": 0,
+    "scale": 0.95
+  },
+  "torso": {
+    "x": 10.5,
+    "y": 170,
+    "rotation": 0,
+    "scale": 0.9
+  },
+  "tasset": {
+    "x": 9.5,
+    "y": 115,
+    "rotation": -1,
+    "scale": 0.95
+  },
+  "head": {
+    "x": 10.5,
+    "y": 280,
+    "rotation": 0,
+    "scale": 1.04
+  },
+  "sword": {
+    "x": -42,
+    "y": 85.5,
+    "rotation": -27,
+    "scale": 0.9
+  },
+  "lower_arm_r": {
+    "x": -87,
+    "y": 141,
+    "rotation": 28,
+    "scale": 0.87
+  },
+  "hand_r": {
+    "x": -77,
+    "y": 136.5,
+    "rotation": 14,
+    "scale": 0.9
+  },
+  "upper_arm_r": {
+    "x": -52.5,
+    "y": 203.5,
+    "rotation": -1,
+    "scale": 0.95
+  }
+}

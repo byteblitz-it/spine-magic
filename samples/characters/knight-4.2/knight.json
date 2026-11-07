@@ -16,48 +16,50 @@
     {
       "name": "hip",
       "parent": "root",
-      "y": 118
+      "x": 5.6,
+      "y": 104.6
     },
     {
       "name": "torso",
       "parent": "hip",
-      "y": 22
+      "x": 3.1,
+      "y": 18.6
     },
     {
       "name": "head",
       "parent": "torso",
-      "x": 4,
-      "y": 82
+      "x": -0.3,
+      "y": 81.9
     },
     {
       "name": "cape",
       "parent": "torso",
-      "x": -30,
-      "y": 60
+      "x": -41.6,
+      "y": 49.3
     },
     {
       "name": "arm_r",
       "parent": "torso",
-      "x": -48,
-      "y": 80
+      "x": -51.5,
+      "y": 94.4
     },
     {
       "name": "forearm_r",
       "parent": "arm_r",
-      "x": -22,
-      "y": -44
+      "x": -44.7,
+      "y": -57.2
     },
     {
       "name": "hand_r",
       "parent": "forearm_r",
-      "x": -18,
-      "y": -38
+      "x": 7.5,
+      "y": -11.7
     },
     {
       "name": "sword",
       "parent": "hand_r",
-      "x": -12,
-      "y": -30
+      "x": -38.7,
+      "y": -23.2
     },
     {
       "name": "grip",
@@ -67,40 +69,40 @@
     {
       "name": "blade_mid",
       "parent": "sword",
-      "x": 131,
-      "y": -65,
+      "x": 116.8,
+      "y": -60.5,
       "color": "ffcc00ff"
     },
     {
       "name": "sword_tip",
       "parent": "sword",
-      "x": 229,
-      "y": -113,
+      "x": 204.3,
+      "y": -105.2,
       "color": "ffcc00ff"
     },
     {
       "name": "arm_l",
       "parent": "torso",
-      "x": 48,
-      "y": 76
+      "x": 39.3,
+      "y": 92.8
     },
     {
       "name": "forearm_l",
       "parent": "arm_l",
-      "x": 14,
-      "y": -36
+      "x": 27.4,
+      "y": -57.2
     },
     {
       "name": "hand_l",
       "parent": "forearm_l",
-      "x": 9,
-      "y": -44
+      "x": 7,
+      "y": -33.9
     },
     {
       "name": "leg_r",
       "parent": "hip",
-      "x": -30,
-      "y": -8
+      "x": -35.6,
+      "y": 5.4
     },
     {
       "name": "shin_r",
@@ -111,8 +113,8 @@
     {
       "name": "leg_l",
       "parent": "hip",
-      "x": 30,
-      "y": -8
+      "x": 24.4,
+      "y": 5.4
     },
     {
       "name": "shin_l",
@@ -123,7 +125,7 @@
     {
       "name": "chest",
       "parent": "torso",
-      "y": 45,
+      "y": 40.5,
       "color": "ffcc00ff"
     }
   ],
@@ -215,24 +217,31 @@
       "attachments": {
         "cape": {
           "cape": {
-            "x": -70,
-            "y": -70,
+            "x": -67.1,
+            "y": -61.5,
+            "rotation": -2.5,
+            "scaleX": 0.92,
+            "scaleY": 0.92,
             "width": 202,
             "height": 182
           }
         },
         "fist_l": {
           "fist_l": {
-            "x": -5,
-            "y": 6,
+            "x": -3.9,
+            "y": 4.6,
+            "scaleX": 0.77,
+            "scaleY": 0.77,
             "width": 82,
             "height": 112
           }
         },
         "forearm_l": {
           "forearm_l": {
-            "x": 4,
-            "y": -38,
+            "x": 3.1,
+            "y": -29.3,
+            "scaleX": 0.77,
+            "scaleY": 0.77,
             "width": 82,
             "height": 112
           }
@@ -279,66 +288,85 @@
         },
         "crotch": {
           "crotch": {
-            "x": 2,
-            "y": 12,
+            "x": 1.9,
+            "y": 11.4,
+            "scaleX": 0.95,
+            "scaleY": 0.95,
             "width": 123,
             "height": 73
           }
         },
         "torso": {
           "torso": {
-            "x": 2,
-            "y": 52,
+            "x": 1.8,
+            "y": 46.8,
+            "scaleX": 0.9,
+            "scaleY": 0.9,
             "width": 136,
             "height": 149
           }
         },
         "tasset": {
           "tasset": {
-            "x": 4,
-            "y": -6,
+            "x": 3.9,
+            "y": 10.4,
+            "rotation": -1,
+            "scaleX": 0.95,
+            "scaleY": 0.95,
             "width": 128,
             "height": 73
           }
         },
         "head": {
           "head": {
-            "x": 2,
-            "y": 72,
+            "x": 2.1,
+            "y": 74.9,
+            "scaleX": 1.04,
+            "scaleY": 1.04,
             "width": 148,
             "height": 137
           }
         },
         "sword": {
           "sword": {
-            "x": 86,
-            "y": -43,
-            "rotation": -26,
+            "x": 76.7,
+            "y": -40,
+            "rotation": -27,
+            "scaleX": 0.9,
+            "scaleY": 0.9,
             "width": 327,
             "height": 89
           }
         },
         "lower_arm_r": {
           "lower_arm_r": {
-            "x": -10,
-            "y": -20,
-            "scaleX": -1,
+            "x": 0.5,
+            "y": -19.4,
+            "rotation": 28,
+            "scaleX": -0.87,
+            "scaleY": 0.87,
             "width": 96,
             "height": 104
           }
         },
         "hand_r": {
           "hand_r": {
-            "y": -14,
-            "scaleX": -1,
+            "x": 3,
+            "y": -12.2,
+            "rotation": 14,
+            "scaleX": -0.9,
+            "scaleY": 0.9,
             "width": 86,
             "height": 92
           }
         },
         "upper_arm_r": {
           "upper_arm_r": {
-            "x": -10,
-            "y": -15,
+            "x": -9.7,
+            "y": -14.1,
+            "rotation": -1,
+            "scaleX": 0.95,
+            "scaleY": 0.95,
             "width": 94,
             "height": 91
           }
