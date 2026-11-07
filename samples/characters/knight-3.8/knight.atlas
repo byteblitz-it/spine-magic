@@ -53,51 +53,51 @@ boot_l
   orig: 87, 134
   offset: 0, 0
   index: -1
-gauntlet_r
+glove_l
   rotate: false
   xy: 379, 188
+  size: 82, 112
+  orig: 82, 112
+  offset: 0, 0
+  index: -1
+gauntlet_r
+  rotate: false
+  xy: 2, 339
   size: 96, 104
   orig: 96, 104
   offset: 0, 0
   index: -1
-bracer_l
-  rotate: false
-  xy: 2, 339
-  size: 86, 92
-  orig: 86, 92
-  offset: 0, 0
-  index: -1
 pauldron_r
   rotate: false
-  xy: 90, 339
+  xy: 100, 339
   size: 94, 91
   orig: 94, 91
   offset: 0, 0
   index: -1
 sword
   rotate: false
-  xy: 2, 433
+  xy: 2, 445
   size: 327, 89
   orig: 327, 89
   offset: 0, 0
   index: -1
 pauldron_l
   rotate: false
-  xy: 331, 433
+  xy: 331, 445
   size: 86, 84
   orig: 86, 84
   offset: 0, 0
   index: -1
 crotch
   rotate: false
-  xy: 2, 524
+  xy: 2, 536
   size: 123, 73
   orig: 123, 73
   offset: 0, 0
   index: -1
 tasset
   rotate: false
-  xy: 127, 524
+  xy: 127, 536
   size: 128, 73
   orig: 128, 73
   offset: 0, 0

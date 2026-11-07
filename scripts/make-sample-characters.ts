@@ -51,9 +51,11 @@ const KNIGHT: CharDef = {
     { part: "torso", bone: "torso", x: 2, y: 192 },
     { part: "tasset", bone: "hip", x: 4, y: 112 },
     { part: "pauldron_l", bone: "torso", x: 62, y: 200 },
-    { part: "bracer_l", bone: "forearm_l", x: 80, y: 140 },
+    // left arm: "Hand L" (sleeve, vambrace, dark fist) hanging from under the pauldron
+    { part: "glove_l", bone: "forearm_l", x: 68, y: 146 },
     { part: "sword", bone: "sword", x: -10, y: 75, rotation: -26 },
-    { part: "gauntlet_r", bone: "forearm_r", x: -84, y: 140 },
+    // sword arm: "Lower Arm R" mirrored so it runs from the shoulder down to the fist closed on the hilt
+    { part: "gauntlet_r", bone: "forearm_r", x: -70, y: 152, flipX: true },
     // the head draws over the sword arm, so a raised arm passes behind it
     { part: "head", bone: "head", x: 6, y: 294 },
     // shoulder plates stay on the torso; only the arm under them swings

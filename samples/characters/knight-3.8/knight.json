@@ -166,9 +166,9 @@
       "attachment": "pauldron_l"
     },
     {
-      "name": "bracer_l",
+      "name": "glove_l",
       "bone": "forearm_l",
-      "attachment": "bracer_l"
+      "attachment": "glove_l"
     },
     {
       "name": "sword",
@@ -267,12 +267,12 @@
             "height": 84
           }
         },
-        "bracer_l": {
-          "bracer_l": {
-            "x": 16,
-            "y": -42,
-            "width": 86,
-            "height": 92
+        "glove_l": {
+          "glove_l": {
+            "x": 4,
+            "y": -36,
+            "width": 82,
+            "height": 112
           }
         },
         "sword": {
@@ -286,8 +286,9 @@
         },
         "gauntlet_r": {
           "gauntlet_r": {
-            "x": -24,
-            "y": -46,
+            "x": -10,
+            "y": -34,
+            "scaleX": -1,
             "width": 96,
             "height": 104
           }
