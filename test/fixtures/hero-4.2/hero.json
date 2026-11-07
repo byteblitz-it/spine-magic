@@ -1,0 +1,161 @@
+{
+  "skeleton": {
+    "hash": "hero",
+    "spine": "4.2.43",
+    "x": -80,
+    "y": 0,
+    "width": 260,
+    "height": 220,
+    "images": "./",
+    "audio": ""
+  },
+  "bones": [
+    {
+      "name": "root"
+    },
+    {
+      "name": "body",
+      "parent": "root",
+      "y": 60,
+      "color": "ffffffff"
+    },
+    {
+      "name": "arm",
+      "parent": "body",
+      "x": 30,
+      "y": 100,
+      "length": 90,
+      "color": "ff8000ff"
+    },
+    {
+      "name": "hand",
+      "parent": "arm",
+      "x": 90,
+      "color": "ffcc00ff"
+    }
+  ],
+  "slots": [
+    {
+      "name": "body",
+      "bone": "body",
+      "attachment": "body"
+    },
+    {
+      "name": "arm",
+      "bone": "arm",
+      "attachment": "arm"
+    }
+  ],
+  "skins": [
+    {
+      "name": "default",
+      "attachments": {
+        "body": {
+          "body": {
+            "x": 0,
+            "y": 60,
+            "width": 80,
+            "height": 120
+          }
+        },
+        "arm": {
+          "arm": {
+            "x": 45,
+            "y": 0,
+            "width": 90,
+            "height": 20
+          }
+        }
+      }
+    }
+  ],
+  "animations": {
+    "swing": {
+      "bones": {
+        "arm": {
+          "rotate": [
+            {
+              "time": 0,
+              "value": -30
+            },
+            {
+              "time": 0.5,
+              "value": 80
+            },
+            {
+              "time": 1,
+              "value": -30
+            }
+          ]
+        }
+      }
+    },
+    "walk": {
+      "bones": {
+        "body": {
+          "translate": [
+            {
+              "time": 0,
+              "x": 0,
+              "y": 0
+            },
+            {
+              "time": 1,
+              "x": 120,
+              "y": 0
+            },
+            {
+              "time": 2,
+              "x": 0,
+              "y": 0
+            }
+          ]
+        },
+        "arm": {
+          "rotate": [
+            {
+              "time": 0,
+              "value": 0
+            },
+            {
+              "time": 0.5,
+              "value": 20
+            },
+            {
+              "time": 1,
+              "value": 0
+            },
+            {
+              "time": 1.5,
+              "value": 20
+            },
+            {
+              "time": 2,
+              "value": 0
+            }
+          ]
+        }
+      }
+    },
+    "idle": {
+      "bones": {
+        "arm": {
+          "rotate": [
+            {
+              "time": 0,
+              "value": 0
+            },
+            {
+              "time": 1,
+              "value": 10
+            },
+            {
+              "time": 2,
+              "value": 0
+            }
+          ]
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "name": "spinemagic",
+  "owner": { "name": "ByteBlitz" },
+  "metadata": { "description": "SpineMagic: AI-authored particle effects baked to Spine 3.8–4.3 skeletons." },
+  "plugins": [
+    {
+      "name": "spinemagic",
+      "source": "./plugin",
+      "description": "Spine particle effects for AI agents: MCP tools (simulate, preview, bake, validate) plus the spine-vfx skill (workflow, art direction, budgets)."
+    }
+  ]
+}

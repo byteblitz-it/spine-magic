@@ -1,0 +1,7 @@
+* text=auto eol=lf
+*.png binary
+
+# prebuilt MCP server for the plugin (npm run build:plugin) — not hand-edited
+plugin/server/** linguist-generated=true -diff
+# official Spine runtimes, unmodified
+vendor/** linguist-vendored=true -diff

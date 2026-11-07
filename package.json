@@ -1,0 +1,47 @@
+{
+  "name": "spinemagic",
+  "version": "0.1.0",
+  "description": "Particle effects for Spine 3.8+, authored by AI agents over MCP",
+  "type": "module",
+  "license": "MIT",
+  "author": "ByteBlitz",
+  "bin": {
+    "spinemagic-mcp": "dist/mcp/server.js"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "build:plugin": "node scripts/build-plugin.mjs",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "pretest": "tsc -p tsconfig.json",
+    "test": "vitest run",
+    "mcp": "tsx src/mcp/server.ts",
+    "demo": "tsx scripts/demo.ts",
+    "web": "vite --config web/vite.config.ts",
+    "build:web": "tsc -p web/tsconfig.json && vite build --config web/vite.config.ts"
+  },
+  "dependencies": {
+    "@esotericsoftware/spine-pixi-v8": "^4.3.13",
+    "@modelcontextprotocol/sdk": "^1.32.2",
+    "fflate": "^0.8.3",
+    "pixi.js": "^8.22.0",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "spine-core-40": "npm:@esotericsoftware/spine-core@4.0.31",
+    "spine-core-41": "npm:@esotericsoftware/spine-core@4.1.56",
+    "spine-core-42": "npm:@esotericsoftware/spine-core@4.2.120",
+    "spine-core-43": "npm:@esotericsoftware/spine-core@4.3.13",
+    "spine-webgl-42": "npm:@esotericsoftware/spine-webgl@4.2.120",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^5.2.0",
+    "esbuild": "^0.28.2",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2",
+    "vite": "^7.3.7",
+    "vitest": "^3.2.4"
+  }
+}

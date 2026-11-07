@@ -1,0 +1,9 @@
+node_modules/
+dist/
+dist-web/
+textures/
+out/
+projects/
+characters/
+textures/
+.claude/
