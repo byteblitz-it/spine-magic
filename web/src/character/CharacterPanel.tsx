@@ -38,7 +38,7 @@ export function CharacterPanel({ effect, character, loading, error, previewing, 
     if (!path) { onAttach(null); return; }
     // bone/animation are fixed up by the app once the skeleton has loaded (unknown names → best guess)
     const bones = info?.bones.map((b) => b.name) ?? [];
-    const bone = ["hand", "weapon", "hand_R", "hand_r", "R_hand"].find((n) => bones.includes(n)) ?? bones[bones.length - 1] ?? "";
+    const bone = ["sword_tip", "staff_orb", "hand", "weapon", "hand_R", "hand_r", "R_hand"].find((n) => bones.includes(n)) ?? bones[bones.length - 1] ?? "";
     onAttach({ ...(a ?? {}), character: path, bone: a && (!info || bones.includes(a.bone)) ? a.bone : bone, animation: a?.animation ?? info?.animations[0]?.name ?? "" });
   };
 
@@ -66,7 +66,7 @@ export function CharacterPanel({ effect, character, loading, error, previewing, 
       <div className="character-body">
         {options.length === 0 && (
           <p className="muted small">No characters yet. Upload a Spine skeleton (.json 3.8–4.3, or .skel 3.8 / 4.2, + .atlas + .png) or{" "}
-            <button className="link-btn" onClick={async () => { await api.addSampleCharacters(); await refresh(); }}>add the sample heroes</button>.</p>
+            <button className="link-btn" onClick={async () => { await api.addSampleCharacters(); await refresh(); }}>add the sample knight &amp; wizard</button>.</p>
         )}
         {options.length > 0 && (
           <select value={a?.character ?? ""} onChange={(e) => choose(e.target.value)}>

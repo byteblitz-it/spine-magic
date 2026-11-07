@@ -122,8 +122,16 @@ Re-attaching replaces the previous copy, several effects stack, and detaching re
 Every merged file is played through all its animations in the runtime, and the effect's anchor is checked to sit
 exactly on the bone.
 
-Try it with the sample heroes: in the editor's **Character** panel choose *add the sample heroes*, or run
-`npx tsx scripts/make-test-character.ts`.
+| | |
+|---|---|
+| **Enchanted blade** — knight, `attack`, follow `blade_mid`: glow and sparks ride the sword | <img src="docs/media/knight-enchanted-blade.png" width="520" alt="knight with an enchanted blade" /> |
+| **Orb magic** — wizard, `cast`, follow `staff_orb` (upright): pulsing glow and swirling stars | <img src="docs/media/wizard-orb-magic.png" width="520" alt="wizard with orb magic" /> |
+
+Try it yourself with the sample **knight** and **wizard** (Spine 3.8 and 4.2, in `samples/characters/`): in the
+editor's **Character** panel choose *add the sample knight & wizard*, or point `attach_effect` at
+`samples/characters/knight-4.2/knight.json`. Their anchor bones (`sword_tip`, `blade_mid`, `grip`, `staff_orb`,
+`hat_gem`, …) sit on the art, ready to attach to. They are whole-sprite rigs (one image that leans, hops and
+swings), so the sword and staff move with the body rather than on their own.
 
 ## MCP tools
 
@@ -154,6 +162,8 @@ The details are in [docs/DESIGN.md](docs/DESIGN.md).
 | Command | What it does |
 |---|---|
 | `npm test` | Unit, character and end-to-end MCP tests — baked bones are compared with the simulation inside the real 3.8 / 4.x runtimes |
+| `npx tsx scripts/make-sample-characters.ts` | Rebuild the knight and wizard skeletons from `art/sample-characters.png` |
+| `npx tsx scripts/make-character-media.ts` | Re-render the on-character README images (merged with `attach_effect`, posed by the 4.2 runtime) |
 | `node scripts/fetch-spine-examples.mjs` | Download Esoteric's example skeletons for the `.skel` converter tests (skipped without them) |
 | `npm run web` | Visual editor with live agent sync |
 | `npm run demo [preset]` | Export every preset for every version into `out/` and validate |
@@ -173,6 +183,7 @@ vendor/      official Spine 3.8 runtime (not published on npm)
 
 SpineMagic is MIT-licensed — © 2026 ByteBlitz IT Solutions. See [LICENSE](LICENSE). One exception:
 `src/core/skel.ts`, the binary `.skel` reader, is ported from the Spine Runtimes and stays under their license.
+The sample character art (`art/`, `samples/characters/`) is © ByteBlitz IT Solutions and included under the same MIT License.
 
 The Spine runtimes used for validation and previews are © Esoteric Software under the Spine Runtimes License,
 and using Spine data in a product requires a Spine license from Esoteric Software — see

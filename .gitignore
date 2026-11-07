@@ -2,9 +2,9 @@ node_modules/
 test/fixtures/official/
 dist/
 dist-web/
-textures/
-out/
-projects/
-characters/
-textures/
+/textures/
+/out/
+/projects/
+/characters/
+/textures/
 .claude/

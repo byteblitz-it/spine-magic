@@ -98,7 +98,8 @@ export function spineMagicApi(): Plugin {
               return send(res, 200, list);
             }
             if (name === "_samples" && method === "POST") {
-              for (const v of ["3.8", "4.2"]) cpSync(join(repoRoot, "test", "fixtures", `hero-${v}`), charPath(`hero-${v}`), { recursive: true });
+              const samples = join(repoRoot, "samples", "characters");
+              for (const d of readdirSync(samples)) cpSync(join(samples, d), charPath(d), { recursive: true });
               return send(res, 200, { ok: true });
             }
             if (name && file && method === "GET") {

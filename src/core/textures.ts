@@ -42,7 +42,8 @@ const BUILTIN: Record<string, { w: number; h: number; desc: string; shade: Shade
 
 BUILTIN.ribbon = {
   w: 128, h: 32, desc: "ribbon strip: soft edges, fades from head (left) to tail (right) — for emitter.ribbon",
-  shade: (u, v) => Math.pow(Math.max(0, 1 - Math.abs(v)), 1.4) * Math.pow(clamp01((1 - u) / 2), 0.8),
+  // solid core with soft edges across the width; fades out towards the tail
+  shade: (u, v) => Math.pow(clamp01((1 - Math.abs(v)) * 1.8), 1.3) * Math.pow(clamp01((1 - u) / 2), 0.6),
 };
 
 // flipbook sets: name-1 … name-4, meant for emitter.sprite.frames

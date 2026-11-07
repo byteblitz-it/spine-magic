@@ -42,7 +42,13 @@ export function ribbonVertices(e: Emitter, period: number, t: number, loop: bool
     // tangent from neighbours; keep the last good normal where points coincide
     const a = pts[Math.max(0, i - 1)], b = pts[Math.min(n, i + 1)];
     const dx = a[0] - b[0], dy = a[1] - b[1], len = Math.hypot(dx, dy);
-    if (len > 1e-6) { nx = -dy / len; ny = dx / len; }
+    if (len > 1e-6) {
+      let mx = -dy / len, my = dx / len;
+      // where the path doubles back (wind-up → slash) the tangent reverses; keep the normal on the same side so
+      // the strip folds over smoothly instead of twisting into a bow-tie
+      if (i > 0 && mx * nx + my * ny < 0) { mx = -mx; my = -my; }
+      nx = mx; ny = my;
+    }
     const w = (r.width * Math.max(0, evalCurve(r.widthOverLength, i / n))) / 2;
     out.push(pts[i][0] + nx * w, pts[i][1] + ny * w, pts[i][0] - nx * w, pts[i][1] - ny * w);
   }

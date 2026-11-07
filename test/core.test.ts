@@ -157,6 +157,13 @@ describe("new emitter features", () => {
     });
   }
 
+  it("a ribbon on a path that doubles back keeps its width (no twist at the turn)", () => {
+    const e = parseEffect({ emitters: [{ motion: { enabled: true, points: [[0, 0], [200, 0]], closed: false, smooth: false, mode: "pingpong" }, ribbon: { enabled: true, length: 1, segments: 20, width: 20, widthOverLength: [[0, 1], [1, 1]] } }] });
+    // at t = 1.2 s the emitter has turned back at x = 200 (pingpong over the 2 s effect), so the history spans the turn
+    const v = ribbonVertices(e.emitters[0], 2, 1.2, true);
+    for (let i = 0; i < v.length; i += 4) expect(Math.hypot(v[i] - v[i + 2], v[i + 1] - v[i + 3])).toBeCloseTo(20, 1);
+  });
+
   it("frames of different sizes keep the particle size on the longest edge", () => {
     const e = parseEffect({ emitters: [{ name: "m", sprite: { frames: ["soft-circle", "spark", "square"] } }] });
     const { json } = bakeSimulation(e, simulate(e), { version: "4.2" });

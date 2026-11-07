@@ -75802,7 +75802,8 @@ BUILTIN.ribbon = {
   w: 128,
   h: 32,
   desc: "ribbon strip: soft edges, fades from head (left) to tail (right) \u2014 for emitter.ribbon",
-  shade: (u, v) => Math.pow(Math.max(0, 1 - Math.abs(v)), 1.4) * Math.pow(clamp012((1 - u) / 2), 0.8)
+  // solid core with soft edges across the width; fades out towards the tail
+  shade: (u, v) => Math.pow(clamp012((1 - Math.abs(v)) * 1.8), 1.3) * Math.pow(clamp012((1 - u) / 2), 0.6)
 };
 var SPIN_WIDTH = [1, 0.7, 0.18, 0.7];
 SPIN_WIDTH.forEach((k, i2) => {
@@ -75929,8 +75930,13 @@ function ribbonVertices(e, period, t, loop) {
     const a = pts[Math.max(0, i2 - 1)], b = pts[Math.min(n, i2 + 1)];
     const dx = a[0] - b[0], dy = a[1] - b[1], len = Math.hypot(dx, dy);
     if (len > 1e-6) {
-      nx = -dy / len;
-      ny = dx / len;
+      let mx = -dy / len, my = dx / len;
+      if (i2 > 0 && mx * nx + my * ny < 0) {
+        mx = -mx;
+        my = -my;
+      }
+      nx = mx;
+      ny = my;
     }
     const w = r.width * Math.max(0, evalCurve(r.widthOverLength, i2 / n)) / 2;
     out.push(pts[i2][0] + nx * w, pts[i2][1] + ny * w, pts[i2][0] - nx * w, pts[i2][1] - ny * w);

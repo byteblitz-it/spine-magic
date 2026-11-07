@@ -21,6 +21,16 @@ const stamp = parseEffect({
   emitters: [{ name: "s", simulationSpace: "world", emission: { rate: 30, limit: 10 }, initial: { lifetime: 0.02, speed: 0, size: 10 }, overLifetime: { alpha: [[0, 1], [1, 1]] } }],
 });
 
+describe.each(VERSIONS)("sample characters — Spine %s", (v) => {
+  it.each([["knight", "sword_tip", "attack"], ["wizard", "staff_orb", "cast"]])("%s loads in the runtime and takes an effect on %s", async (name, bone, animation) => {
+    const dir = mkdtempSync(join(tmpdir(), `sm-sample-${name}-${v}-`));
+    cpSync(join("samples", "characters", `${name}-${v}`), dir, { recursive: true });
+    const r = await attachToCharacter({ effect: glow, jsonPath: join(dir, `${name}.json`), attach: { bone, animation } });
+    expect(r.validation.ok).toBe(true);
+    expect(r.followError).toBe(0);
+  });
+});
+
 describe.each(VERSIONS)("character merge — Spine %s", (v) => {
   it("follow: the anchor sits on the bone through the whole animation; original files untouched", async () => {
     const f = fixture(v);

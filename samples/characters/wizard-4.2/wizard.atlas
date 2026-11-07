@@ -1,0 +1,14 @@
+
+wizard.png
+size: 512,512
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+pma: true
+wizard
+  rotate: false
+  xy: 2, 2
+  size: 387, 398
+  orig: 387, 398
+  offset: 0, 0
+  index: -1
