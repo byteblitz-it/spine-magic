@@ -41,16 +41,9 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
-      - run: npm run build:plugin
-      - name: Fail if plugin/server differs from src/
-        run: |
-          if ! git diff --quiet -- plugin/server; then
-            git diff --stat -- plugin/server
-            git diff -- plugin/server | head -80
-            echo "::error::plugin/server is stale - run 'npm run build:plugin' and commit. $(git diff --stat -- plugin/server | tr '\n' ' ')"
-            echo "::error::first changes: $(git diff --text -U0 -- plugin/server | grep -E '^[-+][^-+]' | head -6 | cut -c1-160 | tr '\n' ' ')"
-            exit 1
-          fi
+      # esbuild output isn't byte-identical across OSes, so compare the source fingerprint the bundle was built from
+      - name: Fail if plugin/server was built from older sources
+        run: COMMITTED_HASH="$(cat plugin/server/SOURCE-HASH)" node scripts/build-plugin.mjs --check
       - name: Bundled server passes the MCP tests outside the repo
         run: |
           mkdir -p "$RUNNER_TEMP/plugin" && cp -r plugin/. "$RUNNER_TEMP/plugin/"
